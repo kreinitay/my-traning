@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>My Training</title>
+<meta name="theme-color" content="#0d0d10">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#0d0d10;--card:#17171c;--card2:#202028;--ink:#f4f4f6;--muted:#8d8d98;--line:#2a2a33;--accent:#ff5a36;--accent2:#ffb03a;--ok:#3ddc84;--prep:#5aa9ff;--power:#c77dff}
+body[data-plan="jump"]{--accent:#18c9a0;--accent2:#7ee8ff}
+body[data-plan="push"]{--accent:#ffb627;--accent2:#ff7b3a}
+body[data-plan="push"] .btn.main,body[data-plan="push"] .steps li::before{color:#2a1a00}
+.tday{background:var(--card);border-radius:20px;padding:16px;margin-bottom:16px;border:1px solid var(--line)}
+.tday h3{margin:0 0 2px;font-size:17px}
+.tday .muted{font-size:13px}
+.titem{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:14px;padding:10px 12px;margin-top:8px;cursor:pointer;border-left:4px solid var(--c)}
+.titem.dn{opacity:.5}
+.titem .temo{font-size:24px}
+.titem .tmid{flex:1;min-width:0}
+.titem .tmid b{display:block;font-size:15px}
+.titem .tmid small{color:var(--muted);font-size:12px}
+.titem .tgo{width:42px;height:42px;border-radius:50%;background:var(--c);color:#0d0d10;font-weight:900;font-size:16px;flex:none}
+.titem .tok{width:42px;height:42px;border-radius:50%;background:var(--ok);color:#06210f;font-weight:900;display:grid;place-items:center;flex:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 100px}
+body.home .wrap{padding-bottom:30px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 14px}
+.top h1{font-size:23px;font-weight:800;margin:0;letter-spacing:-.5px;flex:1}
+.top h1 span{color:var(--accent)}
+.back{width:38px;height:38px;border-radius:50%;background:var(--card2);font-size:22px;line-height:1;flex:none}
+.pill{background:var(--card2);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:600;flex:none}
+.hero{background:linear-gradient(140deg,color-mix(in srgb,var(--accent) 22%,var(--card)) 0%,var(--card) 65%);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:20px;padding:18px;margin-bottom:16px}
+.hero .lbl{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase}
+.hero h2{margin:4px 0 2px;font-size:22px;font-weight:800}
+.hero .meta{color:var(--muted);font-size:13px}
+.row2{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;padding:13px;border-radius:14px;font-weight:700;font-size:15px;text-align:center}
+.btn.main{background:var(--accent);color:#fff}
+body[data-plan="jump"] .btn.main{color:#032a20}
+.btn.sec{background:var(--card2)}
+.btn.ok{background:var(--ok);color:#06210f}
+.bigsets{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.bigsets b{min-width:44px;padding:9px 10px;text-align:center;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:color-mix(in srgb,var(--accent) 35%,#fff);font-size:20px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.stat{background:var(--card);border-radius:14px;padding:12px;text-align:center}
+.stat strong{display:block;font-size:22px;font-weight:800}
+.stat small{color:var(--muted);font-size:11px}
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin:12px 0 4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .4s}
+.goalline{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.wk{display:flex;justify-content:space-between;align-items:baseline;margin:22px 4px 8px}
+.wk h3{margin:0;font-size:15px;font-weight:800}
+.wk span{font-size:12px;color:var(--muted)}
+.day{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px;margin-bottom:7px;border:1px solid transparent;width:100%;text-align:left;cursor:pointer}
+.day.next{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.day.done{opacity:.55}
+.chk{width:30px;height:30px;flex:none;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:transparent;font-weight:800}
+.done .chk{background:var(--ok);border-color:var(--ok);color:#06210f}
+.dmid{flex:1;min-width:0}
+.dtop{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:800;letter-spacing:.6px;padding:2px 7px;border-radius:6px;text-transform:uppercase}
+.t-prep,.t-found{background:rgba(90,169,255,.15);color:var(--prep)}
+.t-build{background:rgba(255,90,54,.15);color:#ff7a5c}
+.t-power{background:rgba(199,125,255,.15);color:var(--power)}
+.t-peak{background:rgba(126,232,255,.14);color:#7ee8ff}
+.t-test{background:rgba(255,176,58,.18);color:#ffb03a}
+.t-today{background:var(--ink);color:var(--bg)}
+.t-bday{background:linear-gradient(90deg,#ff5a9e,#ffb03a);color:#fff}
+.dsets{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.dsets b{min-width:28px;text-align:center;padding:3px 6px;border-radius:8px;background:var(--card2);font-size:14px}
+.dtxt{margin-top:5px;font-size:13px;color:#c9c9d1}
+.dtxt b{color:var(--ink)}
+.chev{color:var(--muted);font-size:20px;flex:none}
+.tot{text-align:right;flex:none;margin-right:2px}
+.tot strong{display:block;font-size:19px;font-weight:800;line-height:1}
+.tot small{font-size:10px;color:var(--muted)}
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(13,13,16,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;justify-content:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:5}
+body.home nav{display:none}
+nav .in{display:flex;max-width:560px;width:100%}
+nav button{flex:1;padding:6px;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button i{font-style:normal;font-size:20px}
+nav button.on{color:var(--accent)}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px}
+.card h3{margin:0 0 8px;font-size:16px}
+.muted{color:var(--muted)}
+/* home */
+.hello{font-size:30px;font-weight:900;margin:14px 0 4px;letter-spacing:-.8px}
+.sub{color:var(--muted);margin:0 0 20px}
+.bday{background:linear-gradient(120deg,#ff5a9e33,#ffb03a33);border:1px solid #ffb03a55;border-radius:18px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.bday b{font-size:28px}
+.plancard{display:block;width:100%;text-align:left;border-radius:22px;padding:20px;margin-bottom:14px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+.plancard::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--c);opacity:.18}
+.plancard .emo{font-size:38px}
+.plancard h2{margin:6px 0 2px;font-size:24px;font-weight:900}
+.plancard .nx{margin-top:10px;font-size:14px;color:#c9c9d1}
+.plancard .nx b{color:var(--ink)}
+.plancard .bar i{background:var(--c)}
+.plancard .go{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;font-weight:800;background:var(--c);color:#0d0d10}
+/* sheet */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10;display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.grab{width:40px;height:5px;background:var(--line);border-radius:99px;margin:4px auto 12px}
+.sheet h2{margin:6px 0 2px;font-size:22px;font-weight:800}
+.sheet h4{margin:18px 0 0;font-size:15px}
+.steps{list-style:none;padding:0;margin:12px 0;counter-reset:s}
+.steps li{position:relative;padding:10px 12px 10px 44px;background:var(--card2);border-radius:12px;margin-bottom:6px;counter-increment:s}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+body[data-plan="jump"] .steps li::before{color:#032a20}
+.steps li small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.tips{margin:6px 0 14px;padding-left:18px;color:#c9c9d1;font-size:14px}
+.tips li{margin:5px 0}
+textarea{width:100%;min-height:70px;background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;resize:vertical}
+.result{background:rgba(255,176,58,.12);border-radius:12px;padding:10px 12px;margin:10px 0;color:var(--accent2);font-weight:700}
+.bdaybox{background:linear-gradient(120deg,#ff5a9e33,#ffb03a33);border-radius:14px;padding:12px 14px;margin:12px 0;font-weight:700}
+.timebox{background:var(--card2);border-radius:14px;padding:12px 14px;margin:12px 0}
+.timebox .tt{display:flex;justify-content:space-between;align-items:center}
+.timebox .tt b{font-size:20px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{padding:7px 12px;border-radius:99px;background:var(--card);font-size:13px;font-weight:600;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--accent);color:#0d0d10;border-color:var(--accent)}
+.chip input{background:transparent;color:var(--ink);border:0;font:inherit;width:104px;color-scheme:dark}
+/* workout */
+.wo{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column}
+.wo.on{display:flex}
+.wohead{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;max-width:560px;width:100%;margin:0 auto}
+.wohead .x{width:38px;height:38px;border-radius:50%;background:var(--card2);font-size:18px}
+.wohead .t{flex:1;font-weight:700}
+.wobar{max-width:528px;width:calc(100% - 32px);margin:6px auto 0;height:6px;background:var(--card2);border-radius:99px;overflow:hidden}
+.wobar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.wobody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;max-width:560px;width:100%;margin:0 auto;overflow:auto}
+.wobody .kind{font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.wobody .kind.rest{color:var(--ok)}
+.wobody h2{font-size:26px;margin:8px 0 4px;font-weight:800}
+.huge{font-size:110px;font-weight:900;line-height:1;margin:16px 0 4px;font-variant-numeric:tabular-nums;letter-spacing:-3px}
+.unit{font-size:18px;color:var(--muted);font-weight:600}
+.wobody p{color:#c9c9d1;max-width:340px;margin:16px auto 0}
+.ring{position:relative;width:230px;height:230px;margin:14px auto 0}
+.ring svg{transform:rotate(-90deg)}
+.ring .huge{position:absolute;inset:0;display:grid;place-items:center;margin:0;font-size:72px}
+.wofoot{display:flex;gap:10px;padding:12px 16px calc(18px + env(safe-area-inset-bottom));max-width:560px;width:100%;margin:0 auto}
+.stepper{display:flex;align-items:center;gap:22px;margin-top:18px}
+.stepper button{width:58px;height:58px;border-radius:50%;background:var(--card2);font-size:28px;font-weight:700}
+.stepper .huge{margin:0;min-width:120px}
+.upnext{margin-top:22px;font-size:13px;color:var(--muted)}
+.upnext b{color:var(--ink)}
+/* tips + progress */
+details.tip{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:8px}
+details.tip summary{font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.tip summary::-webkit-details-marker{display:none}
+details.tip summary::after{content:'+';color:var(--accent);font-size:20px;line-height:1}
+details.tip[open] summary::after{content:'–'}
+details.tip p,details.tip ul{color:#c9c9d1;margin:10px 0 0;font-size:14px}
+details.tip ul{padding-left:18px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:130px;margin-top:10px}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--muted)}
+.chart span{width:100%;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:6px 6px 0 0;min-height:4px}
+.chart em{font-style:normal;color:var(--ink);font-weight:700;font-size:12px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns .btn{flex:1 1 45%}
+.trow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.trow:last-child{border-bottom:0}
+.trow input{background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 8px;font:inherit}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;z-index:30;display:none}
+.mform{width:100%;text-align:left;margin-top:12px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card2);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.mrow small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.mrow input{width:96px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px;font:inherit;font-size:18px;font-weight:700;text-align:center}
+.mt{width:100%;border-collapse:collapse;font-size:13px}
+.mt th{color:var(--muted);font-weight:600;font-size:11px;text-align:center;padding:4px}
+.mt td{padding:7px 4px;border-top:1px solid var(--line);text-align:center}
+.mt td:first-child{text-align:left}
+.offbtn{display:block;width:100%;text-align:left;font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:8px 12px;margin:-2px 0 8px}
+.offbtn b{color:var(--ink)}
+.conf{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+</style>
+</head>
+<body class="home">
+<div class="wrap">
+  <!-- HOME -->
+  <section class="view on" id="v-home"></section>
+  <!-- PLAN -->
+  <section class="view" id="v-plan">
+    <div class="top"><button class="back" data-home>‹</button><h1 class="ptitle"></h1><button class="pill" id="jumpTo">Today ↓</button></div>
+    <div id="hero"></div>
+    <div class="stats" id="stats"></div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="goalline"><span id="pct"></span><span id="goalTxt"></span></div>
+    <div id="list"></div>
+  </section>
+  <!-- PROGRESS -->
+  <section class="view" id="v-prog">
+    <div class="top"><button class="back" data-home>‹</button><h1>Your <span>Progress</span></h1></div>
+    <div id="progress"></div>
+  </section>
+  <!-- TIPS -->
+  <section class="view" id="v-tips">
+    <div class="top"><button class="back" data-home>‹</button><h1>How <span>To</span></h1></div>
+    <div id="tips-pull">
+      <details class="tip" open><summary>The perfect pull-up</summary><ul>
+        <li>Grip the bar a bit wider than your shoulders.</li>
+        <li>Start hanging with straight arms.</li>
+        <li>Pull your shoulders down first, then pull until your chin is over the bar.</li>
+        <li>Lower yourself all the way down with control.</li>
+        <li>No kicking or swinging — a clean rep counts, a messy one doesn't.</li></ul></details>
+      <details class="tip"><summary>Pull-up or chin-up?</summary><p>Chin-up = palms facing you. Pull-up = palms facing away. Chin-ups are easier because your biceps help more. Start with chin-ups if you want and switch later — both count.</p></details>
+      <details class="tip"><summary>Negatives</summary><p>Jump or step up so your chin is over the bar, then lower yourself as slowly as you can until your arms are straight. Count the seconds out loud.</p></details>
+      <details class="tip"><summary>Top hold</summary><p>Jump up to the top (chin over bar) and hold it. Squeeze the bar, shoulders down, elbows tight. If you start to slip, lower slowly — that's a bonus negative.</p></details>
+      <details class="tip"><summary>Dead hang & scapular pulls</summary><p>Dead hang: just hang with straight arms — builds grip. Scapular pull: while hanging, pull your shoulders down away from your ears without bending your arms, then relax.</p></details>
+      <details class="tip"><summary>When to slow down</summary><ul>
+        <li>Sharp pain in elbow or shoulder → stop for the day.</li>
+        <li>Still sore on a training day? Take an extra rest day.</li>
+        <li>Couldn't finish a day? Repeat it next time.</li>
+        <li>Can't finish a set? Do the missing reps as negatives.</li></ul></details>
+      <details class="tip"><summary>No bar at home?</summary><p>A doorway pull-up bar works well — check it's tight before hanging your full weight. A park bar or playground works too.</p></details>
+    </div>
+    <div id="tips-jump">
+      <details class="tip" open><summary>How to jump higher</summary><ul>
+        <li>Swing your arms hard — back on the way down, up on the way up.</li>
+        <li>Quick dip: don't squat too deep before you jump.</li>
+        <li>Every jump at 100% effort. Tired, slow jumps don't make you jump higher — stop the set instead.</li>
+        <li>Strong legs + fast jumps = higher jump. That's why the plan has both.</li></ul></details>
+      <details class="tip"><summary>Land softly (protect your knees)</summary><ul>
+        <li>Land on the balls of your feet, then heels.</li>
+        <li>Hips back, knees bend — like sitting into a chair.</li>
+        <li>Knees point the same way as your toes, never caving in.</li>
+        <li>Quiet landings = good landings.</li></ul></details>
+      <details class="tip"><summary>Reach jumps</summary><p>Pick something high: a door frame, a tree branch, the backboard or net, or tape on a wall. Jump and try to touch it. When it gets easy, pick something higher.</p></details>
+      <details class="tip"><summary>Approach jump (basketball)</summary><p>Take 2–3 fast steps, make your last two steps quick (right-left or left-right), plant both feet, swing your arms and explode up. This is how you jump highest in a game.</p></details>
+      <details class="tip"><summary>The squats</summary><ul>
+        <li><b>Squat:</b> feet shoulder-width, sit back and down, chest up, stand up strong.</li>
+        <li><b>Sumo squat:</b> feet wide, toes out.</li>
+        <li><b>Pause squat:</b> stop 3 seconds at the bottom, then stand up.</li>
+        <li><b>Bulgarian split squat:</b> back foot on a chair, lower until the back knee almost touches the floor.</li>
+        <li><b>Cossack squat:</b> feet very wide, squat to one side keeping the other leg straight.</li>
+        <li><b>Backpack:</b> put books in a backpack to make any squat harder.</li></ul></details>
+      <details class="tip"><summary>The 4 jump tests</summary><ul>
+        <li><b>Vertical jump:</b> hands on hips, no arm swing, jump straight up from standing. Your start: 38.9 cm · goal 45 cm.</li>
+        <li><b>Highest touch:</b> with arm swing, touch the wall as high as you can. Measure from the floor.</li>
+        <li><b>Broad jump:</b> two feet → two feet, as far forward as you can. Your start: 172 cm.</li>
+        <li><b>One-leg broad jump:</b> take off from one leg, land on both. Your start: left 154 cm, right 148 cm. Try to get the weaker leg closer to the stronger one.</li>
+        <li>Do 3 tries and keep the best. Same shoes and same floor every time.</li></ul></details>
+      <details class="tip"><summary>When to slow down</summary><ul>
+        <li>Pain under the kneecap or in the ankle → no jumping that day, just do the stretching.</li>
+        <li>Jump on grass, a court or a mat if you can — not concrete.</li>
+        <li>Sleep well. Your legs get stronger while you rest.</li></ul></details>
+    </div>
+    <div id="tips-push">
+      <details class="tip" open><summary>The perfect push-up</summary><ul>
+        <li>Hands a bit wider than your shoulders, body in one straight line.</li>
+        <li>Chest goes down to about a fist from the floor.</li>
+        <li>Elbows about 45° from your body — not flared out to the sides.</li>
+        <li>Push all the way up. Half reps don't count.</li></ul></details>
+      <details class="tip"><summary>How the plan works</summary><ul>
+        <li>Every number comes from <b>your max</b> (the most push-ups you can do in one go). Start: 25 until you test.</li>
+        <li>You test your max on Nov 9, Dec 7, Jan 4, Feb 1 and the final test on Feb 24. After each test all the sets get bigger.</li>
+        <li><b>Max Day (Mon):</b> sets that go down (80% → 50% of your max), then one max set, then slow push-ups.</li>
+        <li><b>Variety (Tue):</b> lighter — different kinds of push-ups, because you also trained on Monday.</li>
+        <li><b>Pump Day (Wed):</b> sets until your arms are full (about 15–20) and pyramids.</li>
+        <li><b>Bonus Day:</b> every 2 weeks, on your Jump High day off (Sunday or Friday) — ladders and every-minute sets.</li></ul></details>
+      <details class="tip"><summary>The variations</summary><ul>
+        <li><b>Wide:</b> hands much wider than shoulders — more chest.</li>
+        <li><b>Diamond:</b> hands together under your chest, thumbs and fingers make a diamond — more triceps.</li>
+        <li><b>Decline:</b> feet on a chair or bed — harder, more shoulders.</li>
+        <li><b>Archer:</b> very wide hands, go down to one side with the other arm straight.</li>
+        <li><b>Pike:</b> hips high like an upside-down V, lower your head toward the floor — shoulders.</li>
+        <li><b>Clap / explosive:</b> push up so hard your hands leave the floor. Land soft.</li>
+        <li><b>Pseudo-planche:</b> hands by your belly, fingers pointing to your feet, lean forward.</li>
+        <li><b>Slow:</b> 3–4 seconds down, normal speed up.</li></ul></details>
+      <details class="tip"><summary>"Until your arms are full"</summary><p>Keep going until your arms feel full and heavy — about 15–20 for you now. Stop 1–2 reps before you can't do any more. That burning feeling is the "pump".</p></details>
+      <details class="tip"><summary>3 days in a row</summary><p>Push-ups are Mon, Tue and Wed. Tuesday is lighter on purpose so your arms can recover. If your wrists or shoulders hurt, skip Tuesday and do Wednesday.</p></details>
+    </div>
+  </section>
+</div>
+
+<nav><div class="in">
+  <button class="on" data-v="plan"><i>📅</i>Plan</button>
+  <button data-v="prog"><i>📈</i>Progress</button>
+  <button data-v="tips"><i>💡</i>How to</button>
+</div></nav>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="wo" id="wo">
+  <div class="wohead"><button class="x" id="woX">✕</button><div class="t" id="woT"></div><div class="muted" id="woN"></div></div>
+  <div class="wobar"><i id="woBar"></i></div>
+  <div class="wobody" id="woBody"></div>
+  <div class="wofoot" id="woFoot"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= SHARED ================= */
+const NAME='Nitay';
+const START=[2026,10,8], DAYS=90, BDAY=new Date(2027,1,5);
+const FEEL=['😄 Easy','🙂 OK','😮‍💨 Hard','💀 Too hard'];
+const PHASE={prep:'Prep',found:'Foundation',build:'Build',power:'Power',peak:'Peak',test:'Test'};
+const DOW=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const $=id=>document.getElementById(id);
+const fmt=d=>d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+const fmtLong=d=>d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+const short=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const isToday=d=>d.toDateString()===new Date().toDateString();
+const isBday=s=>s.date.toDateString()===BDAY.toDateString();
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const pl=(n,w)=>n+' '+w+(n===1?'':'s');
+function makeDates(train,days=DAYS){const o=[];for(let k=0;k<days;k++){const d=new Date(START[0],START[1],START[2]+k);if(train.includes(d.getDay()))o.push({d,k});}return o;}
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',1800);}
+
+/* ================= PULL-UP PLAN ================= */
+const ORIG=[[3,2,1,1,0],[3,2,1,1,0],[3,2,2,1,0],[3,3,2,1,0],[4,3,2,1,0],
+[4,3,2,1,1],[4,3,2,2,1],[4,3,3,2,1],[4,4,3,2,1],[5,4,3,2,1],
+[5,4,3,2,1],[5,4,3,2,2],[5,4,3,3,2],[5,4,4,3,2],[5,5,4,3,2],
+[6,5,4,3,2],[6,5,4,3,3],[6,5,4,4,3],[6,5,5,4,3],[6,6,5,4,3],
+[7,6,5,4,3],[7,6,5,4,4],[7,6,5,5,4],[7,6,6,5,4],[7,7,6,5,4]];
+const MOD=ORIG.map(r=>[r[0]-1,r[1]-1,1,r[4]].filter(n=>n>0)); // sets 1&2 −1, set 3 = 1, old set 4 removed
+const EXTRA=[[6,5,1,4,3],[6,6,1,4,3],[7,6,1,5,3],[7,6,1,5,4],[7,6,1,5,4,3],[7,7,1,5,4,3],
+[8,7,1,6,4,3],[8,7,1,6,5,3],[8,7,1,6,5,4,3],[8,8,1,6,5,4,3],[9,8,1,6,5,4,3],[9,8,1,7,5,4,3],[10,8,1,7,5,4,3]];
+const LEVELS=MOD.concat(EXTRA);
+const PREP=[
+ {hang:[15,3],hold:[10,4],neg:[3,1,3]},{hang:[15,3],hold:[10,5],neg:[3,1,4]},
+ {hang:[20,3],hold:[10,5],neg:[3,2,3]},{hang:[20,3],hold:[12,5],neg:[4,2,3]},
+ {hang:[25,3],hold:[12,6],neg:[4,2,4]},{pull:[1,1],hold:[15,5],neg:[4,3,3]},
+ {pull:[1,2],hold:[15,5],neg:[5,3,3]},{pull:[1,3],hold:[15,6],neg:[5,3,4]},
+ {pull:[1,4],hold:[15,6],neg:[5,3,4]},{test:2,hold:[15,5]}];
+const PULL_S=(()=>{const d=makeDates([0,1,3,5,6]),EASY=3,MAIN=d.length-PREP.length-EASY-1;
+  return d.map(({d:date,k},n)=>{let s;
+    if(n<PREP.length)s={kind:'prep',phase:PREP[n].test?'test':'prep',p:PREP[n]};
+    else if(n<PREP.length+EASY)s={kind:'main',phase:'build',sets:[1,1,1]};
+    else{const i=n-PREP.length-EASY;
+      if(i===MAIN)s={kind:'final',phase:'test'};
+      else{const L=Math.floor(i*LEVELS.length/MAIN);s={kind:'main',phase:L<MOD.length?'build':'power',sets:LEVELS[L]};}}
+    return Object.assign(s,{id:n,week:Math.floor(k/7)+1,day:k+1,date});});})();
+const WARM_MAIN={type:'task',kind:'Warm-up',title:'Warm up',big:'3',unit:'minutes',text:'Arm circles 20s each way · 10 shoulder shrugs · 10 scapular pulls on the bar · 1 slow negative'};
+const PULL={
+  key:'pull',name:'Pull-Up Plan',emoji:'💪',color:'#ff5a36',S:PULL_S,
+  times:{0:['18:00'],1:['16:30'],3:['18:00'],5:['12:00'],6:['11:00','16:00']},
+  phases:['prep','build','power'],goalTxt:'Goal: 12 pull-ups · Feb 5 🎂',days:DAYS,statLbl:'pull-ups done',unit:'pull-ups',
+  count(s,st){if(s.kind==='main')return sum(s.sets);if(s.kind==='final')return st.results[s.id]||0;const p=s.p;return (p.pull?p.pull[0]*p.pull[1]:0)+(p.test?(st.results[s.id]||0):0);},
+  desc(s){const p=s.p,a=[];if(p.test)a.push(`Test: ${p.test} pull-ups`);if(p.pull)a.push(pl(p.pull[1],'pull-up'));if(p.hang)a.push(`Hang ${p.hang[0]}s×${p.hang[1]}`);if(p.hold)a.push(`Hold ${p.hold[0]}s×${p.hold[1]}`);if(p.neg)a.push(`Neg ${p.neg[1]}×${p.neg[2]}`);return a.join(' · ');},
+  rowBody(s,st){
+    if(s.kind==='main')return{mid:chips(s.sets,'dsets'),tot:totHtml(sum(s.sets),'total')};
+    if(s.kind==='final')return{mid:`<div class="dtxt"><b>Max pull-ups · goal 12 🎯</b></div>`,tot:st.results[s.id]!=null?totHtml(st.results[s.id],'result'):''};
+    return{mid:`<div class="dtxt">${this.desc(s)}</div>`,tot:st.results[s.id]!=null?totHtml(st.results[s.id],'result'):''};},
+  heroBody(s){
+    if(s.kind==='main')return chips(s.sets,'bigsets')+`<div class="meta" style="margin-top:8px">${pl(sum(s.sets),'pull-up')} in ${s.sets.length} sets</div>`;
+    if(s.kind==='final')return `<div class="bigsets"><b>MAX · goal 12</b></div>`;
+    return `<div class="meta" style="margin-top:10px;color:#c9c9d1">${this.desc(s)}</div>`;},
+  sheetTop(s){return s.kind==='main'?chips(s.sets,'bigsets')+`<div class="muted" style="margin-top:6px">${pl(sum(s.sets),'pull-up')} in ${s.sets.length} sets · about ${Math.round(s.sets.length*2.5+5)} min</div>`:'';},
+  lines(s){const L=[];
+    if(s.kind==='main'){L.push(['Warm up (3 min)','Arm circles, shrugs, 10 scapular pulls, 1 slow negative']);
+      s.sets.forEach((r,k)=>L.push([`Set ${k+1}: ${pl(r,'pull-up')}`,k===2?'Your one perfect rep — slow and clean':(k<s.sets.length-1?'Rest 2 min after':'Last set — give it everything')]));
+      L.push(['Stretch (1 min)','Lats and chest']);}
+    else if(s.kind==='final'){L.push(['Warm up (3 min)','Arm circles, shrugs, scapular pulls, 1 negative']);L.push(['2 easy pull-ups','Then rest 3 minutes']);L.push(['MAX TEST','As many clean pull-ups as you can — goal 12']);}
+    else{const p=s.p;L.push(['Warm up (2 min)','Arm circles, shrugs, 5 scapular pulls']);
+      if(p.test)L.push([`Test: ${p.test} pull-ups in a row`,'Got it? Start the main plan. Not yet? Repeat the last 2 days.']);
+      if(p.pull)L.push([`${pl(p.pull[1],'real pull-up')} (1 at a time)`,'Rest 90s between. Miss one? Make it a negative']);
+      if(p.hang)L.push([`Dead hang ${p.hang[0]}s × ${p.hang[1]}`,'Rest 30s between']);
+      if(p.hold)L.push([`Top hold ${p.hold[0]}s × ${p.hold[1]}`,'Chin over bar · rest 30s between']);
+      if(p.neg)L.push([`Negatives: ${p.neg[1]} ${p.neg[1]===1?'set':'sets'} of ${p.neg[2]}`,`${p.neg[0]} seconds down each · rest 90s between sets`]);}
+    return L;},
+  tips(s){if(s.kind==='prep')return['Use a box or chair to get to the top for holds and negatives.','Control matters more than speed — slow is the goal.','A bit sore tomorrow is normal.'];
+    if(s.kind==='final')return['Rest well the day before.','Chin over the bar and straight arms at the bottom = 1 rep.','Whatever you get, you\'ve come a long way from 0–1.'];
+    const t=['Rest 2 minutes between sets.','No kicking or swinging.','Can\'t finish a set? Do the missing reps as negatives.'];if(s.phase==='power')t.unshift('Power phase: more sets now. Drink water and take the full rest.');return t;},
+  steps(s,st){const out=[],rest=x=>out.push({type:'rest',secs:x});
+    if(s.kind==='main'){out.push(WARM_MAIN);rest(60);
+      s.sets.forEach((r,k)=>{out.push({type:'task',kind:`Set ${k+1} of ${s.sets.length}`,title:k===2?'One perfect rep':'Pull-ups',big:String(r),unit:r===1?'pull-up':'pull-ups',text:k===2?'Slowest, cleanest rep of the day. Full hang → chin over bar → slow down.':'Straight arms at the bottom, chin over the bar at the top. Can\'t finish? Do the rest as negatives.'});rest(120);});
+      out.pop();out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'1',unit:'minute',text:'Hang loosely 15s, then stretch lats and chest 20s each side.'});}
+    else if(s.kind==='final'){out.push(WARM_MAIN);rest(60);
+      out.push({type:'task',kind:'Warm-up',title:'2 easy pull-ups',big:'2',unit:'pull-ups',text:'Just to get the body ready. Easy and clean.'});rest(180);
+      out.push({type:'input',kind:'Birthday challenge',title:'Max pull-ups in one go',unit:'pull-ups',start:12,text:'Go! As many clean reps as you can. Then enter how many you did.'});}
+    else{const p=s.p;out.push({type:'task',kind:'Warm-up',title:'Warm up',big:'2',unit:'minutes',text:'Arm circles 20s each way · 10 shoulder shrugs · 5 scapular pulls on the bar'});rest(45);
+      if(p.test){out.push({type:'input',kind:'Test',title:`Do ${p.test} pull-ups in a row`,unit:'pull-ups',start:p.test,text:'Fresh and focused. Then enter how many you got.'});rest(120);}
+      if(p.pull)for(let i=0;i<p.pull[1];i++){out.push({type:'task',kind:`Pull-up ${i+1} of ${p.pull[1]}`,title:'Real pull-up',big:String(p.pull[0]),unit:'pull-up',text:'Give it everything. Didn\'t reach the top? Turn it into a slow negative.'});rest(90);}
+      if(p.hang)for(let i=0;i<p.hang[1];i++){out.push({type:'timer',kind:`Dead hang ${i+1} of ${p.hang[1]}`,title:'Dead hang',secs:p.hang[0],text:'Straight arms, relaxed body, strong grip.'});rest(30);}
+      if(p.hold)for(let i=0;i<p.hold[1];i++){out.push({type:'timer',kind:`Top hold ${i+1} of ${p.hold[1]}`,title:'Hold at the top',secs:p.hold[0],text:'Jump up so your chin is over the bar, then tap Start. Shoulders down, squeeze.'});rest(30);}
+      if(p.neg)for(let i=0;i<p.neg[1];i++){out.push({type:'task',kind:`Negatives · set ${i+1} of ${p.neg[1]}`,title:`${p.neg[0]}-second negatives`,big:String(p.neg[2]),unit:'negatives',text:`Jump up to the top, lower yourself counting ${p.neg[0]} seconds, all the way to straight arms.`});rest(90);}
+      out.pop();}
+    out.push({type:'end'});return out;},
+  endMsg(s,st){const r=st.results[s.id];
+    if(s.kind==='final')return r>=12?`${r} pull-ups. You hit the goal! 🏆`:`${r} pull-ups — from 0–1 to ${r}! Repeat the last week and test again for 12.`;
+    if(s.p&&s.p.test)return r>=s.p.test?`You got ${r}! Main plan starts next time.`:`You got ${r}. Repeat the last 2 prep days, then test again.`;
+    return s.kind==='main'?`${pl(sum(s.sets),'pull-up')} done.`:'Prep day done.';},
+  bestTxt:(b)=>`Best: ${b} <span class="muted" style="font-weight:400">/ 12 goal</span>`,goal:12,logQ:'How many pull-ups did you do in one go?'
+};
+
+/* ================= JUMP PLAN ================= */
+// [name, sets, reps or seconds, unit ('reps'|'leg'|'side'|'sec'), rest seconds, tip]
+const TIP={
+ pogo:'Stay on your toes, stiff ankles, quick little bounces.',
+ calf:'Slow down, fast up. Full stretch at the bottom.',
+ slcalf:'On one leg, hold a wall for balance. Slow down, fast up.',
+ wgs:'Deep lunge, elbow to the floor, then rotate and reach up to the sky.',
+ plank:'Straight line from head to heels. Squeeze your belly.',
+ side:'Switch side every set. Hips up high.',
+ hollow:'Lie on your back, lift legs and shoulders, lower back pressed to the floor.',
+ reach:'Find something high — a door frame, branch, backboard or tape on a wall. Jump and touch it. Full effort every jump!',
+ reach2:'Pick something a bit higher than last time. Big arm swing, explode up.',
+ drop:'Rise on your toes, drop into a quarter squat and freeze. Knees out, chest up.',
+ sqj:'Jump as high as you can, land softly and stick it.',
+ broad:'Swing your arms, jump forward as far as you can, stick the landing.',
+ line:'Quick hops side to side over a line, feet together.',
+ box:'Jump onto a bench or stairs, then step down — never jump down.',
+ tuck:'Jump and pull your knees to your chest at the top.',
+ depth:'Step off a low step (30–40 cm). The instant you land, jump up as high as you can.',
+ skip:'Skip and drive your knee up high, swing your arms.',
+ appr:'2–3 fast steps, quick last two steps, plant and jump. Reach for the highest point.',
+ lat:'Jump sideways off one leg, land on the other and stick it.',
+ hop:'Hop on one leg, land softly on the same leg.',
+ split:'Lunge position, jump up and switch legs in the air.',
+ layup:'Jump off one leg like a layup, drive the other knee up.',
+ sq:'3 seconds down, stand up strong. Chest up, knees out.',
+ sumo:'Feet wide, toes out, sit straight down.',
+ pause:'Squat down, stop 3 seconds at the bottom, then stand up fast.',
+ wall:'Back against the wall, thighs flat, knees at 90°.',
+ bsq:'Put books in a backpack. Full squat, stand up strong.',
+ bulg:'Back foot on a chair. Lower until the back knee almost touches the floor.',
+ coss:'Feet very wide, squat to one side keeping the other leg straight.',
+ pistol:'Sit down slowly onto a chair on one leg. Stand up with both if you need.',
+ lunge:'Step back, lower until both knees are at 90°, push back up.',
+ step:'Use a chair or stairs. Push through the front foot, don\'t push off the back one.',
+ bridge:'Lie on your back, feet flat, push hips up and squeeze for 1 second.',
+ slb:'Same as a glute bridge, but one leg in the air.',
+ rdl:'Stand on one leg, hinge at the hip with a flat back, reach to the floor, stand up.',
+ walk:'Big steps forward, back knee almost touches the floor.'
+};
+const JT={
+ // Sunday — easy: bounce, reach jumps, mobility
+ easy:[
+  [['Pogo hops',3,15,'reps',45,TIP.pogo],['Reach jumps',3,5,'reps',60,TIP.reach],['Calf raises',3,15,'reps',45,TIP.calf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',3,20,'reps',45,TIP.pogo],['Reach jumps',4,5,'reps',60,TIP.reach2],['One-leg calf raises',3,12,'leg',45,TIP.slcalf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',4,20,'reps',45,'Fast and stiff — touch the ground as short as possible.'],['Reach jumps',5,5,'reps',60,TIP.reach2],['One-leg calf raises',3,15,'leg',45,TIP.slcalf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',3,15,'reps',45,TIP.pogo],['Reach jumps',3,5,'reps',60,TIP.reach2],["World's greatest stretch",2,5,'side',30,TIP.wgs]]],
+ // Monday morning — strength only, NO jumps
+ strM:[
+  [['Reverse lunges',3,8,'leg',60,TIP.lunge],['Step-ups',3,10,'leg',60,TIP.step],['Glute bridge',3,15,'reps',45,TIP.bridge],['One-leg RDL',3,8,'leg',45,TIP.rdl],['Calf raises',3,20,'reps',45,TIP.calf],['Plank',3,30,'sec',45,TIP.plank]],
+  [['Walking lunges (backpack)',3,10,'leg',75,TIP.walk],['Step-ups (backpack)',4,10,'leg',75,TIP.step],['One-leg glute bridge',3,10,'leg',45,TIP.slb],['One-leg RDL',3,10,'leg',45,TIP.rdl],['One-leg calf raises',3,12,'leg',45,TIP.slcalf],['Side plank',4,25,'sec',30,TIP.side]],
+  [['Slow step-ups (backpack)',4,8,'leg',90,'3 seconds up, 3 seconds down. '+TIP.step],['Reverse lunges (backpack)',3,10,'leg',75,TIP.lunge],['One-leg RDL (backpack)',3,8,'leg',60,TIP.rdl],['One-leg calf raises',3,15,'leg',45,TIP.slcalf],['Hollow hold',3,25,'sec',45,TIP.hollow]],
+  [['Reverse lunges',2,8,'leg',60,TIP.lunge],['Step-ups',2,8,'leg',60,TIP.step],['Calf raises',2,15,'reps',45,TIP.calf]]],
+ // Tuesday — basketball jumps (hard)
+ powB:[
+  [['High skips',3,10,'reps',60,TIP.skip],['Approach jumps (practice)',3,3,'reps',90,'80% effort — focus on the rhythm of the last two steps. '+TIP.appr],['Lateral bounds',3,4,'side',60,TIP.lat],['One-leg hops in place',2,8,'leg',60,TIP.hop]],
+  [['Approach jumps',4,3,'reps',90,TIP.appr],['Lateral bounds',3,6,'side',75,TIP.lat],['One-leg hops forward',3,5,'leg',75,TIP.hop],['Split squat jumps',3,5,'leg',75,TIP.split]],
+  [['Approach jumps (max)',5,3,'reps',120,TIP.appr],['One-leg layup jumps',4,3,'leg',90,TIP.layup],['Lateral bounds',3,6,'side',75,TIP.lat],['Split squat jumps',3,6,'leg',75,TIP.split]],
+  [['Approach jumps (max)',3,3,'reps',120,TIP.appr],['One-leg layup jumps',2,3,'leg',90,TIP.layup]]],
+ // Thursday — jump power (hard)
+ powA:[
+  [['Drop & stick',3,5,'reps',60,TIP.drop],['Squat jumps',3,5,'reps',90,TIP.sqj],['Broad jumps',3,3,'reps',90,TIP.broad],['Line hops',3,10,'reps',60,TIP.line]],
+  [['Squat jumps',4,5,'reps',90,TIP.sqj],['Box jumps',4,4,'reps',90,TIP.box],['Broad jumps',4,3,'reps',90,TIP.broad],['Tuck jumps',3,5,'reps',75,TIP.tuck]],
+  [['Depth jumps',4,4,'reps',120,TIP.depth],['Box jumps (higher)',4,3,'reps',90,TIP.box],['Broad jumps',4,3,'reps',90,TIP.broad],['Tuck jumps',3,6,'reps',75,TIP.tuck]],
+  [['Depth jumps',3,3,'reps',120,TIP.depth],['Box jumps',3,3,'reps',90,TIP.box],['Broad jumps',2,3,'reps',90,TIP.broad]]],
+ // Friday — easy: reach jumps + core
+ easyF:[
+  [['Reach jumps',3,5,'reps',60,TIP.reach],['Plank',3,30,'sec',45,TIP.plank],['Glute bridge',2,15,'reps',45,TIP.bridge]],
+  [['Reach jumps',4,5,'reps',60,TIP.reach2],['Plank',3,40,'sec',45,TIP.plank],['Hollow hold',2,20,'sec',45,TIP.hollow]],
+  [['Reach jumps',5,5,'reps',60,TIP.reach2],['Hollow hold',3,25,'sec',45,TIP.hollow],['Side plank',4,30,'sec',30,TIP.side]],
+  [['Reach jumps',3,5,'reps',60,TIP.reach2],['Plank',2,40,'sec',45,TIP.plank]]],
+ // Saturday — squat day (hard strength)
+ sq:[
+  [['Squats',3,15,'reps',60,TIP.sq],['Sumo squats',3,12,'reps',60,TIP.sumo],['Pause squats',3,8,'reps',60,TIP.pause],['Wall sit',2,30,'sec',45,TIP.wall],['Calf raises',3,15,'reps',45,TIP.calf]],
+  [['Backpack squats',4,12,'reps',75,TIP.bsq],['Bulgarian split squats',3,8,'leg',75,TIP.bulg],['Pause squats',3,10,'reps',60,TIP.pause],['Cossack squats',3,6,'side',60,TIP.coss],['Wall sit',3,45,'sec',45,TIP.wall]],
+  [['Bulgarian split squats (backpack)',4,8,'leg',90,TIP.bulg],['One-leg squat to chair',3,5,'leg',75,TIP.pistol],['Backpack pause squats',4,8,'reps',75,TIP.pause],['Cossack squats',3,8,'side',60,TIP.coss],['Wall sit',3,60,'sec',60,TIP.wall]],
+  [['Bulgarian split squats',3,6,'leg',75,TIP.bulg],['Fast squats',3,10,'reps',60,'Normal speed down, explode up.'],['Wall sit',2,45,'sec',45,TIP.wall]]]
+};
+const JTYPE={0:'easy',1:'strM',2:'powB',4:'powA',5:'easyF',6:'sq'};
+const JTITLE={easy:'Bounce & Reach',strM:'Leg Strength (no jumps)',powB:'Basketball Jumps',powA:'Jump Power',easyF:'Reach & Core',sq:'Squat Day'};
+const JLEVEL={easy:'Easy',strM:'Medium',powB:'Hard',powA:'Hard',easyF:'Easy',sq:'Hard'};
+const JDAYS=112, JTEST=[0,27,55,83,111];
+const JUMP_S=makeDates([0,1,2,4,5,6],JDAYS).map(({d,k},n)=>{
+  const w=Math.floor(k/7)+1,ph=w<=4?0:w<=8?1:w<=15?2:3,type=JTYPE[d.getDay()],final=k===JDAYS-1;
+  return{id:n,week:w,day:k+1,date:d,type,ph,phase:w>=13?'peak':['found','build','power','peak'][ph],test:JTEST.includes(k),baseTest:JTEST.includes(k),final,kind:final?'final':'main',ex:final?[]:JT[type][ph]};});
+function exLabel(e){const[n,s,r,u]=e;return `${n}: ${s} × ${r}${u==='sec'?'s':u==='leg'?' each leg':u==='side'?' each side':''}`;}
+function jumpResults(st){const t=[];JUMP_S.forEach(s=>{if(st.results[s.id]!=null)t.push({d:s.date,r:st.results[s.id]});});st.maxLog.forEach(m=>t.push({d:new Date(m.d),r:m.r}));return t.sort((a,b)=>a.d-b.d);}
+const JUMP={
+  key:'jump',name:'Jump High Plan',emoji:'🏀',color:'#18c9a0',S:JUMP_S,
+  times:{0:['16:00'],1:['08:00'],2:['16:00'],4:['15:00'],5:['10:00'],6:['14:00']},
+  phases:['found','build','power','peak'],goalTxt:'Goal: 45 cm vertical · Feb 27',days:JDAYS,statLbl:'sets done',unit:'cm',
+  count(s){return sum(s.ex.map(e=>e[1]));},
+  rowBody(s,st){
+    if(s.final)return{mid:`<div class="dtxt"><b>Final jump test 📏</b> · measure your vertical</div>`,tot:st.results[s.id]!=null?totHtml(st.results[s.id],'cm'):''};
+    const names=s.ex.map(e=>e[0]).join(' · ');
+    return{mid:`<div class="dtxt"><b>${s.test?'Jump test + ':''}${JTITLE[s.type]}</b> · ${JLEVEL[s.type]}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${names}</div>`,
+      tot:st.results[s.id]!=null?totHtml(st.results[s.id],'cm'):totHtml(this.count(s),'sets')};},
+  heroBody(s){
+    if(s.final)return `<div class="bigsets"><b>📏 Final jump test</b></div>`;
+    return `<div class="bigsets"><b style="font-size:17px">${s.test?'📏 Test + ':''}${JTITLE[s.type]}</b></div><div class="meta" style="margin-top:8px">${JLEVEL[s.type]} · ${s.ex.length} exercises · ${this.count(s)} sets</div>`;},
+  sheetTop(s){return s.final?'':`<div class="bigsets"><b style="font-size:17px">${JTITLE[s.type]}</b></div><div class="muted" style="margin-top:6px">${JLEVEL[s.type]} · ${s.ex.length} exercises · about ${Math.round(this.count(s)*1.6+8)} min</div>`;},
+  lines(s){const L=[['Warm up (4 min)','Jog in place, leg swings, high knees, butt kicks'+(s.type==='strM'?'':', 5 easy squat jumps')]];
+    if(s.test){L.push(['📏 Jump tests','Vertical (hands on hips) · highest touch · broad jump · one-leg broad jumps left & right']);}
+    s.ex.forEach(e=>L.push([exLabel(e),`${e[5]} · rest ${e[4]}s`]));
+    if(!s.final)L.push(['Stretch (3 min)','Quads, hamstrings, calves, hips']);
+    return L;},
+  tips(s){const t={easy:['Easy day — have fun with it, but every reach jump is 100%.','Try a higher target when it gets easy.'],
+    strM:['No jumping today — just strong, controlled reps.','Morning? Warm up a bit longer, your body is still stiff.'],
+    powB:['Hard day: full rest between sets, every jump max effort.','Practice on the court if you can.'],
+    powA:['Hard day: quality over quantity. Stop a set if jumps get slow.','Land softly — knees over toes.'],
+    easyF:['Easy day before the squat day — don\'t overdo it.','Reach jumps: pick a new target every week.'],
+    sq:['Hard day: all about different squats.','Go deep and stand up strong. Backpack makes it harder.']}[s.type]||[];
+    if(s.final)return['Rest well the day before.','Warm up properly, then 3–5 jumps and take the best.','Compare it with your first test on Nov 8!'];
+    return (s.test?['Test first while you\'re fresh, then the workout.']:[]).concat(t);},
+  steps(s,st){const out=[],rest=x=>out.push({type:'rest',secs:x});
+    out.push({type:'task',kind:'Warm-up',title:'Warm up',big:s.test||s.final?'5':'4',unit:'minutes',text:'Jog in place 1 min · leg swings 10 each leg · high knees & butt kicks 20s'+(s.type==='strM'?' · 10 squats':' · 5 easy squat jumps')});rest(45);
+    if(s.test){
+      out.push({type:'task',kind:'Jump test 1 of 4',title:'Vertical jump',big:'3',unit:'tries',text:'Hands on hips, no arm swing. Jump straight up from standing. Keep your best one (cm).'});rest(60);
+      out.push({type:'task',kind:'Jump test 2 of 4',title:'Highest touch',big:'3',unit:'tries',text:'Arm swing allowed. Jump from standing and touch the wall as high as you can. Measure your best touch from the floor.'});rest(60);
+      out.push({type:'task',kind:'Jump test 3 of 4',title:'Broad jump',big:'3',unit:'tries',text:'Two feet → two feet. Swing your arms, jump forward as far as you can and stick the landing. Measure from the line to your heels.'});rest(60);
+      out.push({type:'task',kind:'Jump test 4 of 4',title:'One-leg broad jump',big:'2',unit:'tries each leg',text:'Take off from ONE leg, land on BOTH feet. Do left and right.'});
+      out.push({type:'multi',kind:s.final?'Final jump test':'Jump test',title:'Enter your results'});
+      if(!s.final)rest(120);}
+    s.ex.forEach(([n,sets,r,u,rs,tip])=>{for(let i=0;i<sets;i++){
+      if(u==='sec')out.push({type:'timer',kind:`${n} · ${i+1} of ${sets}`,title:n,secs:r,text:tip});
+      else out.push({type:'task',kind:`Set ${i+1} of ${sets}`,title:n,big:String(r),unit:u==='reps'?'reps':u==='leg'?'each leg':'each side',text:tip});
+      rest(rs);}});
+    if(out[out.length-1].type==='rest')out.pop();
+    if(!s.final)out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'3',unit:'minutes',text:'Quads, hamstrings, calves and hips — 30 seconds each.'});
+    out.push({type:'end'});return out;},
+  endMsg(s,st){const r=st.results[s.id];
+    if(s.test){const f=jFirst(st);if(r==null)return 'Test saved.';const g=+(r-(f.vert??r)).toFixed(1);
+      return `Vertical: ${r} cm`+(g?` (${g>0?'+':''}${g} cm since the start)`:'')+(r>=45?' — 45 cm goal hit! 🏆':` · ${+(45-r).toFixed(1)} cm to the goal`);}
+    return `${this.count(s)} sets done.`;},
+  bestTxt:(b,st)=>{const t=jumpResults(st);const g=t.length>1?t[t.length-1].r-t[0].r:0;return `Best: ${b} cm <span class="muted" style="font-weight:400">${t.length>1?`(${g>=0?'+':''}${g} cm)`:''}</span>`;},
+  goal:45,logQ:'Your vertical jump in cm?',movable:true,
+  progressCard(S,chart){const f=jFirst(S),n=jLatest(S),b=jBest(S),v=n.vert??0;
+    const rows=JFIELDS.map(([k,nm,,u,goal])=>{const d=n[k]!=null&&f[k]!=null?+(n[k]-f[k]).toFixed(1):null;
+      return `<tr><td>${nm}${goal?`<br><small class="muted">goal ${goal}</small>`:''}</td><td>${f[k]??'–'}</td><td>${n[k]??'–'}</td><td><b>${b[k]??'–'}</b></td><td style="color:${d==null||d===0?'var(--muted)':d>0?'#3ddc84':'#ff7a6b'}">${d==null?'':(d>0?'+':'')+d}</td></tr>`;}).join('');
+    return `<div class="card" style="margin-top:12px"><h3>Vertical: ${v||'–'} cm <span class="muted" style="font-weight:400">/ 45 cm goal</span></h3><div class="bar"><i style="width:${Math.min(100,v/45*100)}%"></i></div>
+      <div class="goalline" style="margin-bottom:8px"><span>Start ${f.vert??'–'} cm</span><span>${v?`${+(45-v).toFixed(1)>0?+(45-v).toFixed(1)+' cm to go':'Goal hit! 🏆'}`:''}</span></div>
+      <table class="mt"><tr><th></th><th>Start</th><th>Now</th><th>Best</th><th>+/−</th></tr>${rows}</table>
+      <div class="muted" style="font-size:12px;margin-top:8px">All in cm. Vertical chart:</div>${chart}
+      <button class="btn main" style="width:100%;margin-top:14px" id="logMax">+ Log a jump test</button></div>`;}
+};
+/* ================= PUSH-UP PLAN ================= */
+// Reps are % of your current max (latest test). R = same spec n times, Pc = percent spec
+const R=(n,v)=>Array(n).fill(v), Pc=x=>({p:x});
+const TP={
+ desc:'Each set a bit smaller. Clean reps, chest close to the floor.',
+ amrap:'As many as you can! Stop when your form breaks.',
+ slow:'3 seconds down, push up normally.',
+ slow4:'4 seconds down, push up normally.',
+ half:'Half of the max you just did. Easy and clean.',
+ full:'Keep going until your arms are full — about 15–20. Stop 1–2 before you can\'t do more.',
+ pyr:'Pyramid — up then down. Rest only 45 seconds.',
+ wide:'Hands much wider than your shoulders.',
+ dia:'Hands together under your chest in a diamond shape.',
+ dec:'Feet on a chair or bed, hands on the floor.',
+ arch:'Very wide hands. Go down to one side, other arm straight. Switch sides.',
+ pike:'Hips high, lower your head toward the floor between your hands.',
+ clap:'Push up explosively so your hands leave the floor. Clap if you can.',
+ ppl:'Hands by your belly, fingers toward your feet, lean forward.',
+ plank:'Straight line from head to heels, squeeze your belly.',
+ burn:'Last set — everything you have left.'
+};
+const PT={
+ max:[
+  m=>[['Push-ups',[.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]],
+  m=>[['Push-ups',[.85,.75,.65,.55].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (3s down)',R(3,6),'reps',60,TP.slow]],
+  m=>[['Push-ups',[.9,.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (4s down)',R(3,8),'reps',60,TP.slow4]],
+  m=>[['Push-ups',[.5,.5,.4].map(Pc),'reps',75,'Light week before the final test — easy, clean reps.'],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]]],
+ var:[
+  m=>[['Wide push-ups',R(3,Pc(.4*m)),'reps',60,TP.wide],['Diamond push-ups',R(3,Pc(.25*m)),'reps',60,TP.dia],['Decline push-ups',R(3,Pc(.3*m)),'reps',60,TP.dec],['Plank',R(3,40),'sec',45,TP.plank]],
+  m=>[['Decline push-ups',R(4,Pc(.35*m)),'reps',60,TP.dec],['Diamond push-ups',R(3,Pc(.3*m)),'reps',60,TP.dia],['Archer push-ups',R(3,Math.round(4*m)),'side',60,TP.arch],['Pike push-ups',R(3,8),'reps',60,TP.pike],['Clap push-ups',R(3,5),'reps',75,TP.clap]],
+  m=>[['Archer push-ups',R(4,Math.round(5*m)),'side',75,TP.arch],['Clap push-ups',R(4,6),'reps',75,TP.clap],['Pseudo-planche push-ups',R(3,8),'reps',60,TP.ppl],['Pike push-ups',R(3,10),'reps',60,TP.pike],['Plank',R(3,60),'sec',45,TP.plank]],
+  m=>[['Wide push-ups',R(2,Pc(.3)),'reps',60,TP.wide],['Diamond push-ups',R(2,Pc(.2)),'reps',60,TP.dia],['Plank',R(2,40),'sec',45,TP.plank]]],
+ pump:[
+  m=>[['Arms-full sets',R(4,Pc(.6*m)),'reps',60,TP.full],['Slow push-ups (3s down)',[5],'reps',45,TP.slow]],
+  m=>[['Pyramid',[.2,.4,.6,.8,.6,.4,.2].map(x=>Pc(x*m)),'reps',45,TP.pyr],['Arms-full set',[Pc(.6*m)],'reps',60,TP.full]],
+  m=>[['Arms-full sets',R(5,Pc(.7*m)),'reps',45,TP.full],['Burnout',['MAX'],'reps',60,TP.burn]],
+  m=>[]],
+ bonus:[
+  m=>[['Ladder',[.1,.2,.3,.4,.5].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Diamond push-ups',R(2,Pc(.3*m)),'reps',60,TP.dia],['Plank',R(2,45),'sec',45,TP.plank]],
+  m=>[['Ladder',[.1,.2,.3,.4,.5,.6].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Clap push-ups',R(3,5),'reps',75,TP.clap],['Decline push-ups',R(2,Pc(.35*m)),'reps',60,TP.dec]],
+  m=>[['Every-minute sets',R(8,Pc(.35*m)),'reps',40,'Do the set, then rest until the next minute starts.'],['Archer push-ups',R(3,5),'side',60,TP.arch],['Burnout',['MAX'],'reps',60,TP.burn]],
+  m=>[['Easy push-ups',R(2,Pc(.4)),'reps',60,'Light — save your energy for the final test.'],['Plank',R(2,40),'sec',45,TP.plank]]]
+};
+const PTEST_AFTER=[['Push-ups (50% of your max)',[.5,.5,.4].map(Pc),'reps',90,TP.half],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]];
+const PTYPE={0:'bonus',1:'max',2:'var',3:'pump',5:'bonus'};
+const PTITLE={max:'Max Day',var:'Variety',pump:'Pump Day',bonus:'Bonus Day'};
+const PLEVEL={max:'Hard',var:'Medium',pump:'Hard',bonus:'Medium'};
+const PDAYS=112;
+const PUSH_S=makeDates([0,1,2,3,5],PDAYS).map(({d,k},n)=>{
+  const w=Math.floor(k/7)+1,ph=w<=4?0:w<=8?1:w<=15?2:3,wip=(w-1)%4,type=PTYPE[d.getDay()],m=1+.05*wip;
+  const final=w===16&&type==='pump', test=final||(type==='max'&&[1,5,9,13].includes(w));
+  return{id:n,week:w,day:k+1,date:d,type,ph,phase:final?'test':w>=13?'peak':['found','build','power','peak'][ph],test,final,kind:final?'final':'main',
+    ex:final?[]:(test?PTEST_AFTER:PT[type][ph](m)),normEx:final?[]:PT[type][ph](m),baseTest:test};});
+function pushMax(S,id){let best=null;
+  PUSH_S.forEach(s=>{if(s.id<=id&&S.results[s.id]!=null)best={d:s.date,r:S.results[s.id]};});
+  const lim=id<0?-Infinity:PUSH_S[Math.min(id,PUSH_S.length-1)].date.getTime()+864e5;
+  S.maxLog.forEach(x=>{const d=new Date(x.d);if(d<lim&&(!best||d>=best.d))best={d,r:x.r};});
+  return best?best.r:25;}
+const rv=(sp,M)=>sp==='MAX'?'MAX':typeof sp==='number'?sp:Math.max(1,Math.round(sp.p*M));
+function pushReps(s){const M=pushMax(ST.push,s.id);return s.ex.map(e=>e[1].map(sp=>rv(sp,M)));}
+function pushLabel(e,vals){const[n,,u]=e;const suf=u==='sec'?'s':u==='side'?' each side':'';const v=vals.map(x=>x==='MAX'?'Max':x);
+  return v.every(x=>x===v[0])?(v.length>1?`${n}: ${v.length} × ${v[0]}${suf}`:`${n}: ${v[0]}${suf}`):`${n}: ${v.join('-')}${suf}`;}
+const PUSH={
+  key:'push',name:'Push-Up Plan',emoji:'🔥',color:'#ffb627',S:PUSH_S,
+  times:{0:['16:00'],1:['20:00'],2:['14:00'],3:['16:00'],5:['10:00']},
+  phases:['found','build','power','peak'],goalTxt:'Goal: 40 push-ups · Feb 24',days:PDAYS,statLbl:'push-ups done',unit:'push-ups',
+  title(s){return s.final?'Final max test':(s.test?'Max test + ':'')+PTITLE[s.type];},
+  count(s,S){let t=0;pushReps(s).forEach((vals,i)=>{if(s.ex[i][2]!=='sec')vals.forEach(v=>{if(v!=='MAX')t+=v*(s.ex[i][2]==='side'?2:1);});});return t+(S.results[s.id]||0);},
+  rowBody(s,S){
+    if(s.final)return{mid:`<div class="dtxt"><b>Final max test 🎯</b> · goal 40</div>`,tot:S.results[s.id]!=null?totHtml(S.results[s.id],'max'):''};
+    const names=s.ex.map(e=>e[0]).join(' · ');
+    return{mid:`<div class="dtxt"><b>${this.title(s)}</b> · ${PLEVEL[s.type]}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${names}</div>`,
+      tot:S.results[s.id]!=null?totHtml(S.results[s.id],'max'):totHtml(this.count(s,S),'push-ups')};},
+  heroBody(s,S){if(s.final)return `<div class="bigsets"><b>MAX · goal 40</b></div>`;
+    return `<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="meta" style="margin-top:8px">${PLEVEL[s.type]} · about ${this.count(s,ST.push)} push-ups · your max: ${pushMax(ST.push,s.id-1)}</div>`;},
+  sheetTop(s){return s.final?'':`<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="muted" style="margin-top:6px">${PLEVEL[s.type]} · based on your max: <b style="color:var(--ink)">${pushMax(ST.push,s.test?s.id-1:s.id)}</b></div>`;},
+  lines(s){const L=[['Warm up (3 min)','Arm circles, 10 shoulder taps, 10 knee push-ups, 5 slow push-ups']];
+    if(s.test)L.push(['🎯 Max test','As many push-ups as you can in one go — then the 50% sets come from this number']);
+    const reps=pushReps(s);s.ex.forEach((e,i)=>L.push([pushLabel(e,reps[i]),`${e[4]} · rest ${e[3]}s`]));
+    if(!s.final)L.push(['Stretch (2 min)','Chest, shoulders, triceps']);return L;},
+  tips(s){if(s.final)return['Rest well the day before.','Full push-ups only — chest close to the floor, arms straight at the top.','Compare it with your first test on Nov 9!'];
+    const t={max:['Hard day: full rest between sets.','Max set: stop when your form breaks, not before.'],var:['Lighter day — you trained yesterday too.','Try every variation, even if you do fewer reps.'],pump:['Hard day: short rests, go until your arms are full.','Drink water!'],bonus:['Bonus day — on your jump day off.','Medium effort: fast, clean reps, not to total failure.']}[s.type];
+    return (s.test?['Test first while you\'re fresh, then the 50% sets.']:[]).concat(t);},
+  steps(s,S){const out=[],rest=x=>out.push({type:'rest',secs:x});
+    out.push({type:'task',kind:'Warm-up',title:'Warm up',big:'3',unit:'minutes',text:'Arm circles 20s each way · 10 shoulder taps · 10 knee push-ups · 5 slow push-ups'});rest(60);
+    if(s.test){out.push({type:'input',kind:s.final?'Final test':'Max test',title:'Max push-ups in one go',unit:'push-ups',start:pushMax(S,s.id-1),text:'Full push-ups, chest close to the floor, no resting on the floor. Then enter how many you did.'});if(s.ex.length)rest(180);}
+    s.ex.forEach(([n,reps,u,rs,tip])=>reps.forEach((sp,i)=>{
+      if(u==='sec')out.push({type:'timer',kind:`${n} · ${i+1} of ${reps.length}`,title:n,secs:sp,text:tip});
+      else out.push({type:'task',kind:`Set ${i+1} of ${reps.length}`,title:n,calc:()=>String(rv(sp,pushMax(ST.push,s.id))),unit:sp==='MAX'?'as many as you can':u==='side'?'each side':'push-ups',text:tip});
+      rest(rs);}));
+    if(out[out.length-1].type==='rest')out.pop();
+    if(!s.final)out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'2',unit:'minutes',text:'Chest stretch in a doorway, shoulder and triceps stretch — 20s each.'});
+    out.push({type:'end'});return out;},
+  endMsg(s,S){const r=S.results[s.id];
+    if(s.test){const first=S.results[PUSH_S.find(x=>x.test).id];return `Max: ${r} push-ups`+(first!=null&&s.id!==PUSH_S.find(x=>x.test).id?` (${r-first>=0?'+':''}${r-first} since your first test)`:'')+(s.final&&r>=40?' — goal hit! 🏆':'');}
+    return `About ${this.count(s,S)} push-ups done. 🔥`;},
+  bestTxt:b=>`Best: ${b} <span class="muted" style="font-weight:400">/ 40 goal</span>`,goal:40,movable:true,logQ:'How many push-ups did you do in one go?'
+};
+PULL.title=s=>s.kind==='main'?`${pl(sum(s.sets),'pull-up')} · ${s.sets.join('-')}`:s.kind==='final'?'Max pull-up test':s.p.test?`Test: ${s.p.test} pull-ups`:'Prep: holds & negatives';
+JUMP.title=s=>s.final?'Final jump test':(s.test?'Jump test + ':'')+JTITLE[s.type];
+const PLANS={pull:PULL,jump:JUMP,push:PUSH};
+/* jump measurements */
+const JFIELDS=[['vert','Vertical jump','hands on hips, from standing','cm',45],['reach','Highest touch','arm swing — height on the wall','cm'],['broad','Broad jump','2 legs → 2 legs','cm'],['left','One-leg broad · left','off left leg, land on 2','cm'],['right','One-leg broad · right','off right leg, land on 2','cm']];
+function jEntries(S){const e=[];JUMP_S.forEach(s=>{if(S.multi[s.id])e.push({d:s.date,m:S.multi[s.id]});});S.maxLog.forEach(x=>{if(x.m)e.push({d:new Date(x.d),m:x.m});});return e.sort((a,b)=>a.d-b.d);}
+function jLatest(S){const o={};jEntries(S).forEach(e=>Object.entries(e.m).forEach(([k,v])=>{if(v!=null)o[k]=v;}));return o;}
+function jFirst(S){const o={};jEntries(S).forEach(e=>Object.entries(e.m).forEach(([k,v])=>{if(v!=null&&o[k]==null)o[k]=v;}));return o;}
+function jBest(S){const o={};jEntries(S).forEach(e=>Object.entries(e.m).forEach(([k,v])=>{if(v!=null&&(o[k]==null||v>o[k]))o[k]=v;}));return o;}
+function multiForm(L){return JFIELDS.map(([k,n,h])=>`<label class="mrow"><span><b>${n}</b><small>${h}</small></span><input type="number" step="0.1" inputmode="decimal" data-mf="${k}" value="${L[k]??''}" placeholder="cm"></label>`).join('');}
+function readMulti(root){const o={};root.querySelectorAll('[data-mf]').forEach(i=>{const v=parseFloat(String(i.value).replace(',','.'));if(!isNaN(v))o[i.dataset.mf]=v;});return o;}
+
+/* ================= STATE ================= */
+const KEY='training-app-v1';
+const blank=()=>({done:{},notes:{},results:{},maxLog:[],times:{},def:{},feel:{},moves:{},multi:{},offSwap:{}});
+let ST={pull:blank(),jump:blank(),push:blank()};
+try{const raw=localStorage.getItem(KEY);
+  if(raw){const o=JSON.parse(raw);['pull','jump','push'].forEach(k=>ST[k]=Object.assign(blank(),o[k]));}
+  else{const old=localStorage.getItem('pullup-app-v1');if(old)ST.pull=Object.assign(blank(),JSON.parse(old));}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
+// Jump measurements you did before starting (Nov 8)
+if(!ST.jump.seeded){ST.jump.maxLog.push({d:'2026-11-08T08:00:00',r:38.9,m:{vert:38.9,broad:172,left:154,right:148},start:true});ST.jump.seeded=true;save();}
+// Moved tests (up to 4 training days earlier or later)
+function applyMoves(plan){if(!plan.movable)return;const mv=ST[plan.key].moves||{};
+  plan.S.forEach(s=>{s.test=s.baseTest;s.movedFrom=null;});
+  Object.entries(mv).forEach(([f,t])=>{f=+f;t=+t;if(plan.S[f]&&plan.S[t]&&f!==t){plan.S[f].test=false;plan.S[t].test=true;plan.S[t].movedFrom=f;}});
+  if(plan.key==='push')plan.S.forEach(s=>{if(!s.final)s.ex=s.test?PTEST_AFTER:s.normEx;});}
+applyMoves(JUMP);applyMoves(PUSH);
+// Jump plan: odd weeks 6 trainings, even weeks 5. The day off is Friday (weeks 2,6,10,14) or Sunday (weeks 4,8,12,16) — you can swap it.
+function offDay(w){let d=w%4===2?5:0;if((ST.jump.offSwap||{})[w])d=d===5?0:5;return d;}
+function applyOff(){JUMP_S.forEach(s=>{s.off=s.week%2===0&&s.date.getDay()===offDay(s.week)&&!s.test&&!s.final;});
+  // Push-ups: a bonus training on the jump day off, in every 5-training jump week
+  PUSH_S.forEach(s=>{s.off=s.type==='bonus'&&!(s.week%2===0&&s.date.getDay()===offDay(s.week));});}
+applyOff();
+Object.values(PLANS).forEach(pl=>Object.defineProperty(pl,'A',{get(){return this.S.filter(s=>!s.off);}}));
+JUMP.offBtn=w=>{if(w%2)return '';const d=offDay(w);return `<button class="offbtn" data-offswap="${w}">😴 Day off this week: <b>${d===5?'Friday':'Sunday'}</b> (🔥 push-up bonus day) · tap to switch to ${d===5?'Sunday':'Friday'}</button>`;};
+PUSH.offBtn=w=>{if(w%2)return '';const d=offDay(w);return `<button class="offbtn" data-offswap="${w}">➕ Bonus training this week: <b>${d===5?'Friday':'Sunday'}</b> (your jump day off) · tap to switch to ${d===5?'Sunday':'Friday'}</button>`;};
+let cur='pull';
+const P=()=>PLANS[cur], st=()=>ST[cur];
+
+/* ================= TIMES ================= */
+function timeOpts(plan,s){const dw=s.date.getDay(),d=ST[plan.key].def[dw];const base=plan.times[dw]||['16:00'];const o=[d||base[0],...base];return [...new Set(o)];}
+function timeOf(plan,s){return ST[plan.key].times[s.id]||timeOpts(plan,s)[0];}
+
+/* ================= RENDER ================= */
+const chips=(a,c)=>`<div class="${c}">${a.map(x=>`<b>${x}</b>`).join('')}</div>`;
+const totHtml=(v,l)=>`<div class="tot"><strong>${v}</strong><small>${l}</small></div>`;
+// status: done | part | skip | sick  (old saves used true = done)
+const stOf=(S,id)=>S.done[id]===true?'done':(S.done[id]||'');
+const didIt=(S,id)=>['done','part'].includes(stOf(S,id));
+const STAT={done:['✓','Done','#3ddc84'],part:['½','Partly done','#ffb03a'],skip:['✕','Didn\'t do it','#8d8d98'],sick:['🤒','Sick','#5aa9ff']};
+const nextOf=plan=>plan.A.find(s=>!stOf(ST[plan.key],s.id));
+const weeksOf=plan=>Math.ceil(plan.days/7);
+function daysToBday(){return Math.ceil((BDAY-new Date().setHours(0,0,0,0))/864e5);}
+function dayItems(d){const out=[];Object.values(PLANS).forEach(plan=>plan.A.forEach(s=>{if(s.date.toDateString()===d.toDateString())out.push({plan,s,t:timeOf(plan,s)});}));return out.sort((a,b)=>a.t.localeCompare(b.t));}
+function todayBox(){
+  const now=new Date();now.setHours(0,0,0,0);
+  let items=dayItems(now),label='Today',sub=fmtLong(now),note='';
+  if(!items.length){note='No training today 😴 Rest up.';
+    for(let i=1;i<120;i++){const d=new Date(now);d.setDate(d.getDate()+i);const it=dayItems(d);if(it.length){items=it;label=i===1?'Tomorrow':'Next training';sub=fmtLong(d);break;}}}
+  else if(items.every(x=>stOf(ST[x.plan.key],x.s.id))){note='All done today ✅ Nice work!';}
+  const rows=items.map(({plan,s,t})=>{const so=stOf(ST[plan.key],s.id),sc=so?STAT[so]:null;
+    return `<div class="titem ${so?'dn':''}" style="--c:${plan.color}" data-go="${plan.key}:${s.id}"><span class="temo">${plan.emoji}</span>
+      <div class="tmid"><b>${t} · ${plan.name.replace(' Plan','s').replace('Jump Highs','Jump High')}</b><small>${plan.title(s)}${isBday(s)?' · 🎂':''}</small></div>
+      ${sc?`<span class="tok" style="background:${sc[2]}">${sc[0]}</span>`:`<button class="tgo" data-gostart="${plan.key}:${s.id}" aria-label="Start">▶</button>`}</div>`;}).join('');
+  return `<div class="tday"><h3>${label}</h3><div class="muted">${sub}</div>${note?`<div style="margin-top:8px;font-weight:600">${note}</div>`:''}${rows}</div>`;
+}
+function renderHome(){
+  const dtb=daysToBday();
+  const banner=dtb===0?`<div class="bday"><b>🎂</b><div><strong>Happy birthday, ${NAME}!</strong><div class="muted" style="font-size:13px">Today is your pull-up birthday challenge.</div></div></div>`
+    :dtb>0?`<div class="bday"><b>🎂</b><div><strong>${dtb} days</strong> to your birthday challenge<div class="muted" style="font-size:13px">Pull-up plan finishes on Feb 5 — your birthday</div></div></div>`:'';
+  const card=plan=>{const S=ST[plan.key],done=plan.A.filter(s=>didIt(S,s.id)).length,n=nextOf(plan);
+    const nx=n?`Next: <b>Day ${n.day} · ${isToday(n.date)?'Today':fmt(n.date)} · ${timeOf(plan,n)}</b>`:'<b>All done 🏆</b>';
+    return `<button class="plancard" data-plan="${plan.key}" style="--c:${plan.color}"><div class="emo">${plan.emoji}</div><h2>${plan.name}</h2>
+      <div class="muted" style="font-size:13px">${done} / ${plan.A.length} workouts · ${plan.goalTxt}</div><div class="bar"><i style="width:${done/plan.A.length*100}%"></i></div>
+      <div class="nx">${nx}</div><span class="go">Open →</span></button>`;};
+  $('v-home').innerHTML=`<div class="hello">Hey ${NAME} 👋</div><p class="sub">Here's your training — pick a plan to see more.</p>${todayBox()}${banner}${card(PULL)}${card(JUMP)}${card(PUSH)}`;
+}
+function renderHero(){
+  const plan=P(),n=nextOf(plan);
+  if(!n){$('hero').innerHTML=`<div class="hero"><div class="lbl">Finished</div><h2>You did all 90 days 🏆</h2><div class="meta">Check your Progress tab.</div></div>`;return;}
+  const when=isToday(n.date)?'Today':fmt(n.date);
+  $('hero').innerHTML=`<div class="hero"><div class="lbl">Next up · ${PHASE[n.phase]}${isBday(n)?' · 🎂 Birthday':''}</div><h2>Day ${n.day} · ${when}</h2><div class="meta">🕒 ${timeOf(plan,n)} · Week ${n.week} of ${weeksOf(plan)}</div>${plan.heroBody(n)}
+  <div class="row2"><button class="btn main" data-start="${n.id}">▶ Start workout</button><button class="btn sec" data-open="${n.id}">Details</button></div></div>`;
+}
+function renderStats(){
+  const plan=P(),S=st(),done=plan.A.filter(s=>didIt(S,s.id));
+  const total=done.reduce((a,s)=>a+plan.count(s,S),0);
+  const today=Math.floor((new Date().setHours(0,0,0,0)-new Date(START[0],START[1],START[2]))/864e5)+1;
+  $('stats').innerHTML=`<div class="stat"><strong>${done.length}<small>/${plan.A.length}</small></strong><small>workouts</small></div>
+   <div class="stat"><strong>${total}</strong><small>${plan.statLbl}</small></div>
+   <div class="stat"><strong>${today<1?plan.days:Math.max(0,plan.days-today+1)}</strong><small>days to go</small></div>`;
+  $('fill').style.width=(done.length/plan.A.length*100)+'%';
+  $('pct').textContent=Math.round(done.length/plan.A.length*100)+'% done';
+  $('goalTxt').textContent=plan.goalTxt;
+}
+function renderList(){
+  const plan=P(),S=st(),n=nextOf(plan);let h='';
+  const A=plan.A;A.forEach((s,i)=>{
+    if(i===0||A[i-1].week!==s.week){const wk=A.filter(x=>x.week===s.week);
+      h+=`<div class="wk"><h3>Week ${s.week} <span class="muted" style="font-weight:600;font-size:12px">· ${wk.length} trainings</span></h3><span>${short(wk[0].date)} – ${short(wk[wk.length-1].date)}</span></div>${plan.offBtn?plan.offBtn(s.week):''}`;}
+    const tags=[`<span class="tag t-${s.phase}">${PHASE[s.phase]}</span>`];
+    if(s.test&&s.phase!=='test')tags.push('<span class="tag t-test">Test</span>');
+    if(isBday(s))tags.push('<span class="tag t-bday">🎂 Birthday</span>');
+    if(isToday(s.date))tags.unshift('<span class="tag t-today">Today</span>');
+    const changed=S.times[s.id]?' ✎':'';
+    const b=plan.rowBody(s,S);
+    const so=stOf(S,s.id),sc=so?STAT[so]:null;
+    h+=`<div class="day ${so?'done':''} ${n&&n.id===s.id?'next':''}" data-open="${s.id}">
+      <button class="chk" data-chk="${s.id}" aria-label="Done" style="${sc?`background:${sc[2]};border-color:${sc[2]};color:#0d0d10`:''}">${sc?sc[0]:'✓'}</button>
+      <div class="dmid"><div class="dtop">${fmt(s.date)} · ${timeOf(plan,s)}${changed} · Day ${s.day} ${tags.join('')}</div>${b.mid}</div>${b.tot}<span class="chev">›</span></div>`;
+  });
+  $('list').innerHTML=h;
+}
+function streak(plan){const S=ST[plan.key],A=plan.A;let c=0;for(let j=A.length-1;j>=0;j--){const x=stOf(S,A[j].id);if(x==='done'||x==='part')c++;else if(x&&c)break;else if(c)break;}return c;}
+function renderProgress(){
+  const plan=P(),S=st(),done=plan.A.filter(s=>didIt(S,s.id));
+  const total=done.reduce((a,s)=>a+plan.count(s,S),0);
+  const cnt=k=>plan.A.filter(s=>stOf(S,s.id)===k).length;
+  const feels=Object.values(S.feel);
+  const tests=[];plan.S.forEach(s=>{if(S.results[s.id]!=null)tests.push({d:s.date,r:S.results[s.id]});});
+  S.maxLog.forEach(m=>{if(m.r!=null)tests.push({d:new Date(m.d),r:m.r});});tests.sort((a,b)=>a.d-b.d);
+  const best=tests.length?Math.max(...tests.map(t=>t.r)):0, last=tests.slice(-10), top=Math.max(plan.goal||0,best,1)*1.08;
+  const chart=last.length?`<div class="chart">${last.map(t=>`<div><em>${t.r}</em><span style="height:${t.r/top*100}%"></span>${short(t.d)}</div>`).join('')}</div>`:`<p class="muted">No tests yet. Tap the button below any time you want to test yourself.</p>`;
+  const phases=plan.phases.map(ph=>{const all=plan.A.filter(s=>s.phase===ph||(ph==='prep'&&s.kind==='prep'));const d=all.filter(s=>didIt(S,s.id)).length;
+    return `<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${PHASE[ph]}</span><span class="muted">${d}/${all.length}</span></div><div class="bar" style="margin:5px 0 0"><i style="width:${all.length?d/all.length*100:0}%"></i></div></div>`;}).join('');
+  const dows=[...new Set(plan.S.map(s=>s.date.getDay()))].sort();
+  const trows=dows.map(dw=>{const v=S.def[dw]||plan.times[dw][0];return `<div class="trow"><span>${DOW[dw]}</span><input type="time" value="${v}" data-def="${dw}"></div>`;}).join('');
+  $('progress').innerHTML=`
+  <div class="stats"><div class="stat"><strong>${done.length}</strong><small>workouts</small></div><div class="stat"><strong>${total}</strong><small>${plan.statLbl}</small></div><div class="stat"><strong>${streak(plan)}</strong><small>in a row</small></div></div>
+  ${plan.progressCard?plan.progressCard(S,chart):`<div class="card" style="margin-top:12px"><h3>${plan.bestTxt(best,S)}</h3>${plan.goal?`<div class="bar"><i style="width:${Math.min(100,best/plan.goal*100)}%"></i></div>`:''}${chart}
+  <button class="btn main" style="width:100%;margin-top:14px" id="logMax">+ Log a test</button></div>`}
+  <div class="card"><h3>Your days</h3><div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0">${Object.entries(STAT).map(([k,v])=>`<div class="stat" style="background:var(--card2);padding:10px 4px"><strong style="color:${v[2]};font-size:19px">${cnt(k)}</strong><small>${v[0]} ${v[1]}</small></div>`).join('')}</div>
+   ${feels.length?`<div class="muted" style="font-size:13px;margin-top:10px">How it felt: ${FEEL.map((f,i)=>`${f} ×${feels.filter(x=>x===i).length}`).join(' · ')}</div>`:'<div class="muted" style="font-size:13px;margin-top:10px">Open a day to mark it done, partly, skipped or sick, and how it felt.</div>'}</div>
+  <div class="card"><h3>Training times</h3><p class="muted" style="margin:0 0 6px;font-size:13px">Your normal time for each day. To change just one day, open that day and pick a time there.</p>${trows}</div>
+  <div class="card"><h3>Phases</h3>${phases}</div>
+  <div class="card"><h3>Backup</h3><p class="muted" style="margin:0 0 10px;font-size:13px">Progress for both plans is saved on this phone. Copy a backup code to keep it safe.</p>
+  <div class="btns"><button class="btn sec" id="bk">Copy backup</button><button class="btn sec" id="rs">Restore</button><button class="btn sec" id="rz" style="color:#ff7a6b">Reset this plan</button></div></div>`;
+}
+function renderPlan(){document.querySelectorAll('.ptitle').forEach(e=>e.innerHTML=`${P().name.split(' ')[0]} <span>${P().name.split(' ').slice(1).join(' ')}</span>`);
+  ['pull','jump','push'].forEach(k=>$('tips-'+k).style.display=cur===k?'':'none');
+  renderHero();renderStats();renderList();renderProgress();}
+function renderAll(){renderHome();renderPlan();}
+function show(v){document.body.classList.toggle('home',v==='home');
+  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));window.scrollTo(0,0);}
+function openPlan(k){cur=k;document.body.dataset.plan=k;renderPlan();show('plan');
+  setTimeout(()=>{const el=document.querySelector('.day.next');if(el&&nextOf(P())&&nextOf(P()).id>0)el.scrollIntoView({block:'center'});},60);}
+
+/* ================= SHEET ================= */
+let sheetId=null;
+function openSheet(id){
+  const plan=P(),S=st(),s=plan.S[id];sheetId=id;
+  const lines=plan.lines(s).map(([a,b])=>`<li><b>${a}</b><small>${b}</small></li>`).join('');
+  const res=S.results[id]!=null?`<div class="result">Result: ${S.results[id]} ${plan.unit}</div>`:'';
+  const opts=timeOpts(plan,s),t=timeOf(plan,s),changed=!!S.times[id];
+  const bday=isBday(s)?`<div class="bdaybox">🎂 ${s.kind==='final'?`Birthday challenge — Happy birthday, ${NAME}! This is the day you've trained 90 days for.`:`It's your birthday, ${NAME}! Training on your birthday = legend. 💪`}</div>`:'';
+  $('sheet').innerHTML=`<div class="grab"></div>
+   <div class="dtop"><span class="tag t-${s.phase}">${PHASE[s.phase]}</span>${s.test&&s.phase!=='test'?'<span class="tag t-test">Test</span>':''}${isToday(s.date)?'<span class="tag t-today">Today</span>':''}<span>Week ${s.week}</span></div>
+   <h2>Day ${s.day} · ${fmtLong(s.date)}</h2>${bday}${plan.sheetTop(s)}${res}
+   <div class="timebox"><div class="tt"><span>🕒 Training time</span><b>${t}</b></div>
+     <div class="muted" style="font-size:12px;margin-top:2px">${changed?'Changed for this day only':'Change it for this day only:'}</div>
+     <div class="chips">${opts.map(o=>`<button class="chip ${o===t?'on':''}" data-time="${o}">${o}</button>`).join('')}
+     <label class="chip">Other <input type="time" id="tIn" value="${t}"></label>${changed?'<button class="chip" data-time="reset">↺ Normal</button>':''}</div></div>
+   ${moveBox(plan,s)}
+   <h4>What to do</h4><ol class="steps">${lines}</ol>
+   <h4 style="margin-top:4px">Tips</h4><ul class="tips">${plan.tips(s).map(x=>`<li>${x}</li>`).join('')}</ul>
+   <h4 style="margin:0 0 6px">Notes</h4><textarea id="note" placeholder="How did it go?">${S.notes[id]||''}</textarea>
+   <div class="row2"><button class="btn main" data-start="${id}">▶ Start workout</button>
+     </div>
+   <h4 style="margin:16px 0 0">How did this day go?</h4>
+   <div class="chips">${Object.entries(STAT).map(([k,v])=>`<button class="chip ${stOf(S,id)===k?'on':''}" data-status="${k}" style="${stOf(S,id)===k?`background:${v[2]};border-color:${v[2]}`:''}">${v[0]} ${v[1]}</button>`).join('')}${stOf(S,id)?'<button class="chip" data-status="">↺ Clear</button>':''}</div>
+   <h4 style="margin:14px 0 0">How did it feel?</h4>
+   <div class="chips">${FEEL.map((f,i)=>`<button class="chip ${S.feel[id]===i?'on':''}" data-feel="${i}">${f}</button>`).join('')}</div>
+   ${stOf(S,id)==='sick'?'<div class="result" style="color:#5aa9ff;background:rgba(90,169,255,.12)">Get well! When you\'re back, start easy — repeat the last day you finished before moving on.</div>':''}
+   ${stOf(S,id)==='skip'?'<div class="result" style="color:var(--muted);background:var(--card2)">No problem — just do the next day. Missed a few in a row? Repeat your last finished day first.</div>':''}
+   <button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;
+  $('ov').classList.add('on');
+  $('note').addEventListener('input',e=>{S.notes[id]=e.target.value;save();});
+  $('tIn').addEventListener('change',e=>{if(e.target.value)setTime(id,e.target.value);});
+}
+function setTime(id,v){const plan=P(),S=st(),s=plan.S[id];
+  if(v==='reset'||v===timeOpts(plan,s)[0])delete S.times[id];else S.times[id]=v;
+  save();renderAll();openSheet(id);toast(v==='reset'?'Back to normal time':'Time changed for this day');}
+function moveBox(plan,s){if(!plan.movable||!s.test||s.final)return '';
+  const orig=s.movedFrom!=null?s.movedFrom:s.id,opts=[];
+  const A=plan.A,oi=A.indexOf(plan.S[orig])>=0?A.indexOf(plan.S[orig]):A.findIndex(x=>x.id>orig);
+  for(let o=-4;o<=4;o++){const x=A[oi+o];if(!x||x.final)continue;if(x.test&&x.id!==s.id)continue;opts.push({o,t:x.id,x});}
+  return `<div class="timebox"><div class="tt"><span>📅 Move this test</span><small class="muted">up to 4 training days</small></div>
+   <div class="chips">${opts.map(({o,t,x})=>`<button class="chip ${t===s.id?'on':''}" data-move="${orig}:${t}">${o===0?'Normal':(o>0?'+':'')+o} · ${short(x.date)}</button>`).join('')}</div></div>`;}
+function closeSheet(){$('ov').classList.remove('on');sheetId=null;}
+
+/* ================= WORKOUT ================= */
+let W=null,tick=null,wake=null,actx=null;
+function beep(f=880,ms=180){try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.25,actx.currentTime);o.start();o.stop(actx.currentTime+ms/1000);}catch(e){}}
+function buzz(){try{navigator.vibrate&&navigator.vibrate([250,100,250])}catch(e){}beep(988,220);setTimeout(()=>beep(1318,260),260);}
+async function startWorkout(id){closeSheet();const plan=P();
+  W={plan,id,s:plan.S[id],steps:plan.steps(plan.S[id],st()),i:0,end:0,running:false,val:0};
+  $('wo').classList.add('on');try{wake=await navigator.wakeLock.request('screen')}catch(e){wake=null}renderW();}
+function stopTick(){clearInterval(tick);tick=null;}
+function closeW(){stopTick();$('wo').classList.remove('on');try{wake&&wake.release()}catch(e){}W=null;renderAll();}
+function nextStep(){stopTick();W.i++;W.running=false;const x=W.steps[W.i];
+  if(x&&x.type==='rest'){W.end=Date.now()+x.secs*1000;W.running=true;}if(x&&x.type==='input')W.val=x.start;renderW();}
+function upNext(){for(let j=W.i+1;j<W.steps.length;j++){const x=W.steps[j];if(x.type==='task')return `${x.title} · ${x.calc?x.calc():x.big} ${x.unit}`;if(x.type==='timer')return `${x.title} · ${x.secs}s`;if(x.type==='input')return x.title;}return 'Finish 🎉';}
+function ring(left,total,color){const r=100,c=2*Math.PI*r,p=total?left/total:0;
+  return `<div class="ring"><svg width="230" height="230" viewBox="0 0 230 230"><circle cx="115" cy="115" r="${r}" stroke="#202028" stroke-width="14" fill="none"/><circle cx="115" cy="115" r="${r}" stroke="${color}" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" style="transition:stroke-dashoffset .25s linear"/></svg><div class="huge">${left>=60?Math.floor(left/60)+':'+String(left%60).padStart(2,'0'):left}</div></div>`;}
+function renderW(){
+  if(!W)return;const s=W.s,step=W.steps[W.i],body=$('woBody'),foot=$('woFoot'),acc=W.plan.color;
+  const real=W.steps.filter(x=>x.type!=='rest'&&x.type!=='end').length,doneN=W.steps.slice(0,W.i).filter(x=>x.type!=='rest'&&x.type!=='end').length;
+  $('woT').textContent=`${W.plan.emoji} Day ${s.day} · ${PHASE[s.phase]}`;
+  $('woN').textContent=step.type==='end'?'':`${Math.min(doneN+1,real)}/${real}`;
+  $('woBar').style.width=(W.i/(W.steps.length-1)*100)+'%';
+  if(step.type==='task'){
+    body.innerHTML=`<div class="kind">${step.kind}</div><h2>${step.title}</h2><div class="huge" style="${String(step.calc?step.calc():step.big).length>2?'font-size:84px':''}">${step.calc?step.calc():step.big}</div><div class="unit">${step.unit}</div><p>${step.text}</p>`;
+    foot.innerHTML=`<button class="btn main" id="wDone">Done ✓</button>`;$('wDone').onclick=nextStep;
+  }else if(step.type==='timer'){
+    const left=W.running?Math.max(0,Math.ceil((W.end-Date.now())/1000)):step.secs;
+    body.innerHTML=`<div class="kind">${step.kind}</div><h2>${step.title}</h2>${ring(left,step.secs,acc)}<p>${step.text}</p>`;
+    foot.innerHTML=W.running?`<button class="btn sec" id="wSkip">Stop · next</button>`:`<button class="btn main" id="wGo">▶ Start ${step.secs}s</button><button class="btn sec" id="wSkip">Skip</button>`;
+    if($('wGo'))$('wGo').onclick=()=>{beep(660,120);W.running=true;W.end=Date.now()+step.secs*1000;runTick();renderW();};
+    $('wSkip').onclick=nextStep;if(W.running&&!tick)runTick();
+  }else if(step.type==='rest'){
+    const left=Math.max(0,Math.ceil((W.end-Date.now())/1000));
+    body.innerHTML=`<div class="kind rest">Rest</div><h2>Breathe, shake it out</h2>${ring(left,step.secs,'#3ddc84')}<div class="upnext">Up next: <b>${upNext()}</b></div>`;
+    foot.innerHTML=`<button class="btn sec" id="wAdd">+15s</button><button class="btn main" id="wSkip">Skip rest</button>`;
+    $('wAdd').onclick=()=>{W.end+=15000;step.secs+=15;renderW();};$('wSkip').onclick=nextStep;if(!tick)runTick();
+  }else if(step.type==='multi'){
+    body.innerHTML=`<div class="kind">${step.kind}</div><h2>${step.title}</h2><p style="margin-top:4px">Your best try in each test, in cm. Leave empty if you skipped one.</p><div class="mform">${multiForm(jLatest(ST.jump))}</div>`;
+    foot.innerHTML=`<button class="btn main" id="wSave">Save results</button>`;
+    $('wSave').onclick=()=>{const v=readMulti(body);const S=ST[W.plan.key];S.multi[W.id]=v;if(v.vert!=null)S.results[W.id]=v.vert;save();nextStep();};
+  }else if(step.type==='input'){
+    body.innerHTML=`<div class="kind">${step.kind}</div><h2>${step.title}</h2><p>${step.text}</p><div class="stepper"><button id="wMinus">−</button><div class="huge" id="wVal">${W.val}</div><button id="wPlus">+</button></div><div class="unit">${step.unit}</div>`;
+    foot.innerHTML=`<button class="btn main" id="wSave">Save result</button>`;
+    $('wMinus').onclick=()=>{W.val=Math.max(0,W.val-1);$('wVal').textContent=W.val;};
+    $('wPlus').onclick=()=>{W.val++;$('wVal').textContent=W.val;};
+    $('wSave').onclick=()=>{ST[W.plan.key].results[W.id]=W.val;save();nextStep();};
+  }else{
+    ST[W.plan.key].done[W.id]='done';save();
+    const bd=isBday(s);
+    body.innerHTML=`<div style="font-size:80px">${bd?'🎂':'🎉'}</div><h2>${bd?`Happy birthday, ${NAME}!`:'Workout complete'}</h2><p>${W.plan.endMsg(s,ST[W.plan.key])}${bd?(s.kind==='final'?'<br><br>90 days done. That\'s the best birthday present you could give yourself. 🏆':'<br><br>Trained on your birthday. Legend. 🎂'):''}</p>`;
+    foot.innerHTML=`<button class="btn main" id="wFin">Finish</button>`;$('wFin').onclick=closeW;
+    buzz();if(bd)confetti();
+  }
+}
+function runTick(){stopTick();let last=null;
+  tick=setInterval(()=>{if(!W){stopTick();return;}const step=W.steps[W.i],left=Math.max(0,Math.ceil((W.end-Date.now())/1000));
+    if(left!==last){last=left;if(left<=3&&left>0)beep(step.type==='rest'?520:740,90);
+      const el=document.querySelector('#woBody .ring');if(el){const t=document.createElement('div');t.innerHTML=ring(left,step.secs,step.type==='rest'?'#3ddc84':W.plan.color);el.replaceWith(t.firstChild);}}
+    if(left<=0){buzz();nextStep();}},200);}
+$('woX').onclick=()=>{if(confirm('Stop this workout? It won\'t be marked done.'))closeW();};
+function confetti(){const c=document.createElement('canvas');c.className='conf';document.body.appendChild(c);const x=c.getContext('2d'),dpr=window.devicePixelRatio||1;
+  c.width=innerWidth*dpr;c.height=innerHeight*dpr;x.scale(dpr,dpr);const cols=['#ff5a36','#ffb03a','#3ddc84','#5aa9ff','#c77dff','#ff5a9e','#fff'];
+  const ps=Array.from({length:180},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.6,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:Math.random()*6.3,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,h:8+Math.random()*8,c:cols[Math.floor(Math.random()*cols.length)]}));
+  const t0=performance.now();(function f(t){x.clearRect(0,0,innerWidth,innerHeight);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore();});
+    if(t-t0<5000)requestAnimationFrame(f);else c.remove();})(t0);}
+
+/* ================= EVENTS ================= */
+document.addEventListener('click',e=>{const t=e.target;
+  const gs=t.closest('[data-gostart]');if(gs){const[k,id]=gs.dataset.gostart.split(':');openPlan(k);startWorkout(+id);return;}
+  const go=t.closest('[data-go]');if(go){const[k,id]=go.dataset.go.split(':');openPlan(k);setTimeout(()=>openSheet(+id),80);return;}
+  const pc=t.closest('[data-plan]');if(pc&&pc.classList.contains('plancard')){openPlan(pc.dataset.plan);return;}
+  if(t.closest('[data-home]')){renderHome();show('home');return;}
+  const chk=t.closest('[data-chk]');if(chk){e.stopPropagation();const id=+chk.dataset.chk,S=st();stOf(S,id)?delete S.done[id]:S.done[id]='done';save();renderAll();return;}
+  const sb=t.closest('[data-start]');if(sb){startWorkout(+sb.dataset.start);return;}
+  const sb2=t.closest('[data-status]');if(sb2){const id=sheetId,S=st(),k=sb2.dataset.status;k?S.done[id]=k:delete S.done[id];save();renderAll();openSheet(id);toast(k?STAT[k][0]+' '+STAT[k][1]:'Cleared');return;}
+  const fb=t.closest('[data-feel]');if(fb){const id=sheetId,S=st(),k=+fb.dataset.feel;S.feel[id]===k?delete S.feel[id]:S.feel[id]=k;save();openSheet(id);return;}
+  const tm=t.closest('[data-time]');if(tm){setTime(sheetId,tm.dataset.time);return;}
+  const op=t.closest('[data-open]');if(op){openSheet(+op.dataset.open);return;}
+  if(t.closest('[data-close]')||t.id==='ov'){closeSheet();return;}
+  const nv=t.closest('nav button');if(nv){show(nv.dataset.v);return;}
+  if(t.id==='jumpTo'){const el=document.querySelector('.day.next');el&&el.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(t.id==='logMax'&&cur==='jump'){$('sheet').innerHTML=`<div class="grab"></div><h2>Log a jump test</h2><p class="muted" style="margin:4px 0 0">Fill in what you measured — leave the rest empty.</p><div class="mform">${multiForm(jLatest(ST.jump))}</div>
+     <button class="btn main" style="width:100%;margin-top:14px" id="saveLog">Save</button><button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');return;}
+  if(t.id==='saveLog'){const v=readMulti($('sheet'));if(Object.keys(v).length){ST.jump.maxLog.push({d:new Date().toISOString(),r:v.vert??jLatest(ST.jump).vert,m:v});save();closeSheet();renderAll();toast('Jump test saved');}return;}
+  const ob=t.closest('[data-offswap]');if(ob){const w=+ob.dataset.offswap,S=ST.jump;S.offSwap[w]?delete S.offSwap[w]:S.offSwap[w]=true;applyOff();save();renderAll();toast('Day off: '+(offDay(w)===5?'Friday':'Sunday'));return;}
+  const mvb=t.closest('[data-move]');if(mvb){const[f,to]=mvb.dataset.move.split(':').map(Number),plan=P(),S=st();
+    if(f===to)delete S.moves[f];else S.moves[f]=to;applyMoves(plan);save();renderAll();openSheet(to);toast(f===to?'Test back on its normal day':'Test moved to '+fmt(plan.S[to].date));return;}
+  if(t.id==='logMax'){const v=prompt(P().logQ);const n=parseInt(v,10);if(!isNaN(n)&&n>=0){st().maxLog.push({d:new Date().toISOString(),r:n});save();renderAll();toast('Saved: '+n+' '+P().unit);}return;}
+  if(t.id==='bk'){const code=btoa(unescape(encodeURIComponent(JSON.stringify(ST))));
+    (navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('Backup copied'),()=>prompt('Copy this backup code:',code));return;}
+  if(t.id==='rs'){const c=prompt('Paste your backup code:');if(!c)return;try{const o=JSON.parse(decodeURIComponent(escape(atob(c.trim()))));
+    if(o.pull||o.jump||o.push){['pull','jump','push'].forEach(k=>ST[k]=Object.assign(blank(),o[k]));}else ST.pull=Object.assign(blank(),o);save();renderAll();toast('Restored');}catch(err){alert('That code didn\'t work.');}return;}
+  if(t.id==='rz'){if(confirm(`Delete all progress in the ${P().name}? This can't be undone.`)){ST[cur]=blank();save();renderAll();toast('Reset');}return;}
+});
+document.addEventListener('change',e=>{const d=e.target.dataset&&e.target.dataset.def;if(d!=null&&e.target.value){st().def[d]=e.target.value;save();renderAll();toast(`${DOW[d]} → ${e.target.value}`);}});
+renderAll();
+if(daysToBday()===0)setTimeout(confetti,400);
+if(location.protocol.startsWith('http')&&'serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
