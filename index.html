@@ -259,6 +259,16 @@ details.tip ul{padding-left:18px}
         <li><b>Bulgarian split squat:</b> back foot on a chair, lower until the back knee almost touches the floor.</li>
         <li><b>Cossack squat:</b> feet very wide, squat to one side keeping the other leg straight.</li>
         <li><b>Backpack:</b> put books in a backpack to make any squat harder.</li></ul></details>
+      <details class="tip"><summary>Using your dumbbells</summary><ul>
+        <li><b>4 kg</b> = a 2 kg dumbbell in each hand (or both at your chest for squats).</li>
+        <li><b>8 kg</b> = both dumbbells + 4 kg in a backpack.</li>
+        <li>Weeks 1–4 use 4 kg, then 8 kg from week 5. If it's too easy, go slower on the way down.</li>
+        <li>Dumbbell squat jumps: light weight, max height — never slow, heavy jumps.</li></ul></details>
+      <details class="tip"><summary>Calf raises with your dumbbells</summary><ul>
+        <li><b>4 kg</b> = both 2 kg dumbbells. <b>8 kg</b> = both dumbbells + 4 kg in a backpack (books or water bottles).</li>
+        <li>Always on a step edge: heels all the way down for a full stretch, then up as high as you can, hold 1 second.</li>
+        <li>The plan goes: 8 kg on two legs → one leg → one leg with 4 kg → one leg with 8 kg.</li>
+        <li>Still too easy? Go slower: 3 seconds down.</li></ul></details>
       <details class="tip"><summary>The 4 jump tests</summary><ul>
         <li><b>Vertical jump:</b> hands on hips, no arm swing, jump straight up from standing. Your start: 38.9 cm · goal 45 cm.</li>
         <li><b>Highest touch:</b> with arm swing, touch the wall as high as you can. Measure from the floor.</li>
@@ -276,9 +286,16 @@ details.tip ul{padding-left:18px}
         <li>Chest goes down to about a fist from the floor.</li>
         <li>Elbows about 45° from your body — not flared out to the sides.</li>
         <li>Push all the way up. Half reps don't count.</li></ul></details>
+      <details class="tip"><summary>The perfect push-up (goal 10–15)</summary><ul>
+        <li>3 seconds down, slow and controlled.</li>
+        <li>Pause 1 second with your chest just above the floor.</li>
+        <li>Push up strong all the way to straight arms.</li>
+        <li>Body straight like a plank the whole time — no sagging hips, no bum in the air.</li>
+        <li>Elbows about 45° from your body. If one rep isn't perfect, the set is over.</li></ul></details>
       <details class="tip"><summary>How the plan works</summary><ul>
-        <li>Every number comes from <b>your max</b> (the most push-ups you can do in one go). Start: 25 until you test.</li>
-        <li>You test your max on Nov 9, Dec 7, Jan 4, Feb 1 and the final test on Feb 24. After each test all the sets get bigger.</li>
+        <li><b>Goals:</b> 40–50 push-ups in one go, and 10–15 perfect push-ups.</li>
+        <li>Every number comes from <b>your max</b> and your <b>perfect max</b>. Until you test: max 25, perfect 8.</li>
+        <li>You test both (perfect first, then max) on Nov 9, Dec 7, Jan 4, Feb 1 and the final tests on Feb 24. After each test all the sets get bigger.</li>
         <li><b>Max Day (Mon):</b> sets that go down (80% → 50% of your max), then one max set, then slow push-ups.</li>
         <li><b>Variety (Tue):</b> lighter — different kinds of push-ups, because you also trained on Monday.</li>
         <li><b>Pump Day (Wed):</b> sets until your arms are full (about 15–20) and pyramids.</li>
@@ -342,6 +359,9 @@ const EXTRA=[[6,5,1,4,3],[6,6,1,4,3],[7,6,1,5,3],[7,6,1,5,4],[7,6,1,5,4,3],[7,7,
 [8,7,1,6,4,3],[8,7,1,6,5,3],[8,7,1,6,5,4,3],[8,8,1,6,5,4,3],[9,8,1,6,5,4,3],[9,8,1,7,5,4,3],[10,8,1,7,5,4,3]];
 const LEVELS=MOD.concat(EXTRA);
 // Fitted to you: top hold max 8–10s, dead hang 30–45s
+// Dumbbell finisher on main pull-up days (your 2 × 2 kg dumbbells)
+const PULL_ACC=[{n:'One-arm rows (4 kg)',sets:[15,15],u:'side',rest:45,tip:'Both dumbbells in one hand, other hand on a chair. Pull your elbow back to your hip and squeeze your back.'},
+ {n:'Hammer curls (2 kg each)',sets:[15,15],u:'reps',rest:45,tip:'Palms facing each other. Up normal, 3 seconds down.'}];
 const PREP=[
  {hang:[30,3],hold:[5,4],neg:[3,1,3]},{hang:[30,3],hold:[5,5],neg:[3,1,4]},
  {hang:[35,3],hold:[6,5],neg:[3,2,3]},{hang:[40,3],hold:[6,5],neg:[4,2,3]},
@@ -375,6 +395,7 @@ const PULL={
   lines(s){const L=[];
     if(s.kind==='main'){L.push(['Warm up (3 min)','Arm circles, shrugs, 10 scapular pulls, 1 slow negative']);
       s.sets.forEach((r,k)=>L.push([`Set ${k+1}: ${pl(r,'pull-up')}`,k===2?'Your one perfect rep — slow and clean':(k<s.sets.length-1?'Rest 2 min after':'Last set — give it everything')]));
+      PULL_ACC.forEach(e=>L.push([cLabel(e),`${e.tip} · rest ${e.rest}s`]));
       L.push(['Stretch (1 min)','Lats and chest']);}
     else if(s.kind==='final'){L.push(['Warm up (3 min)','Arm circles, shrugs, scapular pulls, 1 negative']);L.push(['2 easy pull-ups','Then rest 3 minutes']);L.push(['MAX TEST','As many clean pull-ups as you can — goal 12']);}
     else{const p=s.p;L.push(['Warm up (2 min)','Arm circles, shrugs, 5 scapular pulls']);
@@ -390,6 +411,7 @@ const PULL={
   steps(s,st){const out=[],rest=x=>out.push({type:'rest',secs:x});
     if(s.kind==='main'){out.push(WARM_MAIN);rest(60);
       s.sets.forEach((r,k)=>{out.push({type:'task',kind:`Set ${k+1} of ${s.sets.length}`,title:k===2?'One perfect rep':'Pull-ups',big:String(r),unit:r===1?'pull-up':'pull-ups',text:k===2?'Slowest, cleanest rep of the day. Full hang → chin over bar → slow down.':'Straight arms at the bottom, chin over the bar at the top. Can\'t finish? Do the rest as negatives.'});rest(120);});
+      PULL_ACC.forEach(e=>e.sets.forEach((v,i)=>{out.push({type:'task',kind:`Dumbbells · set ${i+1} of ${e.sets.length}`,title:e.n,big:String(v),unit:UNITS[e.u],text:e.tip});rest(e.rest);}));
       out.pop();out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'1',unit:'minute',text:'Hang loosely 15s, then stretch lats and chest 20s each side.'});}
     else if(s.kind==='final'){out.push(WARM_MAIN);rest(60);
       out.push({type:'task',kind:'Warm-up',title:'2 easy pull-ups',big:'2',unit:'pull-ups',text:'Just to get the body ready. Easy and clean.'});rest(180);
@@ -414,6 +436,10 @@ const PULL={
 const TIP={
  pogo:'Stay on your toes, stiff ankles, quick little bounces.',
  calf:'Slow down, fast up. Full stretch at the bottom.',
+ calf4:'Hold both 2 kg dumbbells (4 kg). Stand on a step edge: heels all the way down, then up high on your toes, hold 1s at the top.',
+ calf8:'8 kg: both dumbbells + 4 kg in a backpack. Stand on a step edge: heels all the way down, up high, hold 1s at the top.',
+ slcalf4:'One leg on a step edge, hold a 2 kg dumbbell in each hand (4 kg) — or one dumbbell and the wall for balance. Full stretch down, high up.',
+ slcalf8:'One leg on a step edge with 8 kg (dumbbells + backpack). Hold a wall for balance. Slow down, strong up.',
  slcalf:'On one leg, hold a wall for balance. Slow down, fast up.',
  wgs:'Deep lunge, elbow to the floor, then rotate and reach up to the sky.',
  plank:'Straight line from head to heels. Squeeze your belly.',
@@ -438,7 +464,9 @@ const TIP={
  sumo:'Feet wide, toes out, sit straight down.',
  pause:'Squat down, stop 3 seconds at the bottom, then stand up fast.',
  wall:'Back against the wall, thighs flat, knees at 90°.',
- bsq:'Put books in a backpack. Full squat, stand up strong.',
+ bsq:'8 kg: both dumbbells at your chest + 4 kg in a backpack. Full squat, stand up strong.',
+ db:'Hold a 2 kg dumbbell in each hand.',
+ db8:'8 kg = a 2 kg dumbbell in each hand + 4 kg in a backpack.',
  bulg:'Back foot on a chair. Lower until the back knee almost touches the floor.',
  coss:'Feet very wide, squat to one side keeping the other leg straight.',
  pistol:'Sit down slowly onto a chair on one leg. Stand up with both if you need.',
@@ -452,16 +480,16 @@ const TIP={
 const JT={
  // Sunday — easy: bounce, reach jumps, mobility
  easy:[
-  [['Pogo hops',3,15,'reps',45,TIP.pogo],['Reach jumps',3,5,'reps',60,TIP.reach],['Calf raises',3,15,'reps',45,TIP.calf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
-  [['Pogo hops',3,20,'reps',45,TIP.pogo],['Reach jumps',4,5,'reps',60,TIP.reach2],['One-leg calf raises',3,12,'leg',45,TIP.slcalf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
-  [['Pogo hops',4,20,'reps',45,'Fast and stiff — touch the ground as short as possible.'],['Reach jumps',5,5,'reps',60,TIP.reach2],['One-leg calf raises',3,15,'leg',45,TIP.slcalf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',3,15,'reps',45,TIP.pogo],['Reach jumps',3,5,'reps',60,TIP.reach],['Calf raises (8 kg)',3,12,'reps',45,TIP.calf8],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',3,20,'reps',45,TIP.pogo],['Reach jumps',4,5,'reps',60,TIP.reach2],['One-leg calf raises',3,15,'leg',45,TIP.slcalf],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
+  [['Pogo hops',4,20,'reps',45,'Fast and stiff — touch the ground as short as possible.'],['Reach jumps',5,5,'reps',60,TIP.reach2],['One-leg calf raises (4 kg)',3,12,'leg',45,TIP.slcalf4],["World's greatest stretch",2,5,'side',30,TIP.wgs]],
   [['Pogo hops',3,15,'reps',45,TIP.pogo],['Reach jumps',3,5,'reps',60,TIP.reach2],["World's greatest stretch",2,5,'side',30,TIP.wgs]]],
  // Monday morning — strength only, NO jumps
  strM:[
-  [['Reverse lunges',3,8,'leg',60,TIP.lunge],['Step-ups',3,10,'leg',60,TIP.step],['Glute bridge',3,15,'reps',45,TIP.bridge],['One-leg RDL',3,8,'leg',45,TIP.rdl],['Calf raises',3,20,'reps',45,TIP.calf],['Plank',3,30,'sec',45,TIP.plank]],
-  [['Walking lunges (backpack)',3,10,'leg',75,TIP.walk],['Step-ups (backpack)',4,10,'leg',75,TIP.step],['One-leg glute bridge',3,10,'leg',45,TIP.slb],['One-leg RDL',3,10,'leg',45,TIP.rdl],['One-leg calf raises',3,12,'leg',45,TIP.slcalf],['Side plank',4,25,'sec',30,TIP.side]],
-  [['Slow step-ups (backpack)',4,8,'leg',90,'3 seconds up, 3 seconds down. '+TIP.step],['Reverse lunges (backpack)',3,10,'leg',75,TIP.lunge],['One-leg RDL (backpack)',3,8,'leg',60,TIP.rdl],['One-leg calf raises',3,15,'leg',45,TIP.slcalf],['Hollow hold',3,25,'sec',45,TIP.hollow]],
-  [['Reverse lunges',2,8,'leg',60,TIP.lunge],['Step-ups',2,8,'leg',60,TIP.step],['Calf raises',2,15,'reps',45,TIP.calf]]],
+  [['Reverse lunges (2 kg each hand)',3,10,'leg',60,TIP.lunge+' '+TIP.db],['Step-ups (2 kg each hand)',3,10,'leg',60,TIP.step+' '+TIP.db],['Glute bridge (4 kg on hips)',3,15,'reps',45,TIP.bridge],['One-leg RDL (4 kg)',3,8,'leg',45,TIP.rdl+' Hold both dumbbells in the opposite hand.'],['Calf raises (8 kg)',3,15,'reps',45,TIP.calf8],['Plank',3,30,'sec',45,TIP.plank]],
+  [['Walking lunges (8 kg)',3,10,'leg',75,TIP.walk+' '+TIP.db8],['Step-ups (8 kg)',4,10,'leg',75,TIP.step+' '+TIP.db8],['One-leg glute bridge (2 kg on hips)',3,10,'leg',45,TIP.slb],['One-leg RDL (4 kg)',3,10,'leg',45,TIP.rdl+' Hold both dumbbells in the opposite hand.'],['One-leg calf raises (4 kg)',3,10,'leg',45,TIP.slcalf4],['Side plank',4,25,'sec',30,TIP.side]],
+  [['Slow step-ups (8 kg)',4,8,'leg',90,'3 seconds up, 3 seconds down. '+TIP.step+' '+TIP.db8],['Reverse lunges (8 kg)',3,10,'leg',75,TIP.lunge+' '+TIP.db8],['One-leg RDL (8 kg)',3,8,'leg',60,TIP.rdl+' '+TIP.db8],['One-leg calf raises (8 kg)',3,10,'leg',60,TIP.slcalf8],['Hollow hold',3,25,'sec',45,TIP.hollow]],
+  [['Reverse lunges',2,8,'leg',60,TIP.lunge],['Step-ups',2,8,'leg',60,TIP.step],['Calf raises (4 kg)',2,25,'reps',45,TIP.calf4]]],
  // Tuesday — basketball jumps (hard)
  powB:[
   [['High skips',3,10,'reps',60,TIP.skip],['Approach jumps (practice)',3,3,'reps',90,'80% effort — focus on the rhythm of the last two steps. '+TIP.appr],['Lateral bounds',3,4,'side',60,TIP.lat],['One-leg hops in place',2,8,'leg',60,TIP.hop]],
@@ -471,7 +499,7 @@ const JT={
  // Thursday — jump power (hard)
  powA:[
   [['Drop & stick',3,5,'reps',60,TIP.drop],['Squat jumps',3,5,'reps',90,TIP.sqj],['Broad jumps',3,3,'reps',90,TIP.broad],['Line hops',3,10,'reps',60,TIP.line]],
-  [['Squat jumps',4,5,'reps',90,TIP.sqj],['Box jumps',4,4,'reps',90,TIP.box],['Broad jumps',4,3,'reps',90,TIP.broad],['Tuck jumps',3,5,'reps',75,TIP.tuck]],
+  [['Dumbbell squat jumps (4 kg)',4,5,'reps',90,'Hold a 2 kg dumbbell in each hand at your sides. Quarter squat, jump as high as you can, land soft.'],['Box jumps',4,4,'reps',90,TIP.box],['Broad jumps',4,3,'reps',90,TIP.broad],['Tuck jumps',3,5,'reps',75,TIP.tuck]],
   [['Depth jumps',4,4,'reps',120,TIP.depth],['Box jumps (higher)',4,3,'reps',90,TIP.box],['Broad jumps',4,3,'reps',90,TIP.broad],['Tuck jumps',3,6,'reps',75,TIP.tuck]],
   [['Depth jumps',3,3,'reps',120,TIP.depth],['Box jumps',3,3,'reps',90,TIP.box],['Broad jumps',2,3,'reps',90,TIP.broad]]],
  // Friday — easy: reach jumps + core
@@ -482,9 +510,9 @@ const JT={
   [['Reach jumps',3,5,'reps',60,TIP.reach2],['Plank',2,40,'sec',45,TIP.plank]]],
  // Saturday — squat day (hard strength)
  sq:[
-  [['Squats',3,15,'reps',60,TIP.sq],['Sumo squats',3,12,'reps',60,TIP.sumo],['Pause squats',3,8,'reps',60,TIP.pause],['Wall sit',2,30,'sec',45,TIP.wall],['Calf raises',3,15,'reps',45,TIP.calf]],
-  [['Backpack squats',4,12,'reps',75,TIP.bsq],['Bulgarian split squats',3,8,'leg',75,TIP.bulg],['Pause squats',3,10,'reps',60,TIP.pause],['Cossack squats',3,6,'side',60,TIP.coss],['Wall sit',3,45,'sec',45,TIP.wall]],
-  [['Bulgarian split squats (backpack)',4,8,'leg',90,TIP.bulg],['One-leg squat to chair',3,5,'leg',75,TIP.pistol],['Backpack pause squats',4,8,'reps',75,TIP.pause],['Cossack squats',3,8,'side',60,TIP.coss],['Wall sit',3,60,'sec',60,TIP.wall]],
+  [['Squats (4 kg)',3,15,'reps',60,TIP.sq+' Hold both dumbbells at your chest.'],['Sumo squats (4 kg)',3,12,'reps',60,TIP.sumo+' Hold the dumbbells between your legs.'],['Pause squats',3,8,'reps',60,TIP.pause],['Wall sit',2,30,'sec',45,TIP.wall],['Calf raises (8 kg)',3,15,'reps',45,TIP.calf8]],
+  [['Squats (8 kg)',4,12,'reps',75,TIP.bsq],['Bulgarian split squats (2 kg each hand)',3,8,'leg',75,TIP.bulg],['Pause squats (4 kg)',3,10,'reps',60,TIP.pause],['Cossack squats (4 kg)',3,6,'side',60,TIP.coss+' Hold the dumbbells at your chest.'],['Wall sit',3,45,'sec',45,TIP.wall]],
+  [['Bulgarian split squats (8 kg)',4,8,'leg',90,TIP.bulg+' '+TIP.db8],['One-leg squat to chair',3,5,'leg',75,TIP.pistol],['Pause squats (8 kg)',4,8,'reps',75,TIP.pause+' '+TIP.db8],['Cossack squats (4 kg)',3,8,'side',60,TIP.coss+' Hold the dumbbells at your chest.'],['Wall sit',3,60,'sec',60,TIP.wall]],
   [['Bulgarian split squats',3,6,'leg',75,TIP.bulg],['Fast squats',3,10,'reps',60,'Normal speed down, explode up.'],['Wall sit',2,45,'sec',45,TIP.wall]]]
 };
 const JTYPE={0:'easy',1:'strM',2:'powB',4:'powA',5:'easyF',6:'sq'};
@@ -575,82 +603,106 @@ const TP={
  plank:'Straight line from head to heels, squeeze your belly.',
  burn:'Last set — everything you have left.'
 };
+// PP = % of your perfect push-up max
+const PP=x=>({pp:x});
+TP.perf='Perfect form: 3s down, pause 1s just above the floor, push up strong to straight arms. Body straight like a plank, elbows at 45°.';
 const PT={
  max:[
-  m=>[['Push-ups',[.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]],
-  m=>[['Push-ups',[.85,.75,.65,.55].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (3s down)',R(3,6),'reps',60,TP.slow]],
-  m=>[['Push-ups',[.9,.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Slow push-ups (4s down)',R(3,8),'reps',60,TP.slow4]],
-  m=>[['Push-ups',[.5,.5,.4].map(Pc),'reps',75,'Light week before the final test — easy, clean reps.'],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]]],
+  m=>[['Push-ups',[.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Perfect push-ups',R(2,PP(.6*m)),'reps',90,TP.perf]],
+  m=>[['Push-ups',[.85,.8,.7,.6,.5].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Perfect push-ups',R(3,PP(.65*m)),'reps',90,TP.perf]],
+  m=>[['Push-ups',[.9,.85,.75,.65,.55].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Perfect push-ups',R(3,PP(.7*m)),'reps',90,TP.perf]],
+  m=>[['Push-ups',[.95,.85,.75,.65,.55,.45].map(x=>Pc(x*m)),'reps',90,TP.desc],['Max set',['MAX'],'reps',120,TP.amrap],['Perfect push-ups',R(4,PP(.75*m)),'reps',90,TP.perf]],
+  m=>[['Push-ups',[.5,.5,.4].map(Pc),'reps',75,'Light week before the final test — easy, clean reps.'],['Perfect push-ups',R(2,PP(.5)),'reps',90,TP.perf]]],
  var:[
   m=>[['Wide push-ups',R(3,Pc(.4*m)),'reps',60,TP.wide],['Diamond push-ups',R(3,Pc(.25*m)),'reps',60,TP.dia],['Decline push-ups',R(3,Pc(.3*m)),'reps',60,TP.dec],['Plank',R(3,40),'sec',45,TP.plank]],
   m=>[['Decline push-ups',R(4,Pc(.35*m)),'reps',60,TP.dec],['Diamond push-ups',R(3,Pc(.3*m)),'reps',60,TP.dia],['Archer push-ups',R(3,Math.round(4*m)),'side',60,TP.arch],['Pike push-ups',R(3,8),'reps',60,TP.pike],['Clap push-ups',R(3,5),'reps',75,TP.clap]],
-  m=>[['Archer push-ups',R(4,Math.round(5*m)),'side',75,TP.arch],['Clap push-ups',R(4,6),'reps',75,TP.clap],['Pseudo-planche push-ups',R(3,8),'reps',60,TP.ppl],['Pike push-ups',R(3,10),'reps',60,TP.pike],['Plank',R(3,60),'sec',45,TP.plank]],
+  m=>[['Decline push-ups',R(3,Pc(.4*m)),'reps',60,TP.dec],['Archer push-ups',R(4,Math.round(5*m)),'side',75,TP.arch],['Clap push-ups',R(4,6),'reps',75,TP.clap],['Pseudo-planche push-ups',R(3,8),'reps',60,TP.ppl],['Pike push-ups',R(3,10),'reps',60,TP.pike]],
+  m=>[['Decline push-ups',R(4,Pc(.45*m)),'reps',60,TP.dec],['Archer push-ups',R(4,Math.round(6*m)),'side',75,TP.arch],['Clap push-ups',R(4,8),'reps',75,TP.clap],['Diamond push-ups',R(3,Pc(.35*m)),'reps',60,TP.dia],['Pseudo-planche push-ups',R(3,10),'reps',60,TP.ppl]],
   m=>[['Wide push-ups',R(2,Pc(.3)),'reps',60,TP.wide],['Diamond push-ups',R(2,Pc(.2)),'reps',60,TP.dia],['Plank',R(2,40),'sec',45,TP.plank]]],
  pump:[
-  m=>[['Arms-full sets',R(4,Pc(.6*m)),'reps',60,TP.full],['Slow push-ups (3s down)',[5],'reps',45,TP.slow]],
-  m=>[['Pyramid',[.2,.4,.6,.8,.6,.4,.2].map(x=>Pc(x*m)),'reps',45,TP.pyr],['Arms-full set',[Pc(.6*m)],'reps',60,TP.full]],
+  m=>[['Arms-full sets',R(4,Pc(.6*m)),'reps',60,TP.full],['Perfect push-ups',[PP(.5)],'reps',60,TP.perf]],
+  m=>[['Pyramid',[.2,.4,.6,.8,.6,.4,.2].map(x=>Pc(x*m)),'reps',45,TP.pyr],['Arms-full set',[Pc(.65*m)],'reps',60,TP.full]],
   m=>[['Arms-full sets',R(5,Pc(.7*m)),'reps',45,TP.full],['Burnout',['MAX'],'reps',60,TP.burn]],
+  m=>[['Pyramid',[.2,.4,.6,.8,.9,.6,.4,.2].map(x=>Pc(x*m)),'reps',45,TP.pyr],['Arms-full sets',R(3,Pc(.7*m)),'reps',45,TP.full],['Burnout',['MAX'],'reps',60,TP.burn]],
   m=>[]],
  bonus:[
-  m=>[['Ladder',[.1,.2,.3,.4,.5].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Diamond push-ups',R(2,Pc(.3*m)),'reps',60,TP.dia],['Plank',R(2,45),'sec',45,TP.plank]],
-  m=>[['Ladder',[.1,.2,.3,.4,.5,.6].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Clap push-ups',R(3,5),'reps',75,TP.clap],['Decline push-ups',R(2,Pc(.35*m)),'reps',60,TP.dec]],
+  m=>[['Ladder',[.1,.2,.3,.4,.5].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Diamond push-ups',R(2,Pc(.3*m)),'reps',60,TP.dia],['Perfect push-ups',R(2,PP(.6*m)),'reps',90,TP.perf]],
+  m=>[['Ladder',[.1,.2,.3,.4,.5,.6].map(x=>Pc(x*m)),'reps',30,'Ladder up — a bit more each set, short rests.'],['Clap push-ups',R(3,5),'reps',75,TP.clap],['Perfect push-ups',R(2,PP(.65*m)),'reps',90,TP.perf]],
   m=>[['Every-minute sets',R(8,Pc(.35*m)),'reps',40,'Do the set, then rest until the next minute starts.'],['Archer push-ups',R(3,5),'side',60,TP.arch],['Burnout',['MAX'],'reps',60,TP.burn]],
+  m=>[['Every-minute sets',R(10,Pc(.4*m)),'reps',40,'Do the set, then rest until the next minute starts.'],['Perfect push-ups',R(3,PP(.7*m)),'reps',90,TP.perf],['Burnout',['MAX'],'reps',60,TP.burn]],
   m=>[['Easy push-ups',R(2,Pc(.4)),'reps',60,'Light — save your energy for the final test.'],['Plank',R(2,40),'sec',45,TP.plank]]]
 };
-const PTEST_AFTER=[['Push-ups (50% of your max)',[.5,.5,.4].map(Pc),'reps',90,TP.half],['Slow push-ups (3s down)',R(2,5),'reps',60,TP.slow]];
+const PTEST_AFTER=[['Push-ups (50% of your max)',[.5,.5,.4].map(Pc),'reps',90,TP.half],['Perfect push-ups',R(2,PP(.5)),'reps',90,TP.perf]];
 const PTYPE={0:'bonus',1:'max',2:'var',3:'pump',5:'bonus'};
 const PTITLE={max:'Max Day',var:'Variety',pump:'Pump Day',bonus:'Bonus Day'};
 const PLEVEL={max:'Hard',var:'Medium',pump:'Hard',bonus:'Medium'};
 const PDAYS=112;
 const PUSH_S=makeDates([0,1,2,3,5],PDAYS).map(({d,k},n)=>{
-  const w=Math.floor(k/7)+1,ph=w<=4?0:w<=8?1:w<=15?2:3,wip=(w-1)%4,type=PTYPE[d.getDay()],m=1+.05*wip;
+  const w=Math.floor(k/7)+1,ph=w<=4?0:w<=8?1:w<=12?2:w<=15?3:4,wip=(w-1)%4,type=PTYPE[d.getDay()],m=1+.05*wip;
   const final=w===16&&type==='pump', test=final||(type==='max'&&[1,5,9,13].includes(w));
-  return{id:n,week:w,day:k+1,date:d,type,ph,phase:final?'test':w>=13?'peak':['found','build','power','peak'][ph],test,final,kind:final?'final':'main',
+  return{id:n,week:w,day:k+1,date:d,type,ph,phase:final?'test':['found','build','power','peak','peak'][ph],test,final,kind:final?'final':'main',
     ex:final?[]:(test?PTEST_AFTER:PT[type][ph](m)),normEx:final?[]:PT[type][ph](m),baseTest:test};});
-function pushMax(S,id){let best=null;
-  PUSH_S.forEach(s=>{if(s.id<=id&&S.results[s.id]!=null)best={d:s.date,r:S.results[s.id]};});
+function latestOf(S,id,map,key,def){let best=null;
+  PUSH_S.forEach(s=>{if(s.id<=id&&map[s.id]!=null)best={d:s.date,r:map[s.id]};});
   const lim=id<0?-Infinity:PUSH_S[Math.min(id,PUSH_S.length-1)].date.getTime()+864e5;
-  S.maxLog.forEach(x=>{const d=new Date(x.d);if(d<lim&&(!best||d>=best.d))best={d,r:x.r};});
-  return best?best.r:25;}
-const rv=(sp,M)=>sp==='MAX'?'MAX':typeof sp==='number'?sp:Math.max(1,Math.round(sp.p*M));
-function pushReps(s){const M=pushMax(ST.push,s.id);return s.ex.map(e=>e[1].map(sp=>rv(sp,M)));}
+  S.maxLog.forEach(x=>{const d=new Date(x.d);if(x[key]!=null&&d<lim&&(!best||d>=best.d))best={d,r:x[key]};});
+  return best?best.r:def;}
+const pushMax=(S,id)=>latestOf(S,id,S.results,'r',25);
+const perfMax=(S,id)=>latestOf(S,id,S.perfect||{},'p',8);
+const rv=(sp,M,PM)=>sp==='MAX'?'MAX':typeof sp==='number'?sp:sp.pp!=null?Math.max(1,Math.round(sp.pp*PM)):Math.max(1,Math.round(sp.p*M));
+function pushReps(s){const M=pushMax(ST.push,s.id),PM=perfMax(ST.push,s.id);return s.ex.map(e=>e[1].map(sp=>rv(sp,M,PM)));}
 function pushLabel(e,vals){const[n,,u]=e;const suf=u==='sec'?'s':u==='side'?' each side':'';const v=vals.map(x=>x==='MAX'?'Max':x);
   return v.every(x=>x===v[0])?(v.length>1?`${n}: ${v.length} × ${v[0]}${suf}`:`${n}: ${v[0]}${suf}`):`${n}: ${v.join('-')}${suf}`;}
+function pushTests(S){const t=[];PUSH_S.forEach(s=>{if(S.results[s.id]!=null||(S.perfect||{})[s.id]!=null)t.push({d:s.date,r:S.results[s.id],p:(S.perfect||{})[s.id]});});
+  S.maxLog.forEach(x=>t.push({d:new Date(x.d),r:x.r,p:x.p}));return t.sort((a,b)=>a.d-b.d);}
 const PUSH={
   key:'push',name:'Push-Up Plan',emoji:'🔥',color:'#ffb627',S:PUSH_S,
   times:{0:['16:00'],1:['20:00'],2:['14:00'],3:['16:00'],5:['10:00']},
-  phases:['found','build','power','peak'],goalTxt:'Goal: 40 push-ups · Feb 24',days:PDAYS,statLbl:'push-ups done',unit:'push-ups',
-  title(s){return s.final?'Final max test':(s.test?'Max test + ':'')+PTITLE[s.type];},
-  count(s,S){let t=0;pushReps(s).forEach((vals,i)=>{if(s.ex[i][2]!=='sec')vals.forEach(v=>{if(v!=='MAX')t+=v*(s.ex[i][2]==='side'?2:1);});});return t+(S.results[s.id]||0);},
-  rowBody(s,S){
-    if(s.final)return{mid:`<div class="dtxt"><b>Final max test 🎯</b> · goal 40</div>`,tot:S.results[s.id]!=null?totHtml(S.results[s.id],'max'):''};
+  phases:['found','build','power','peak'],goalTxt:'Goal: 40–50 max · 10–15 perfect · Feb 24',days:PDAYS,statLbl:'push-ups done',unit:'push-ups',
+  title(s){return s.final?'Final tests':(s.test?'Tests + ':'')+PTITLE[s.type];},
+  count(s,S){let t=0;pushReps(s).forEach((vals,i)=>{if(s.ex[i][2]!=='sec')vals.forEach(v=>{if(v!=='MAX')t+=v*(s.ex[i][2]==='side'?2:1);});});return t+(S.results[s.id]||0)+((S.perfect||{})[s.id]||0);},
+  rowBody(s,S){const res=S.results[s.id]!=null?totHtml(S.results[s.id]+((S.perfect||{})[s.id]!=null?`<small style="font-size:12px"> · ${(S.perfect||{})[s.id]}</small>`:''),'max · perfect'):'';
+    if(s.final)return{mid:`<div class="dtxt"><b>Final tests 🎯</b> · goal 40–50 max · 10–15 perfect</div>`,tot:res};
     const names=s.ex.map(e=>e[0]).join(' · ');
     return{mid:`<div class="dtxt"><b>${this.title(s)}</b> · ${PLEVEL[s.type]}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${names}</div>`,
-      tot:S.results[s.id]!=null?totHtml(S.results[s.id],'max'):totHtml(this.count(s,S),'push-ups')};},
-  heroBody(s,S){if(s.final)return `<div class="bigsets"><b>MAX · goal 40</b></div>`;
-    return `<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="meta" style="margin-top:8px">${PLEVEL[s.type]} · about ${this.count(s,ST.push)} push-ups · your max: ${pushMax(ST.push,s.id-1)}</div>`;},
-  sheetTop(s){return s.final?'':`<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="muted" style="margin-top:6px">${PLEVEL[s.type]} · based on your max: <b style="color:var(--ink)">${pushMax(ST.push,s.test?s.id-1:s.id)}</b></div>`;},
+      tot:res||totHtml(this.count(s,S),'push-ups')};},
+  heroBody(s,S){if(s.final)return `<div class="bigsets"><b>MAX · goal 40–50</b><b>PERFECT · 10–15</b></div>`;
+    return `<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="meta" style="margin-top:8px">${PLEVEL[s.type]} · about ${this.count(s,ST.push)} push-ups · max ${pushMax(ST.push,s.id-1)} · perfect ${perfMax(ST.push,s.id-1)}</div>`;},
+  sheetTop(s){return s.final?'':`<div class="bigsets"><b style="font-size:17px">${this.title(s)}</b></div><div class="muted" style="margin-top:6px">${PLEVEL[s.type]} · based on your max <b style="color:var(--ink)">${pushMax(ST.push,s.test?s.id-1:s.id)}</b> and perfect <b style="color:var(--ink)">${perfMax(ST.push,s.test?s.id-1:s.id)}</b></div>`;},
   lines(s){const L=[['Warm up (3 min)','Arm circles, 10 shoulder taps, 10 knee push-ups, 5 slow push-ups']];
-    if(s.test)L.push(['🎯 Max test','As many push-ups as you can in one go — then the 50% sets come from this number']);
+    if(s.test){L.push(['🎯 Perfect push-up test','As many PERFECT push-ups as you can — stop when one isn\'t perfect · rest 3 min']);L.push(['🎯 Max test','As many push-ups as you can in one go — the 50% sets come from this number']);}
     const reps=pushReps(s);s.ex.forEach((e,i)=>L.push([pushLabel(e,reps[i]),`${e[4]} · rest ${e[3]}s`]));
     if(!s.final)L.push(['Stretch (2 min)','Chest, shoulders, triceps']);return L;},
-  tips(s){if(s.final)return['Rest well the day before.','Full push-ups only — chest close to the floor, arms straight at the top.','Compare it with your first test on Nov 9!'];
-    const t={max:['Hard day: full rest between sets.','Max set: stop when your form breaks, not before.'],var:['Lighter day — you trained yesterday too.','Try every variation, even if you do fewer reps.'],pump:['Hard day: short rests, go until your arms are full.','Drink water!'],bonus:['Bonus day — on your jump day off.','Medium effort: fast, clean reps, not to total failure.']}[s.type];
+  tips(s){if(s.final)return['Rest well the day before.','Perfect test first, then the max test.','Compare it with your first test on Nov 9!'];
+    const t={max:['Hard day: full rest between sets.','Max set: stop when your form breaks, not before.','Perfect push-ups: quality over number.'],var:['Lighter day — you trained yesterday too.','Try every variation, even if you do fewer reps.'],pump:['Hard day: short rests, go until your arms are full.','Drink water!'],bonus:['Bonus day — on your jump day off.','Medium effort: fast, clean reps, not to total failure.']}[s.type];
     return (s.test?['Test first while you\'re fresh, then the 50% sets.']:[]).concat(t);},
   steps(s,S){const out=[],rest=x=>out.push({type:'rest',secs:x});
     out.push({type:'task',kind:'Warm-up',title:'Warm up',big:'3',unit:'minutes',text:'Arm circles 20s each way · 10 shoulder taps · 10 knee push-ups · 5 slow push-ups'});rest(60);
-    if(s.test){out.push({type:'input',kind:s.final?'Final test':'Max test',title:'Max push-ups in one go',unit:'push-ups',start:pushMax(S,s.id-1),text:'Full push-ups, chest close to the floor, no resting on the floor. Then enter how many you did.'});if(s.ex.length)rest(180);}
+    if(s.test){
+      out.push({type:'input',kind:s.final?'Final test 1 of 2':'Test 1 of 2',title:'Perfect push-ups',field:'perfect',unit:'perfect push-ups',start:perfMax(S,s.id-1),text:TP.perf+' Stop when one isn\'t perfect, then enter how many.'});rest(180);
+      out.push({type:'input',kind:s.final?'Final test 2 of 2':'Test 2 of 2',title:'Max push-ups in one go',unit:'push-ups',start:pushMax(S,s.id-1),text:'Full push-ups, chest close to the floor, no resting on the floor. Then enter how many you did.'});if(s.ex.length)rest(180);}
     s.ex.forEach(([n,reps,u,rs,tip])=>reps.forEach((sp,i)=>{
       if(u==='sec')out.push({type:'timer',kind:`${n} · ${i+1} of ${reps.length}`,title:n,secs:sp,text:tip});
-      else out.push({type:'task',kind:`Set ${i+1} of ${reps.length}`,title:n,calc:()=>String(rv(sp,pushMax(ST.push,s.id))),unit:sp==='MAX'?'as many as you can':u==='side'?'each side':'push-ups',text:tip});
+      else out.push({type:'task',kind:`Set ${i+1} of ${reps.length}`,title:n,calc:()=>String(rv(sp,pushMax(ST.push,s.id),perfMax(ST.push,s.id))),unit:sp==='MAX'?'as many as you can':u==='side'?'each side':n.startsWith('Perfect')?'perfect push-ups':'push-ups',text:tip});
       rest(rs);}));
     if(out[out.length-1].type==='rest')out.pop();
     if(!s.final)out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'2',unit:'minutes',text:'Chest stretch in a doorway, shoulder and triceps stretch — 20s each.'});
     out.push({type:'end'});return out;},
-  endMsg(s,S){const r=S.results[s.id];
-    if(s.test){const first=S.results[PUSH_S.find(x=>x.test).id];return `Max: ${r} push-ups`+(first!=null&&s.id!==PUSH_S.find(x=>x.test).id?` (${r-first>=0?'+':''}${r-first} since your first test)`:'')+(s.final&&r>=40?' — goal hit! 🏆':'');}
+  endMsg(s,S){const r=S.results[s.id],p=(S.perfect||{})[s.id];
+    if(s.test){const all=pushTests(S),f=all.find(x=>x.r!=null),fp=all.find(x=>x.p!=null);
+      let m=`Max: ${r??'–'}`+(f&&r!=null&&f.d<s.date?` (${r-f.r>=0?'+':''}${r-f.r})`:'')+` · Perfect: ${p??'–'}`+(fp&&p!=null&&fp.d<s.date?` (${p-fp.p>=0?'+':''}${p-fp.p})`:'');
+      if(s.final)m+=(r>=50?' — top goal 50 hit! 🏆':r>=40?' — goal hit! 🎯':'')+(p>=15?' · perfect top goal hit! 🏆':p>=10?' · perfect goal hit! 🎯':'');
+      return m;}
     return `About ${this.count(s,S)} push-ups done. 🔥`;},
-  bestTxt:b=>`Best: ${b} <span class="muted" style="font-weight:400">/ 40 goal</span>`,goal:40,movable:true,logQ:'How many push-ups did you do in one go?'
+  bestTxt:b=>`Best: ${b} <span class="muted" style="font-weight:400">/ 40–50 goal</span>`,goal:50,movable:true,logQ:'How many push-ups did you do in one go?',
+  progressCard(S,chart){const t=pushTests(S),bm=Math.max(0,...t.filter(x=>x.r!=null).map(x=>x.r)),bp=Math.max(0,...t.filter(x=>x.p!=null).map(x=>x.p));
+    const bar=(v,lo,hi)=>`<div class="bar" style="position:relative"><i style="width:${Math.min(100,v/hi*100)}%"></i><span style="position:absolute;left:${lo/hi*100}%;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5"></span></div>`;
+    return `<div class="card" style="margin-top:12px"><h3>Max: ${bm||'–'} <span class="muted" style="font-weight:400">/ goal 40–50</span></h3>${bar(bm,40,50)}
+      <div class="goalline" style="margin-bottom:12px"><span>${bm>=50?'Top goal hit! 🏆':bm>=40?'Goal hit! 🎯 Now go for 50':bm?`${40-bm} to 40 · ${50-bm} to 50`:'Test tomorrow!'}</span><span>| = 40</span></div>
+      <h3>Perfect: ${bp||'–'} <span class="muted" style="font-weight:400">/ goal 10–15</span></h3>${bar(bp,10,15)}
+      <div class="goalline"><span>${bp>=15?'Top goal hit! 🏆':bp>=10?'Goal hit! 🎯 Now go for 15':bp?`${10-bp} to 10 · ${15-bp} to 15`:'Not tested yet'}</span><span>| = 10</span></div>
+      <div class="muted" style="font-size:12px;margin-top:12px">Max push-ups chart:</div>${chart}
+      <button class="btn main" style="width:100%;margin-top:14px" id="logMax">+ Log a test</button></div>`;}
 };
 PULL.title=s=>s.kind==='main'?`${pl(sum(s.sets),'pull-up')} · ${s.sets.join('-')}`:s.kind==='final'?'Max pull-up test':s.p.test?`Test: ${s.p.test} pull-ups`:'Prep: holds & negatives';
 JUMP.title=s=>s.final?'Final jump test':(s.test?'Jump test + ':'')+JTITLE[s.type];
@@ -669,7 +721,7 @@ const UNITS={reps:'reps',sec:'seconds',leg:'each leg',side:'each side'};
 const esc=x=>String(x??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 function normList(plan,s){
   if(plan.key==='pull'){
-    if(s.kind==='main')return[{n:'Pull-ups',sets:[...s.sets],u:'reps',rest:120,tip:'Chin over the bar, straight arms at the bottom.'}];
+    if(s.kind==='main')return[{n:'Pull-ups',sets:[...s.sets],u:'reps',rest:120,tip:'Chin over the bar, straight arms at the bottom.'},...JSON.parse(JSON.stringify(PULL_ACC))];
     if(s.kind==='final')return[];
     const p=s.p,L=[];
     if(p.pull)L.push({n:'Real pull-ups',sets:R(p.pull[1],p.pull[0]),u:'reps',rest:90,tip:'Give it everything. Miss one? Make it a slow negative.'});
@@ -761,7 +813,7 @@ function editClick(t){if(!ED)return false;const plan=P(),S=st();
 
 /* ================= STATE ================= */
 const KEY='training-app-v1';
-const blank=()=>({done:{},notes:{},results:{},maxLog:[],times:{},def:{},feel:{},moves:{},multi:{},offSwap:{},custom:{},extras:[],removed:{}});
+const blank=()=>({perfect:{},done:{},notes:{},results:{},maxLog:[],times:{},def:{},feel:{},moves:{},multi:{},offSwap:{},custom:{},extras:[],removed:{}});
 let ST={pull:blank(),jump:blank(),push:blank()};
 try{const raw=localStorage.getItem(KEY);
   if(raw){const o=JSON.parse(raw);['pull','jump','push'].forEach(k=>ST[k]=Object.assign(blank(),o[k]));}
@@ -993,7 +1045,7 @@ function renderW(){
     foot.innerHTML=`<button class="btn main" id="wSave">Save result</button>`;
     $('wMinus').onclick=()=>{W.val=Math.max(0,W.val-1);$('wVal').textContent=W.val;};
     $('wPlus').onclick=()=>{W.val++;$('wVal').textContent=W.val;};
-    $('wSave').onclick=()=>{ST[W.plan.key].results[W.id]=W.val;save();nextStep();};
+    $('wSave').onclick=()=>{const S=ST[W.plan.key];if(step.field){S[step.field]=S[step.field]||{};S[step.field][W.id]=W.val;}else S.results[W.id]=W.val;save();nextStep();};
   }else{
     ST[W.plan.key].done[W.id]='done';save();
     const bd=isBday(s);
@@ -1036,6 +1088,12 @@ document.addEventListener('click',e=>{const t=e.target;
   if(t.id==='jumpTo'){const el=document.querySelector('.day.next');el&&el.scrollIntoView({behavior:'smooth',block:'center'});return;}
   if(t.id==='logMax'&&cur==='jump'){$('sheet').innerHTML=`<div class="grab"></div><h2>Log a jump test</h2><p class="muted" style="margin:4px 0 0">Fill in what you measured — leave the rest empty.</p><div class="mform">${multiForm(jLatest(ST.jump))}</div>
      <button class="btn main" style="width:100%;margin-top:14px" id="saveLog">Save</button><button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');return;}
+  if(t.id==='logMax'&&cur==='push'){$('sheet').innerHTML=`<div class="grab"></div><h2>Log a push-up test</h2><p class="muted" style="margin:4px 0 0">Fill in what you tested — leave the other empty.</p><div class="mform">
+     <label class="mrow"><span><b>Max push-ups</b><small>in one go</small></span><input type="number" inputmode="numeric" id="lgMax" placeholder="#"></label>
+     <label class="mrow"><span><b>Perfect push-ups</b><small>3s down, 1s pause, full lockout</small></span><input type="number" inputmode="numeric" id="lgPerf" placeholder="#"></label></div>
+     <button class="btn main" style="width:100%;margin-top:14px" id="savePushLog">Save</button><button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');return;}
+  if(t.id==='savePushLog'){const r=parseInt($('lgMax').value,10),p=parseInt($('lgPerf').value,10);if(isNaN(r)&&isNaN(p))return;
+    ST.push.maxLog.push({d:new Date().toISOString(),r:isNaN(r)?undefined:r,p:isNaN(p)?undefined:p});save();closeSheet();renderAll();toast('Push-up test saved');return;}
   if(t.id==='saveLog'){const v=readMulti($('sheet'));if(Object.keys(v).length){ST.jump.maxLog.push({d:new Date().toISOString(),r:v.vert??jLatest(ST.jump).vert,m:v});save();closeSheet();renderAll();toast('Jump test saved');}return;}
   const ob=t.closest('[data-offswap]');if(ob){const w=+ob.dataset.offswap,S=ST.jump;S.offSwap[w]?delete S.offSwap[w]:S.offSwap[w]=true;applyOff();save();renderAll();toast('Day off: '+(offDay(w)===5?'Friday':'Sunday'));return;}
   const mvb=t.closest('[data-move]');if(mvb){const[f,to]=mvb.dataset.move.split(':').map(Number),plan=P(),S=st();
