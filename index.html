@@ -684,8 +684,8 @@ const chips=(a,c)=>`<div class="${c}">${a.map(x=>`<b>${x}</b>`).join('')}</div>`
 const totHtml=(v,l)=>`<div class="tot"><strong>${v}</strong><small>${l}</small></div>`;
 // status: done | part | skip | sick  (old saves used true = done)
 const stOf=(S,id)=>S.done[id]===true?'done':(S.done[id]||'');
-const didIt=(S,id)=>['done','part'].includes(stOf(S,id));
-const STAT={done:['✓','Done','#3ddc84'],part:['½','Partly done','#ffb03a'],skip:['✕','Didn\'t do it','#8d8d98'],sick:['🤒','Sick','#5aa9ff']};
+const didIt=(S,id)=>['done','part','sickdid'].includes(stOf(S,id));
+const STAT={done:['✓','Done','#3ddc84'],sickdid:['🤒✓','Sick but did it','#c77dff'],part:['½','Partly done','#ffb03a'],skip:['✕','Didn\'t do it','#8d8d98'],sick:['🤒','Sick','#5aa9ff']};
 const nextOf=plan=>plan.A.find(s=>!stOf(ST[plan.key],s.id));
 const weeksOf=plan=>Math.ceil(plan.days/7);
 function daysToBday(){return Math.ceil((BDAY-new Date().setHours(0,0,0,0))/864e5);}
@@ -749,7 +749,7 @@ function renderList(){
   });
   $('list').innerHTML=h;
 }
-function streak(plan){const S=ST[plan.key],A=plan.A;let c=0;for(let j=A.length-1;j>=0;j--){const x=stOf(S,A[j].id);if(x==='done'||x==='part')c++;else if(x&&c)break;else if(c)break;}return c;}
+function streak(plan){const S=ST[plan.key],A=plan.A;let c=0;for(let j=A.length-1;j>=0;j--){const x=stOf(S,A[j].id);if(x==='done'||x==='part'||x==='sickdid')c++;else if(x&&c)break;else if(c)break;}return c;}
 function renderProgress(){
   const plan=P(),S=st(),done=plan.A.filter(s=>didIt(S,s.id));
   const total=done.reduce((a,s)=>a+plan.count(s,S),0);
@@ -767,7 +767,7 @@ function renderProgress(){
   <div class="stats"><div class="stat"><strong>${done.length}</strong><small>workouts</small></div><div class="stat"><strong>${total}</strong><small>${plan.statLbl}</small></div><div class="stat"><strong>${streak(plan)}</strong><small>in a row</small></div></div>
   ${plan.progressCard?plan.progressCard(S,chart):`<div class="card" style="margin-top:12px"><h3>${plan.bestTxt(best,S)}</h3>${plan.goal?`<div class="bar"><i style="width:${Math.min(100,best/plan.goal*100)}%"></i></div>`:''}${chart}
   <button class="btn main" style="width:100%;margin-top:14px" id="logMax">+ Log a test</button></div>`}
-  <div class="card"><h3>Your days</h3><div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0">${Object.entries(STAT).map(([k,v])=>`<div class="stat" style="background:var(--card2);padding:10px 4px"><strong style="color:${v[2]};font-size:19px">${cnt(k)}</strong><small>${v[0]} ${v[1]}</small></div>`).join('')}</div>
+  <div class="card"><h3>Your days</h3><div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(58px,1fr));margin:0">${Object.entries(STAT).map(([k,v])=>`<div class="stat" style="background:var(--card2);padding:10px 4px"><strong style="color:${v[2]};font-size:19px">${cnt(k)}</strong><small>${v[0]} ${v[1]}</small></div>`).join('')}</div>
    ${feels.length?`<div class="muted" style="font-size:13px;margin-top:10px">How it felt: ${FEEL.map((f,i)=>`${f} ×${feels.filter(x=>x===i).length}`).join(' · ')}</div>`:'<div class="muted" style="font-size:13px;margin-top:10px">Open a day to mark it done, partly, skipped or sick, and how it felt.</div>'}</div>
   <div class="card"><h3>Training times</h3><p class="muted" style="margin:0 0 6px;font-size:13px">Your normal time for each day. To change just one day, open that day and pick a time there.</p>${trows}</div>
   <div class="card"><h3>Phases</h3>${phases}</div>
@@ -809,6 +809,7 @@ function openSheet(id){
    <div class="chips">${Object.entries(STAT).map(([k,v])=>`<button class="chip ${stOf(S,id)===k?'on':''}" data-status="${k}" style="${stOf(S,id)===k?`background:${v[2]};border-color:${v[2]}`:''}">${v[0]} ${v[1]}</button>`).join('')}${stOf(S,id)?'<button class="chip" data-status="">↺ Clear</button>':''}</div>
    <h4 style="margin:14px 0 0">How did it feel?</h4>
    <div class="chips">${FEEL.map((f,i)=>`<button class="chip ${S.feel[id]===i?'on':''}" data-feel="${i}">${f}</button>`).join('')}</div>
+   ${stOf(S,id)==='sickdid'?'<div class="result" style="color:#c77dff;background:rgba(199,125,255,.12)">Respect for training while sick 💪 It counts! Next time, if you feel worse, rest — getting healthy comes first.</div>':''}
    ${stOf(S,id)==='sick'?'<div class="result" style="color:#5aa9ff;background:rgba(90,169,255,.12)">Get well! When you\'re back, start easy — repeat the last day you finished before moving on.</div>':''}
    ${stOf(S,id)==='skip'?'<div class="result" style="color:var(--muted);background:var(--card2)">No problem — just do the next day. Missed a few in a row? Repeat your last finished day first.</div>':''}
    <button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;
@@ -875,7 +876,8 @@ function renderW(){
     ST[W.plan.key].done[W.id]='done';save();
     const bd=isBday(s);
     body.innerHTML=`<div style="font-size:80px">${bd?'🎂':'🎉'}</div><h2>${bd?`Happy birthday, ${NAME}!`:'Workout complete'}</h2><p>${W.plan.endMsg(s,ST[W.plan.key])}${bd?(s.kind==='final'?'<br><br>90 days done. That\'s the best birthday present you could give yourself. 🏆':'<br><br>Trained on your birthday. Legend. 🎂'):''}</p>`;
-    foot.innerHTML=`<button class="btn main" id="wFin">Finish</button>`;$('wFin').onclick=closeW;
+    foot.innerHTML=`<button class="btn sec" id="wSick">🤒 Sick but did it</button><button class="btn main" id="wFin">Finish</button>`;$('wFin').onclick=closeW;
+    $('wSick').onclick=()=>{const S=ST[W.plan.key];S.done[W.id]='sickdid';if(S.feel[W.id]==null)S.feel[W.id]=2;save();closeW();toast('🤒✓ Sick but did it — respect!');};
     buzz();if(bd)confetti();
   }
 }
@@ -899,7 +901,7 @@ document.addEventListener('click',e=>{const t=e.target;
   if(t.closest('[data-home]')){renderHome();show('home');return;}
   const chk=t.closest('[data-chk]');if(chk){e.stopPropagation();const id=+chk.dataset.chk,S=st();stOf(S,id)?delete S.done[id]:S.done[id]='done';save();renderAll();return;}
   const sb=t.closest('[data-start]');if(sb){startWorkout(+sb.dataset.start);return;}
-  const sb2=t.closest('[data-status]');if(sb2){const id=sheetId,S=st(),k=sb2.dataset.status;k?S.done[id]=k:delete S.done[id];save();renderAll();openSheet(id);toast(k?STAT[k][0]+' '+STAT[k][1]:'Cleared');return;}
+  const sb2=t.closest('[data-status]');if(sb2){const id=sheetId,S=st(),k=sb2.dataset.status;k?S.done[id]=k:delete S.done[id];if(k==='sickdid'&&S.feel[id]==null)S.feel[id]=2;save();renderAll();openSheet(id);toast(k?STAT[k][0]+' '+STAT[k][1]:'Cleared');return;}
   const fb=t.closest('[data-feel]');if(fb){const id=sheetId,S=st(),k=+fb.dataset.feel;S.feel[id]===k?delete S.feel[id]:S.feel[id]=k;save();openSheet(id);return;}
   const tm=t.closest('[data-time]');if(tm){setTime(sheetId,tm.dataset.time);return;}
   const op=t.closest('[data-open]');if(op){openSheet(+op.dataset.open);return;}
