@@ -12,9 +12,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--bg:#0d0d10;--card:#17171c;--card2:#202028;--ink:#f4f4f6;--muted:#8d8d98;--line:#2a2a33;--accent:#ff5a36;--accent2:#ffb03a;--ok:#3ddc84;--prep:#5aa9ff;--power:#c77dff}
-body[data-plan="jump"]{--accent:#18c9a0;--accent2:#7ee8ff}
-body[data-plan="push"]{--accent:#ffb627;--accent2:#ff7b3a}
-body[data-plan="push"] .btn.main,body[data-plan="push"] .steps li::before{color:#2a1a00}
 .tday{background:var(--card);border-radius:20px;padding:16px;margin-bottom:16px;border:1px solid var(--line)}
 .tday h3{margin:0 0 2px;font-size:17px}
 .tday .muted{font-size:13px}
@@ -24,7 +21,7 @@ body[data-plan="push"] .btn.main,body[data-plan="push"] .steps li::before{color:
 .titem .tmid{flex:1;min-width:0}
 .titem .tmid b{display:block;font-size:15px}
 .titem .tmid small{color:var(--muted);font-size:12px}
-.titem .tgo{width:42px;height:42px;border-radius:50%;background:var(--c);color:#0d0d10;font-weight:900;font-size:16px;flex:none}
+.titem .tgo{width:42px;height:42px;border-radius:50%;background:var(--c);color:var(--onc,#0d0d10);font-weight:900;font-size:16px;flex:none}
 .titem .tok{width:42px;height:42px;border-radius:50%;background:var(--ok);color:#06210f;font-weight:900;display:grid;place-items:center;flex:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -42,8 +39,7 @@ body.home .wrap{padding-bottom:30px}
 .hero .meta{color:var(--muted);font-size:13px}
 .row2{display:flex;gap:10px;margin-top:16px}
 .btn{flex:1;padding:13px;border-radius:14px;font-weight:700;font-size:15px;text-align:center}
-.btn.main{background:var(--accent);color:#fff}
-body[data-plan="jump"] .btn.main{color:#032a20}
+.btn.main{background:var(--accent);color:var(--onaccent,#fff)}
 .btn.sec{background:var(--card2)}
 .btn.ok{background:var(--ok);color:#06210f}
 .bigsets{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
@@ -103,7 +99,7 @@ nav button.on{color:var(--accent)}
 .plancard .nx{margin-top:10px;font-size:14px;color:#c9c9d1}
 .plancard .nx b{color:var(--ink)}
 .plancard .bar i{background:var(--c)}
-.plancard .go{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;font-weight:800;background:var(--c);color:#0d0d10}
+.plancard .go{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:12px;font-weight:800;background:var(--c);color:var(--onc,#0d0d10)}
 /* sheet */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10;display:none;align-items:flex-end;justify-content:center}
 .ov.on{display:flex}
@@ -114,8 +110,7 @@ nav button.on{color:var(--accent)}
 .sheet h4{margin:18px 0 0;font-size:15px}
 .steps{list-style:none;padding:0;margin:12px 0;counter-reset:s}
 .steps li{position:relative;padding:10px 12px 10px 44px;background:var(--card2);border-radius:12px;margin-bottom:6px;counter-increment:s}
-.steps li::before{content:counter(s);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
-body[data-plan="jump"] .steps li::before{color:#032a20}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--onaccent,#fff);font-size:12px;font-weight:800;display:grid;place-items:center}
 .steps li small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 .tips{margin:6px 0 14px;padding-left:18px;color:#c9c9d1;font-size:14px}
 .tips li{margin:5px 0}
@@ -127,7 +122,7 @@ textarea{width:100%;min-height:70px;background:var(--card2);color:var(--ink);bor
 .timebox .tt b{font-size:20px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .chip{padding:7px 12px;border-radius:99px;background:var(--card);font-size:13px;font-weight:600;border:1px solid var(--line);display:inline-flex;align-items:center;gap:6px}
-.chip.on{background:var(--accent);color:#0d0d10;border-color:var(--accent)}
+.chip.on{background:var(--accent);color:var(--onaccent,#0d0d10);border-color:var(--accent)}
 .chip input{background:transparent;color:var(--ink);border:0;font:inherit;width:104px;color-scheme:dark}
 /* workout */
 .wo{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column}
@@ -197,6 +192,10 @@ details.tip ul{padding-left:18px}
 .eset input{width:48px;text-align:center;background:transparent;color:var(--ink);border:0;font:inherit;font-size:18px;font-weight:800}
 .eset button{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#3a2a2a;color:#ff7a6b;font-size:13px;line-height:1}
 .eadd{border:1px dashed var(--line);border-radius:10px;padding:0 12px;color:var(--accent);font-weight:700;min-height:52px}
+.themes{display:flex;gap:8px;margin:2px 0 14px;flex-wrap:wrap}
+.theme{display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:12px;background:var(--card);border:2px solid transparent;font-size:12px;font-weight:700;color:var(--muted)}
+.theme.on{border-color:var(--accent);color:var(--ink)}
+.theme i{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:-3px;border:1.5px solid var(--card)}
 .conf{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
 </style>
 </head>
@@ -852,6 +851,31 @@ const P=()=>PLANS[cur], st=()=>ST[cur];
 function timeOpts(plan,s){const dw=s.date.getDay(),d=ST[plan.key].def[dw];const base=plan.times[dw]||['16:00'];const o=[d||base[0],...base];return [...new Set(o)];}
 function timeOf(plan,s){return ST[plan.key].times[s.id]||timeOpts(plan,s)[0];}
 
+/* ================= THEMES ================= */
+const THEMES={
+ classic:{name:'Classic',base:{bg:'#0d0d10',card:'#17171c',card2:'#202028',line:'#2a2a33',ink:'#f4f4f6',muted:'#8d8d98'},home:['#ff5a36','#ffb03a'],
+   plan:{pull:['#ff5a36','#ffb03a'],jump:['#18c9a0','#7ee8ff'],push:['#ffb627','#ff7b3a']}},
+ purple:{name:'Purple',base:{bg:'#0c0912',card:'#181222',card2:'#221a30',line:'#2f2540',ink:'#f6f2ff',muted:'#9a8fb0'},home:['#a855f7','#e9d5ff'],
+   plan:{pull:['#a855f7','#e9d5ff'],jump:['#7c6cff','#c7c2ff'],push:['#e879f9','#f5d0fe']}},
+ mono:{name:'Black & White',base:{bg:'#000000',card:'#121212',card2:'#1c1c1c',line:'#2c2c2c',ink:'#ffffff',muted:'#8a8a8a'},home:['#ffffff','#9a9a9a'],
+   plan:{pull:['#ffffff','#9a9a9a'],jump:['#d4d4d4','#7a7a7a'],push:['#a3a3a3','#ffffff']}},
+ red:{name:'Red',base:{bg:'#0a0606',card:'#170d0d',card2:'#221313',line:'#341c1c',ink:'#fff4f2',muted:'#a38a88'},home:['#ff2d2d','#ff8a6b'],
+   plan:{pull:['#ff2d2d','#ff8a6b'],jump:['#ff7a3d','#ffc7a8'],push:['#d6153b','#ff6b81']}}
+};
+function onColor(hex){const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>150?'#111111':'#ffffff';}
+let THEME='classic';try{THEME=localStorage.getItem('training-theme')||'classic';}catch(e){}
+if(!THEMES[THEME])THEME='classic';
+function applyTheme(){const t=THEMES[THEME],r=document.documentElement.style;
+  Object.entries(t.base).forEach(([k,v])=>r.setProperty('--'+k,v));
+  r.setProperty('--accent',t.home[0]);r.setProperty('--accent2',t.home[1]);r.setProperty('--onaccent',onColor(t.home[0]));
+  Object.entries(t.plan).forEach(([k,[a,b]])=>{PLANS[k].color=a;PLANS[k].color2=b;});
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t.base.bg;
+  setAccent(document.body.classList.contains('home')?null:cur);}
+function setAccent(k){const b=document.body.style;
+  if(!k){['--accent','--accent2','--onaccent'].forEach(x=>b.removeProperty(x));return;}
+  const p=PLANS[k];b.setProperty('--accent',p.color);b.setProperty('--accent2',p.color2);b.setProperty('--onaccent',onColor(p.color));}
+function themePicker(){return `<div class="themes">${Object.entries(THEMES).map(([k,t])=>`<button class="theme ${k===THEME?'on':''}" data-theme="${k}">${Object.values(t.plan).map(c=>`<i style="background:${c[0]}"></i>`).join('')}<span style="margin-left:6px">${t.name}</span></button>`).join('')}</div>`;}
+
 /* ================= RENDER ================= */
 const chips=(a,c)=>`<div class="${c}">${a.map(x=>`<b>${x}</b>`).join('')}</div>`;
 const totHtml=(v,l)=>`<div class="tot"><strong>${v}</strong><small>${l}</small></div>`;
@@ -870,7 +894,7 @@ function todayBox(){
     for(let i=1;i<120;i++){const d=new Date(now);d.setDate(d.getDate()+i);const it=dayItems(d);if(it.length){items=it;label=i===1?'Tomorrow':'Next training';sub=fmtLong(d);break;}}}
   else if(items.every(x=>stOf(ST[x.plan.key],x.s.id))){note='All done today ✅ Nice work!';}
   const rows=items.map(({plan,s,t})=>{const so=stOf(ST[plan.key],s.id),sc=so?STAT[so]:null;
-    return `<div class="titem ${so?'dn':''}" style="--c:${plan.color}" data-go="${plan.key}:${s.id}"><span class="temo">${plan.emoji}</span>
+    return `<div class="titem ${so?'dn':''}" style="--c:${plan.color};--onc:${onColor(plan.color)}" data-go="${plan.key}:${s.id}"><span class="temo">${plan.emoji}</span>
       <div class="tmid"><b>${t} · ${plan.name.replace(' Plan','s').replace('Jump Highs','Jump High')}</b><small>${titleFor(plan,s)}${isBday(s)?' · 🎂':''}</small></div>
       ${sc?`<span class="tok" style="background:${sc[2]}">${sc[0]}</span>`:`<button class="tgo" data-gostart="${plan.key}:${s.id}" aria-label="Start">▶</button>`}</div>`;}).join('');
   return `<div class="tday"><h3>${label}</h3><div class="muted">${sub}</div>${note?`<div style="margin-top:8px;font-weight:600">${note}</div>`:''}${rows}</div>`;
@@ -881,10 +905,10 @@ function renderHome(){
     :dtb>0?`<div class="bday"><b>🎂</b><div><strong>${dtb} days</strong> to your birthday challenge<div class="muted" style="font-size:13px">Pull-up plan finishes on Feb 5 — your birthday</div></div></div>`:'';
   const card=plan=>{const S=ST[plan.key],done=plan.A.filter(s=>didIt(S,s.id)).length,n=nextOf(plan);
     const nx=n?`Next: <b>Day ${n.day} · ${isToday(n.date)?'Today':fmt(n.date)} · ${timeOf(plan,n)}</b>`:'<b>All done 🏆</b>';
-    return `<button class="plancard" data-plan="${plan.key}" style="--c:${plan.color}"><div class="emo">${plan.emoji}</div><h2>${plan.name}</h2>
+    return `<button class="plancard" data-plan="${plan.key}" style="--c:${plan.color};--onc:${onColor(plan.color)}"><div class="emo">${plan.emoji}</div><h2>${plan.name}</h2>
       <div class="muted" style="font-size:13px">${done} / ${plan.A.length} workouts · ${plan.goalTxt}</div><div class="bar"><i style="width:${done/plan.A.length*100}%"></i></div>
       <div class="nx">${nx}</div><span class="go">Open →</span></button>`;};
-  $('v-home').innerHTML=`<div class="hello">Hey ${NAME} 👋</div><p class="sub">Here's your training — pick a plan to see more.</p>${todayBox()}${banner}${card(PULL)}${card(JUMP)}${card(PUSH)}`;
+  $('v-home').innerHTML=`<div class="hello">Hey ${NAME} 👋</div>${themePicker()}<p class="sub">Here's your training — pick a plan to see more.</p>${todayBox()}${banner}${card(PULL)}${card(JUMP)}${card(PUSH)}`;
 }
 function renderHero(){
   const plan=P(),n=nextOf(plan);
@@ -953,10 +977,10 @@ function renderPlan(){document.querySelectorAll('.ptitle').forEach(e=>e.innerHTM
   ['pull','jump','push'].forEach(k=>$('tips-'+k).style.display=cur===k?'':'none');
   renderHero();renderStats();renderList();renderProgress();}
 function renderAll(){renderHome();renderPlan();}
-function show(v){document.body.classList.toggle('home',v==='home');
+function show(v){document.body.classList.toggle('home',v==='home');if(v==='home')setAccent(null);
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));window.scrollTo(0,0);}
-function openPlan(k){cur=k;document.body.dataset.plan=k;renderPlan();show('plan');
+function openPlan(k){cur=k;document.body.dataset.plan=k;setAccent(k);renderPlan();show('plan');
   setTimeout(()=>{const el=document.querySelector('.day.next');if(el&&nextOf(P())&&nextOf(P()).id>0)el.scrollIntoView({block:'center'});},60);}
 
 /* ================= SHEET ================= */
@@ -1070,6 +1094,7 @@ function confetti(){const c=document.createElement('canvas');c.className='conf';
 
 /* ================= EVENTS ================= */
 document.addEventListener('click',e=>{const t=e.target;
+  const thb=t.closest('[data-theme]');if(thb){THEME=thb.dataset.theme;try{localStorage.setItem('training-theme',THEME)}catch(err){}applyTheme();renderAll();toast('Theme: '+THEMES[THEME].name);return;}
   if(editClick(t))return;
   const eb=t.closest('[data-edit]');if(eb){openEdit(+eb.dataset.edit);return;}
   if(t.closest('[data-newtr]')){openEdit(null);return;}
@@ -1107,6 +1132,7 @@ document.addEventListener('click',e=>{const t=e.target;
   if(t.id==='rz'){if(confirm(`Delete all progress in the ${P().name}? This can't be undone.`)){ST[cur]=blank();save();renderAll();toast('Reset');}return;}
 });
 document.addEventListener('change',e=>{const d=e.target.dataset&&e.target.dataset.def;if(d!=null&&e.target.value){st().def[d]=e.target.value;save();renderAll();toast(`${DOW[d]} → ${e.target.value}`);}});
+applyTheme();
 renderAll();
 if(daysToBday()===0)setTimeout(confetti,400);
 if(location.protocol.startsWith('http')&&'serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
