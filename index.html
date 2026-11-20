@@ -398,6 +398,7 @@ body.pc .qnav{grid-template-columns:repeat(8,minmax(0,1fr))!important}
 .tlfeel{display:flex;gap:6px;margin-top:8px}.tlfeel button{flex:1;height:34px;border-radius:10px;background:var(--card);font-size:18px;filter:grayscale(.7);opacity:.6}.tlfeel button.on{filter:none;opacity:1;box-shadow:0 0 0 2px var(--accent)}
 .tlnote{width:100%;margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink);font-size:13px}
 .tldate{position:relative;cursor:pointer;text-align:center;flex:1}.tldate input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.hmn{font-size:12px;font-weight:900}.hmleg{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--soft);margin-top:10px}.hmleg i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:middle;margin-right:6px;border:1px solid var(--line)}
 </style>
 </head>
 <body class="home">
@@ -3302,7 +3303,7 @@ function renderData(){const D=daysBack(),Wk=weeksBack(),E=D.map(d=>({d,e:JR.e[is
   const kpi=a=>`<div class="kpis">${a.map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('')}</div>`;
   $('v-data').innerHTML=`<div class="top"><button class="back" data-home>‹</button><h1>Your <span>Data</span> 📊</h1></div>
   <div class="chips" style="margin-bottom:12px">${[[14,'2 weeks'],[30,'Month'],[90,'3 months'],[0,'All']].map(([v,l])=>`<button class="chip ${DRANGE===v?'on':''}" data-drange="${v}">${l}</button>`).join('')}</div>
-  <div class="card"><h3>🔥 Activity</h3>${heatmap()}<div class="muted" style="font-size:12px">Each square is one day: rows = days of the week, columns = weeks (newest on the right, today has a white border). Tap a square to see that day.</div></div>
+  <div class="card"><h3>🔥 What you did each day</h3>${heatmap()}<div class="muted" style="font-size:12px">Tap a day to see what you did.</div></div>
   <div class="card"><h3>😴 Sleep</h3>${kpi([[hrs.length?avg(hrs).toFixed(1)+' h':'–','average'],[beds.length?m2hm(avg(beds)):'–','asleep at'],[wakes.length?m2hm(avg(wakes)):'–','wake up'],[falls.length?Math.round(avg(falls))+'′':'–','to fall asleep'],[debt?(debt.h>0?debt.h+' h':'0 ✓'):'–','under 9 h (7 days)']])}
    ${ch('Hours a night',barChart(D.slice(-Math.min(D.length,31)).map(d=>{const h=sleepH(JR.e[isoD(d)]);return{l:shortD(d),v:h||0,col:h?col(h):''};}),{goal:SLEEP_GOAL,max:11,vals:false}))}
    ${ch('Time you fell asleep',lineChart(SL.filter(x=>x.e.v.asleep||x.e.v.bed).map(x=>({d:x.d,v:nightM(x.e.v.asleep||x.e.v.bed)})),{fmt:m2hm,color:'#7c6cff'}))}
@@ -3722,6 +3723,22 @@ const _renderDataTL=renderData;renderData=function(){_renderDataTL();const S=ST.
    ${Object.keys(acts).length?ch('👥 Team practice — what you did (times)',barChart(Object.entries(acts).sort((a,b)=>b[1].n-a[1].n).slice(0,10).map(([a,o])=>({l:a.split(' ')[0],v:o.n})),{color:'#8d8d98'}))+ch('👥 How each part felt (5 = 😄)',barChart(Object.entries(acts).filter(([,o])=>o.f.length).map(([a,o])=>({l:a.split(' ')[0],v:+(o.f.reduce((x,y)=>x+y,0)/o.f.length).toFixed(1)})),{max:5,color:'#5aa9ff'})):''}</div>`;
   const first=$('v-data').querySelectorAll('.card')[1];first?first.insertAdjacentHTML('beforebegin',html):$('v-data').insertAdjacentHTML('beforeend',html);};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tldch]');if(b){TLDCH=b.dataset.tldch;renderData();}});
+
+/* activity = a normal month calendar (clearer) */
+let HMON=0;
+heatmap=function(){const m=dayMap(),t=new Date();t.setHours(0,0,0,0);const M=new Date(t.getFullYear(),t.getMonth()+HMON,1),y=M.getFullYear(),mo=M.getMonth(),s0=new Date(y,mo,1);s0.setDate(1-s0.getDay());
+  let cells='',tot=0,miss=0;
+  for(let i=0;i<42;i++){const x=new Date(s0);x.setDate(s0.getDate()+i);const iso=isoD(x);let n=0;
+    Object.values(PLANS).forEach(p=>p.A.forEach(z=>{if(z.date.toDateString()===x.toDateString()&&didIt(ST[p.key],z.id))n++;}));n+=BB.log.filter(e=>e.date===iso).length;
+    const o=m.get(x.toDateString()),ms=!n&&o&&o.planned&&x<t,inM=x.getMonth()===mo;if(inM){tot+=n;if(ms)miss++;}
+    const bg=n?`rgba(61,220,132,${Math.min(1,.3+n*.2)})`:ms?'rgba(255,90,90,.45)':'';
+    cells+=`<button class="cday ${inM?'':'out'} ${x.getTime()===t.getTime()?'today':''}" data-calday="${iso}" style="${bg?`background:${bg};`:''}"><span class="cn">${x.getDate()}</span><span class="hmn">${n?'✓'+n:ms?'✕':''}</span></button>`;
+    if(i===34&&new Date(s0.getTime()+35*864e5).getMonth()!==mo)break;}
+  return `<div class="calhead" style="margin-top:0"><button class="lbtn" data-hmon="-1">‹</button><b>${M.toLocaleDateString(LOC,{month:'long',year:'numeric'})}</b><button class="lbtn" data-hmon="1" ${HMON>=0?'disabled style="opacity:.3"':''}>›</button></div>
+   <div class="cal">${[...Array(7)].map((_,i)=>`<span class="cdow">${new Date(2026,10,8+i).toLocaleDateString(LOC,{weekday:'short'})}</span>`).join('')}${cells}</div>
+   <div class="hmleg"><span><i style="background:rgba(61,220,132,.5)"></i>✓2 = you did 2 trainings / games</span><span><i style="background:rgba(61,220,132,1)"></i>darker green = more</span><span><i style="background:rgba(255,90,90,.45)"></i>✕ = planned but missed</span><span><i style="background:var(--card2)"></i>empty = nothing planned</span></div>
+   <div style="font-size:14px;margin-top:8px">This month: <b>${tot}</b> trainings & games done${miss?` · <span style="color:#ff7a6b">${miss} days missed</span>`:''}</div>`;};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-hmon]');if(!b)return;HMON=Math.min(0,HMON+(+b.dataset.hmon));renderData();});
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -3887,6 +3904,7 @@ Object.assign(HE,{'Log':'יומן אימון','Closest to today':'הכי קרו�
  '📝 Log the game & my stats':'📝 רשום את המשחק והסטטיסטיקה שלי','Note (optional)':'הערה (לא חובה)','What did you do / learn?':'מה עשית / למדת?','🗣 What the coach said':'🗣 מה המאמן אמר','No training this day.':'אין אימון ביום הזה.','🏋️ Training log':'🏋️ יומן אימון','Weight used (kg)':'משקל (ק״ג)'});
 [['Training Log','יומן אימון'],['attempts until','ניסיונות עד'],['makes','קליעות'],['in a row','ברצף'],['Right hand','יד ימין'],['Left hand','יד שמאל'],['Spot','נקודה'],['Round','סיבוב'],['Total shots (optional)','סה״כ זריקות (לא חובה)'],
  ['Attempts needed (fewer = better)','ניסיונות שנדרשו (פחות = יותר טוב)'],['How each drill feels','איך כל תרגיל מרגיש'],['of planned reps you did','מהחזרות המתוכננות שעשית'],['what you did','מה עשית'],['How each part felt','איך כל חלק הרגיש'],['How hard','כמה קשה'],['How I felt after','איך הרגשתי אחרי']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+[['What you did each day','מה עשית בכל יום'],['you did 2 trainings / games','עשית 2 אימונים / משחקים'],['darker green = more','ירוק כהה = יותר'],['planned but missed','תוכנן ופוספס'],['empty = nothing planned','ריק = לא תוכנן כלום'],['This month','החודש'],['trainings & games done','אימונים ומשחקים בוצעו'],['days missed','ימים פוספסו'],['Tap a day to see what you did.','לחץ על יום כדי לראות מה עשית.']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 function tr(s){if(LANG!=='he'||!s)return s;const t=s.trim();if(!t)return s;if(HE[t]!=null)return s.replace(t,HE[t]);
   let r=t;for(const[rx,rep]of HE_RX)r=r.replace(rx,rep);
   const longTxt=t.length>60;for(const[a,b]of HE_PH){if(longTxt&&HE_GENERIC.has(a))continue;if(r.includes(a)){const re=new RegExp('(^|[^A-Za-z])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![A-Za-z])','g');r=r.replace(re,(m,p1)=>p1+b);}}
