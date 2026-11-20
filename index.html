@@ -387,6 +387,17 @@ body.pc #v-data.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));co
 .mleg{display:flex;justify-content:space-between;gap:3px;margin-top:8px}.mleg span{flex:1;text-align:center;border-radius:8px;padding:3px 0;font-size:15px}
 .rate{flex-wrap:wrap}.rate button{width:34px;height:34px;font-size:20px;box-shadow:inset 0 -4px 0 var(--mc)}.rate div{gap:3px}
 .cday.jbig .cicons{font-size:22px;line-height:1}.mface{font-size:15px;display:block}
+/* training log */
+body.pc .qnav{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+.tlcard{border-left:4px solid var(--c)}.tlhead{display:flex;align-items:center;gap:10px;margin-bottom:6px}.tlhead .temo{font-size:24px}
+.tldrill{background:var(--card2);border-radius:14px;padding:10px 12px;margin-top:8px}.tldh{display:flex;align-items:center;gap:8px}.tldh b{flex:1;font-size:14px}.tldh .lbtn{width:30px;height:30px;font-size:12px;flex:none}
+.tlpct{font-weight:900;color:var(--accent);font-size:13px}.tlrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:13px}
+.tlnum{width:64px;text-align:center;font-size:16px;font-weight:800;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 0;color:var(--ink)}
+.tlpair{display:flex;align-items:center;gap:4px}.tlpair i{font-style:normal;color:var(--muted)}
+.tlsets{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.tlsets label{display:flex;flex-direction:column;gap:2px}.tlsets small{font-size:10px;color:var(--muted)}
+.tlfeel{display:flex;gap:6px;margin-top:8px}.tlfeel button{flex:1;height:34px;border-radius:10px;background:var(--card);font-size:18px;filter:grayscale(.7);opacity:.6}.tlfeel button.on{filter:none;opacity:1;box-shadow:0 0 0 2px var(--accent)}
+.tlnote{width:100%;margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink);font-size:13px}
+.tldate{position:relative;cursor:pointer;text-align:center;flex:1}.tldate input{position:absolute;inset:0;opacity:0;cursor:pointer}
 </style>
 </head>
 <body class="home">
@@ -402,6 +413,7 @@ body.pc #v-data.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));co
   <section class="view" id="v-food"></section>
   <section class="view" id="v-school"></section>
   <section class="view" id="v-data"></section>
+  <section class="view" id="v-tlog"></section>
   <!-- SETTINGS -->
   <section class="view" id="v-settings"></section>
   <!-- PLAN -->
@@ -1098,7 +1110,7 @@ const HOOP={
           else{out.push({type:'task',kind:`Body circuit · round ${r} of ${d.circuit}`,title:n,big,unit:u,text:tx});out.push({type:'rest',secs:20});}});
         out.push({type:'rest',secs:60});}return;}
       if(!d.log&&!d.tm)out.push({type:'task',kind:i?`Drill ${i} of ${N} · ~${d.min} min`:'Warm-up',title:d.n,big:d.big,unit:d.unit,text:d.txt});
-      else out.push({type:'drill',kind:`Drill ${i} of ${N} · ~${d.min} min`,title:d.n,big:d.big,unit:d.unit,text:d.txt,d,di:i});
+      else out.push({type:'drill',kind:`Drill ${i} of ${N} · ~${d.min} min`,title:d.n,big:d.big,unit:d.unit,text:d.txt,d,di:typeof hIdx==='function'?hIdx(s,d):i});
       out.push({type:'rest',secs:i===0?30:45});});
     while(out.length&&out[out.length-1].type==='rest')out.pop();
     out.push({type:'task',kind:'Cool-down',title:'Stretch',big:'3',unit:'minutes',text:'Calves, hamstrings, hips and shoulders — 20 seconds each. Drink water!'});
@@ -1495,7 +1507,7 @@ function renderHome(){
       <div class="nx">${nx}</div><span class="go">Open →</span></button>`;};
   const gs=globalStreak(),nb=Object.keys(loadBadges()).length;
   $('v-home').innerHTML=`<div class="hello">Hey ${NAME} 👋 ${gs.c?`<span class="streak">🔥 ${gs.c}</span>`:''}</div>${lookBar()}<p class="sub">Training + basketball tracker — pick something to open.</p>
-  <div class="qnav"><button data-view="cal"><b>📅</b>Calendar</button><button data-view="bb"><b>🏀</b>Basketball</button><button data-view="log"><b>📔</b>Journal</button><button data-view="food"><b>🍽</b>Food</button><button data-view="school"><b>🏫</b>School</button><button data-view="data"><b>📊</b>Data</button><button data-view="badges"><b>🏅</b>Badges <small>${nb}/${BADGES.length}</small></button></div>
+  <div class="qnav"><button data-view="cal"><b>📅</b>Calendar</button><button data-view="bb"><b>🏀</b>Basketball</button><button data-view="log"><b>📔</b>Journal</button><button data-view="food"><b>🍽</b>Food</button><button data-view="school"><b>🏫</b>School</button><button data-view="tlog"><b>🏋️</b>Log</button><button data-view="data"><b>📊</b>Data</button><button data-view="badges"><b>🏅</b>Badges <small>${nb}/${BADGES.length}</small></button></div>
   ${weekSummary()}${todayBox()}${banner}${card(HOOP)}${card(STR)}${card(PULL)}${card(JUMP)}${card(PUSH)}${bbHomeCard()}`;
 }
 function renderHero(){
@@ -3420,7 +3432,7 @@ if(!FD.gv2){FD.goals={kcal:2350,p:90,pmax:105,c:310,f:78,su:(FD.goals||{}).su||5
 // 4 kinds of day — the app picks one by itself, tap to change it for that day
 const PRESETS=[['rest','😴','Rest day'],['easy','🙂','Easy day'],['train','🏀','Training day'],['big','🔥','Big day / game']];
 FD.pre=FD.pre||{rest:1850,easy:2000,train:2350,big:2550};
-function autoPreset(iso){const d=dOf(iso);try{if(hGame(d))return 'big';const L=dayLoad(d);return L>=6.5?'big':L>=3?'train':L>0?'easy':'rest';}catch(e){return 'train';}}
+function autoPreset(iso){const d=dOf(iso);try{if(hGame(d))return 'big';const L=dayLoad(d),tp=teamOn(d).some(t=>t.type==='practice');return L>=6.5?'big':(L>=3||tp)?'train':L>0?'easy':'rest';}catch(e){return 'train';}}
 const dayPreset=iso=>(FD.days[iso]||{}).pre||autoPreset(iso);
 function dayGoals(iso){const G={...(FD.goals||{})},k=FD.pre[dayPreset(iso)];if(k){const pm=G.pmax?(G.p+G.pmax)/2:(G.p||90);G.kcal=k;G.f=Math.round(k*.3/9);G.c=Math.round((k-pm*4-G.f*9)/4);}return G;}
 let FEDIT=null,FFAV=false;
@@ -3568,6 +3580,148 @@ const _jPreviewM=jPreview;jPreview=function(iso,e){const h=_jPreviewM(iso,e);ret
 const _renderDataM=renderData;renderData=function(){_renderDataM();const D=daysBack(),cnt=Array(7).fill(0);D.forEach(d=>{const e=JR.e[isoD(d)];if(e&&e.mood)cnt[e.mood-1]++;});
   const c=[...$('v-data').querySelectorAll('.card')].find(x=>/Mood|מצב רוח/.test(x.querySelector('h3').textContent));
   c&&c.querySelector('h3').insertAdjacentHTML('afterend',`<div class="dch"><div class="dcht">Your days by mood</div>${barChart(cnt.map((v,i)=>({l:MOODS[i],v,col:MOODC[i]})),{})}</div>`);};
+/* ================= TRAINING LOG TAB ================= */
+// your own hoops drills: add / delete per day (indexes stay stable so logs never mix up)
+function hDov(s){return (ST.hoop.dov||{})[s.id]||{add:[],del:[]};}
+const _hDrillsL=hDrills;
+function hFull(s){return [..._hDrillsL(s),...hDov(s).add];}
+hDrills=function(s){const del=hDov(s).del||[];return hFull(s).filter((d,i)=>!del.includes(i));};
+const hIdx=(s,d)=>hFull(s).indexOf(d);
+const FEEL5=['😫','😕','😐','🙂','😄'];
+const FIN_SUB=[['Right hand',4],['Left hand',3]];
+function hMode(d){if(d.circuit)return 'done';if(/^Finish \d\/9/.test(d.n))return 'until2';if(d.mode)return d.mode;if(d.unit==='in a row')return 'row';if(d.tm&&d.log)return 'timed';if(d.goal&&d.log)return 'until';if(d.log)return 'pct';return 'done';}
+function spotsOf(d){const m=String(d.big).match(/(\d+)\s*×\s*(\d+)/);if(m&&!d.tm)return{n:+m[1],per:+m[2]};const t=parseInt(d.big)||d.goal||0;return{n:1,per:t};}
+const TACTS=['🔥 Warm-up','🏀 Shooting','🎯 Free throws','🏃 Layups & finishes','⛹️ Dribbling','🤝 Passing','🛡 Defense','💪 Rebounding','⚔️ 1-on-1','📋 Plays','🏟 Scrimmage','⚡ Conditioning','🏋️ Gym / power'];
+let TLD=null,TLADD=null;
+function tlHas(d){return dayItems(d).length||teamOn(d).length||BB.log.some(e=>e.date===isoD(d));}
+function tlDefault(){const t=new Date();t.setHours(0,0,0,0);if(tlHas(t))return isoD(t);for(let i=1;i<90;i++){const a=new Date(t);a.setDate(t.getDate()-i);if(tlHas(a))return isoD(a);const b=new Date(t);b.setDate(t.getDate()+i);if(tlHas(b))return isoD(b);}return isoD(t);}
+function tlStep(dir){const d=dOf(TLD);for(let i=1;i<120;i++){d.setDate(d.getDate()+dir);if(tlHas(d))return isoD(d);}return TLD;}
+const feelRow=(nm,key,v)=>`<div class="tlfeel">${FEEL5.map((f,i)=>`<button class="${v===i+1?'on':''}" data-${nm}="${key}" data-fv="${i+1}">${f}</button>`).join('')}</div>`;
+const numIn=(attr,v,ph)=>`<input class="tlnum" type="number" inputmode="numeric" ${attr} value="${v??''}" placeholder="${ph||'?'}">`;
+// one hoops drill
+function tlHoopDrill(s,d,fi){const S=ST.hoop,r=(((S.shots||{})[s.id]||{})[fi])||{},mode=hMode(d),cats=d.log?[].concat(d.log):[],key=`hoop:${s.id}:${fi}`;let body='';
+  if(mode==='until2'){const sub=r.subs||[];body=FIN_SUB.map(([l,t],j)=>`<div class="tlrow"><span>${l}: attempts until <b>${t}</b> makes</span>${numIn(`data-tlsub="${key}:${j}"`,sub[j],'#')}</div>`).join('');}
+  else if(mode==='until'||mode==='row'){const sp=spotsOf(d),A=r.spots||[];body=Array.from({length:sp.n},(_,j)=>`<div class="tlrow"><span>${sp.n>1?`Spot ${j+1}: `:''}attempts until <b>${sp.per}</b> ${mode==='row'?'in a row':'makes'}</span>${numIn(`data-tlspot="${key}:${j}"`,A[j],'#')}</div>`).join('');}
+  else if(mode==='timed'){const R=r.rounds||[],n=d.tm[1];body=Array.from({length:n},(_,j)=>`<div class="tlrow"><span>${n>1?`Round ${j+1}`:'Makes'} (${d.tm[0]}s)</span>${numIn(`data-tlrnd="${key}:${j}"`,R[j],'makes')}</div>`).join('')+cats.map(c=>`<div class="tlrow"><span>Total shots (optional)</span>${numIn(`data-tlpct="${key}:${c}:a"`,(r.c&&r.c[c]||{}).a,'tried')}</div>`).join('');}
+  else if(mode==='pct'){body=cats.map(c=>{const v=(r.c||{})[c]||{};return `<div class="tlrow"><span>${SHOTC[c][1]} ${SHOTC[c][0]}</span><span class="tlpair">${numIn(`data-tlpct="${key}:${c}:m"`,v.m,'made')}<i>/</i>${numIn(`data-tlpct="${key}:${c}:a"`,v.a,'tried')}</span></div>`;}).join('');}
+  else body=`<div class="tlrow"><span class="muted">Just do it — mark how it felt</span><button class="chip ${r.done?'on':''}" data-tldone="${key}">${r.done?'✓ Done':'Done?'}</button></div>`;
+  const t=hTot({shots:{x:{a:r}}},'x');
+  return `<div class="tldrill"><div class="tldh"><b>${esc(d.n.replace(/^Finish \d\/9: /,'🏃 '))}</b>${t.a?`<span class="tlpct">${hPct(t.m,t.a)}</span>`:''}<button class="lbtn" data-tldel="${key}">🗑</button></div>
+   ${body}${feelRow('tlfeel',key,r.feel)}<input class="tlnote" data-tlnote="${key}" value="${esc(r.note||'')}" placeholder="Note (optional)"></div>`;}
+// one exercise (pull / jump / push / strength)
+function tlEx(plan,s,e){const S=ST[plan.key],x=((S.xlog||{})[s.id]||{})[e.n]||{},key=`${plan.key}:${s.id}:${encodeURIComponent(e.n)}`,u=e.u==='sec'?'s':e.u==='leg'?'/leg':e.u==='side'?'/side':'';
+  const sets=e.u==='tabata'?[]:e.sets;
+  return `<div class="tldrill"><div class="tldh"><b>${esc(e.n)}</b><small class="muted">${cLabel(e).replace(esc(e.n)+':','')}</small><button class="lbtn" data-tldel="${key}">🗑</button></div>
+   ${sets.length?`<div class="tlsets">${sets.map((v,j)=>`<label><small>Set ${j+1}${v==='MAX'?'':' · '+v+u}</small>${numIn(`data-tlset="${key}:${j}"`,(x.sets||[])[j],v==='MAX'?'max':String(v))}</label>`).join('')}</div>`:''}
+   ${plan.key==='str'?`<div class="tlrow"><span>Weight used (kg)</span>${numIn(`data-tlkg="${key}"`,x.kg,'kg')}</div>`:''}
+   ${feelRow('tlfeel',key,x.feel)}<input class="tlnote" data-tlnote="${key}" value="${esc(x.note||'')}" placeholder="Note (optional)"></div>`;}
+function tlCard(plan,s){const S=ST[plan.key],so=stOf(S,s.id),sc=so?STAT[so]:null;let drills='';
+  if(plan.key==='hoop'&&!s.extra){const del=hDov(s).del||[];drills=hFull(s).map((d,i)=>del.includes(i)?'':tlHoopDrill(s,d,i)).join('');}
+  else{const L=effList(plan,s)||normList(plan,s);drills=L.map(e=>tlEx(plan,s,e)).join('')||'<p class="muted">No exercises.</p>';}
+  return `<div class="card tlcard" style="--c:${plan.color}"><div class="tlhead"><span class="temo">${plan.emoji}</span><div class="dmid"><b>${titleFor(plan,s)}</b><div class="muted" style="font-size:12px">${plan.name} · ${timeOf(plan,s)}</div></div>
+    <button class="chip ${so?'on':''}" data-tlst="${plan.key}:${s.id}" style="${sc?`background:${sc[2]};border-color:${sc[2]};color:#111`:''}">${sc?sc[0]+' '+sc[1]:'Mark done'}</button></div>
+   ${drills}<button class="btn sec" style="width:100%;margin-top:10px" data-tladd="${plan.key}:${s.id}">➕ Add a drill / exercise</button></div>`;}
+function tlTeam(iso,t){const e=BB.log.find(x=>x.date===iso&&x.type===t.type);
+  if(t.type==='game'){const g=gameOf(iso);return `<div class="card tlcard" style="--c:#ff8c1a"><div class="tlhead"><span class="temo">🆚</span><div class="dmid"><b>Team game</b><div class="muted" style="font-size:12px">${esc(t.place)}</div></div></div>
+    ${e?`<div class="tlrow"><span>${bbLine(e)}</span><button class="chip" data-bbopen="${e.id}">Open</button></div>`:`<button class="btn main" style="width:100%" ${g?`data-gmlog="${g.r}"`:`data-bbnew="game:${iso}"`}>📝 Log the game & my stats</button>`}</div>`;}
+  const A=(e&&e.acts)||{},on=Object.keys(A),ex=[...new Set([...TACTS,...on,...(BB.acts||[])])];
+  return `<div class="card tlcard" style="--c:#8d8d98"><div class="tlhead"><span class="temo">👥</span><div class="dmid"><b>Team practice${t.time?' · '+t.time:''}</b><div class="muted" style="font-size:12px">${esc(t.place)}</div></div>${e?`<button class="chip" data-bbopen="${e.id}">Full log</button>`:''}</div>
+   <h4 style="margin:6px 0">What did we do?</h4><div class="chips">${ex.map(a=>`<button class="chip ${A[a]?'on':''}" data-tlact="${iso}|${esc(a)}">${esc(a)}</button>`).join('')}<button class="chip" data-tlactnew="${iso}">+ Other</button></div>
+   ${on.map(a=>`<div class="tldrill"><div class="tldh"><b>${esc(a)}</b>${numIn(`data-tlamin="${iso}|${esc(a)}"`,A[a].min,'min')}</div>${feelRow('tlafeel',`${iso}|${esc(a)}`,A[a].feel)}<input class="tlnote" data-tlanote="${iso}|${esc(a)}" value="${esc(A[a].note||'')}" placeholder="What did you do / learn?"></div>`).join('')}
+   ${e?`<h4 style="margin:10px 0 4px">Whole practice</h4>${scaleRowT(e,'intensity','How hard')}${scaleRowT(e,'feel','How I felt after')}<input class="tlnote" data-tlcoach="${iso}" value="${esc(e.coach||'')}" placeholder="🗣 What the coach said">`:''}</div>`;}
+function scaleRowT(e,k,l){return `<div class="tlrow"><span>${l}</span><span class="chips" style="gap:3px">${SCALE5[k].map((o,i)=>`<button class="chip ${e[k]===i+1?'on':''}" style="padding:5px 8px" data-tlsc="${e.date}|${k}|${i+1}">${o}</button>`).join('')}</span></div>`;}
+function teamEntry(iso){let e=BB.log.find(x=>x.date===iso&&x.type==='practice');if(!e){const t=teamOn(dOf(iso)).find(x=>x.type==='practice');e={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:'practice',date:iso,time:t?t.time:'',tags:[],pain:[],dur:t&&t.end?120:90,acts:{}};BB.log.push(e);}e.acts=e.acts||{};return e;}
+function renderTL(){if(!TLD)TLD=tlDefault();const d=dOf(TLD),its=dayItems(d),tm=teamOn(d),t0=new Date();t0.setHours(0,0,0,0);
+  const extraBB=BB.log.filter(e=>e.date===TLD&&!tm.some(t=>t.type===e.type));
+  $('v-tlog').innerHTML=`<div class="top"><button class="back" data-home>‹</button><h1>Training <span>Log</span> 🏋️</h1></div>
+  <div class="calhead" style="margin-top:0"><button class="lbtn" data-tlnav="-1">‹</button><label class="tldate"><b>${isToday(d)?'Today · ':d<t0?'':'Coming · '}${fmtLong(d)}</b><input type="date" id="tlPick" value="${TLD}"></label><button class="lbtn" data-tlnav="1">›</button></div>
+  <div class="chips" style="justify-content:center;margin-bottom:10px"><button class="chip" data-tlgo="today">Closest to today</button></div>
+  ${its.map(({plan,s})=>tlCard(plan,s)).join('')}${tm.map(t=>tlTeam(TLD,t)).join('')}
+  ${extraBB.map(e=>`<div class="card"><div class="tlrow"><span>${e.type==='game'?'🏀 Game':'🏃 Practice'}: ${bbLine(e)}</span><button class="chip" data-bbopen="${e.id}">Open</button></div></div>`).join('')}
+  ${!its.length&&!tm.length&&!extraBB.length?'<div class="card"><p class="muted" style="margin:0">No training this day.</p></div>':''}
+  <p class="muted" style="font-size:12px;text-align:center">Everything saves by itself. Graphs are in 📊 Data → Training log.</p>`;}
+function tlAddSheet(k,id){TLADD={k,id,mode:k==='hoop'?'until':'reps',cat:'mid'};tlAddRender();$('ov').classList.add('on');}
+function tlAddRender(){const A=TLADD,h=A.k==='hoop';
+  $('sheet').innerHTML=`<div class="grab"></div><h2>➕ Add ${h?'a drill':'an exercise'}</h2><div class="timebox"><label class="erow">Name<input id="taName" placeholder="${h?'e.g. Corner threes':'e.g. Wall sit'}"></label></div>
+   ${h?`<h4>How do you log it?</h4><div class="chips">${[['until','Attempts until X makes'],['row','Attempts until X in a row'],['pct','Made / tried'],['timed','Makes in a time'],['done','Just done ✓']].map(([m,l])=>`<button class="chip ${A.mode===m?'on':''}" data-tamode="${m}">${l}</button>`).join('')}</div>
+     ${A.mode!=='done'?`<h4>Shot type</h4><div class="chips">${Object.entries(SHOTC).map(([c,[n,e]])=>`<button class="chip ${A.cat===c?'on':''}" data-tacat="${c}">${e} ${n}</button>`).join('')}</div>`:''}
+     ${A.mode==='until'||A.mode==='row'?`<div class="timebox"><label class="erow">X =<input id="taX" type="number" value="5" style="width:70px"></label><label class="erow">Spots<input id="taSp" type="number" value="1" style="width:70px"></label></div>`:A.mode==='timed'?`<div class="timebox"><label class="erow">Seconds<input id="taSec" type="number" value="60" style="width:70px"></label><label class="erow">Rounds<input id="taR" type="number" value="1" style="width:70px"></label></div>`:''}`
+   :`<div class="timebox"><label class="erow">Sets<input id="taSets" type="number" value="3" style="width:70px"></label><label class="erow">Reps / seconds each<input id="taReps" type="number" value="10" style="width:70px"></label></div><div class="chips">${[['reps','reps'],['sec','seconds'],['leg','each leg'],['side','each side']].map(([u,l])=>`<button class="chip ${A.mode===u?'on':''}" data-tamode="${u}">${l}</button>`).join('')}</div>`}
+   <div class="row2"><button class="btn main" data-tasave>Add</button><button class="btn sec" data-close>Cancel</button></div>`;}
+// saving helpers
+function hShot(id,fi){const S=ST.hoop;S.shots=S.shots||{};S.shots[id]=S.shots[id]||{};const s=HOOP.S[id],d=hFull(s)[fi];return S.shots[id][fi]=S.shots[id][fi]||{n:d?d.n:'',c:{}};}
+function hRecalc(s,fi){const d=hFull(s)[fi],r=hShot(s.id,fi),mode=hMode(d),cat=[].concat(d.log||['lay'])[0];
+  if(mode==='until2'){const a=(r.subs||[]).map(Number).filter(Boolean);const done=FIN_SUB.filter((x,j)=>+(r.subs||[])[j]);if(a.length)r.c={lay:{m:done.reduce((t,x)=>t+x[1],0),a:a.reduce((t,x)=>t+x,0)}};else delete r.c;}
+  else if(mode==='until'||mode==='row'){const sp=spotsOf(d),A=(r.spots||[]).map(Number);const n=A.filter(Boolean).length;if(n){r.c={[cat]:{m:mode==='until'?n*sp.per:n*sp.per,a:Math.max(n*sp.per,A.reduce((t,x)=>t+(x||0),0))}};}else delete r.c;}
+  else if(mode==='timed'){const m=(r.rounds||[]).reduce((t,x)=>t+(+x||0),0),a=r.c&&r.c[cat]&&r.c[cat].a;if(m&&a)r.c={[cat]:{m,a:Math.max(a,m)}};else if(r.c&&r.c[cat])delete r.c[cat].m;}
+  save();}
+function xOf(k,id,name){const S=ST[k];S.xlog=S.xlog||{};S.xlog[id]=S.xlog[id]||{};return S.xlog[id][name]=S.xlog[id][name]||{};}
+function parseKey(key){const[k,id,rest]=key.split(':');return{k,id:+id,rest};}
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if((b=t.closest('[data-view]'))&&b.dataset.view==='tlog'){TLD=null;renderTL();show('tlog');return;}
+  if(b=t.closest('[data-tlnav]')){TLD=tlStep(+b.dataset.tlnav);renderTL();return;}
+  if(t.closest('[data-tlgo]')){TLD=tlDefault();renderTL();return;}
+  if(b=t.closest('[data-tlst]')){const[k,id]=b.dataset.tlst.split(':'),S=ST[k];if(stOf(S,+id))delete S.done[id];else{S.done[id]='done';(S.doneAt=S.doneAt||{})[id]=Date.now();}save();renderAll();renderTL();checkBadges();return;}
+  if(b=t.closest('[data-tlfeel]')){const{k,id,rest}=parseKey(b.dataset.tlfeel),v=+b.dataset.fv;
+    const o=k==='hoop'?hShot(id,+rest):xOf(k,id,decodeURIComponent(rest));o.feel=o.feel===v?undefined:v;save();renderTL();return;}
+  if(b=t.closest('[data-tldone]')){const{id,rest}=parseKey(b.dataset.tldone),o=hShot(id,+rest);o.done=!o.done;save();renderTL();return;}
+  if(b=t.closest('[data-tldel]')){const{k,id,rest}=parseKey(b.dataset.tldel);if(!confirm('Delete it from this training?'))return;
+    if(k==='hoop'){const S=ST.hoop;S.dov=S.dov||{};const o=S.dov[id]=S.dov[id]||{add:[],del:[]};o.del.push(+rest);}
+    else{const plan=PLANS[k],s=plan.S[id],L=JSON.parse(JSON.stringify(effList(plan,s)||normList(plan,s))).filter(x=>x.n!==decodeURIComponent(rest));setCustomList(plan,s,L);}
+    save();renderAll();renderTL();toast('🗑 Deleted');return;}
+  if(b=t.closest('[data-tladd]')){const[k,id]=b.dataset.tladd.split(':');tlAddSheet(k,+id);return;}
+  if(TLADD){if(b=t.closest('[data-tamode]')){const n=$('taName').value;TLADD.mode=b.dataset.tamode;tlAddRender();$('taName').value=n;return;}
+    if(b=t.closest('[data-tacat]')){const n=$('taName').value;TLADD.cat=b.dataset.tacat;tlAddRender();$('taName').value=n;return;}
+    if(t.closest('[data-tasave]')){const A=TLADD,n=$('taName').value.trim()||'My drill',plan=PLANS[A.k],s=plan.S[A.id];
+      if(A.k==='hoop'){const S=ST.hoop;S.dov=S.dov||{};const o=S.dov[A.id]=S.dov[A.id]||{add:[],del:[]};let d={n,big:'',unit:'',min:5,txt:'Your own drill.',mode:A.mode};
+        if(A.mode==='until'||A.mode==='row'){const x=+$('taX').value||5,sp=+$('taSp').value||1;Object.assign(d,{log:A.cat,goal:x*sp,big:sp>1?`${sp} × ${x}`:String(x),unit:A.mode==='row'?'in a row':'makes'});}
+        else if(A.mode==='timed'){Object.assign(d,{log:A.cat,tm:[+$('taSec').value||60,+$('taR').value||1],big:String($('taR').value||1),unit:'rounds'});}
+        else if(A.mode==='pct')Object.assign(d,{log:A.cat,tries:10,unit:'shots'});
+        o.add.push(d);}
+      else{const L=JSON.parse(JSON.stringify(effList(plan,s)||normList(plan,s)));L.push({n,sets:Array(Math.max(1,+$('taSets').value||3)).fill(+$('taReps').value||10),u:A.mode,rest:60,tip:'Your own exercise.'});setCustomList(plan,s,L);}
+      save();TLADD=null;closeSheet();renderAll();renderTL();toast('➕ Added');return;}}
+  if(b=t.closest('[data-tlact]')){const[iso,a]=b.dataset.tlact.split('|'),en=teamEntry(iso);if(en.acts[a])delete en.acts[a];else en.acts[a]={};en.tags=[...new Set([...(en.tags||[]),...Object.keys(en.acts).map(x=>x.replace(/^\S+ /,''))])];saveBB();renderTL();return;}
+  if(b=t.closest('[data-tlactnew]')){const n=(prompt('What did you do?')||'').trim();if(!n)return;BB.acts=[...new Set([...(BB.acts||[]),'📝 '+n])];const en=teamEntry(b.dataset.tlactnew);en.acts['📝 '+n]={};saveBB();renderTL();return;}
+  if(b=t.closest('[data-tlafeel]')){const[iso,a]=b.dataset.tlafeel.split('|'),en=teamEntry(iso),v=+b.dataset.fv;en.acts[a].feel=en.acts[a].feel===v?undefined:v;saveBB();renderTL();return;}
+  if(b=t.closest('[data-tlsc]')){const[iso,k,v]=b.dataset.tlsc.split('|'),en=teamEntry(iso);en[k]=en[k]===+v?undefined:+v;saveBB();renderTL();return;}
+});
+document.addEventListener('change',e=>{const t=e.target,ds=t.dataset||{};if(!t.closest||!t.closest('#v-tlog'))return;const v=t.value===''?undefined:+t.value;let o;
+  if(t.id==='tlPick'&&t.value){TLD=t.value;renderTL();return;}
+  if(ds.tlsub){const p=ds.tlsub.split(':'),id=+p[1],fi=+p[2],j=+p[3];o=hShot(id,fi);o.subs=o.subs||[];o.subs[j]=v;hRecalc(HOOP.S[id],fi);}
+  else if(ds.tlspot){const p=ds.tlspot.split(':'),id=+p[1],fi=+p[2],j=+p[3];o=hShot(id,fi);o.spots=o.spots||[];o.spots[j]=v;hRecalc(HOOP.S[id],fi);}
+  else if(ds.tlrnd){const p=ds.tlrnd.split(':'),id=+p[1],fi=+p[2],j=+p[3];o=hShot(id,fi);o.rounds=o.rounds||[];o.rounds[j]=v;hRecalc(HOOP.S[id],fi);}
+  else if(ds.tlpct){const p=ds.tlpct.split(':'),id=+p[1],fi=+p[2],c=p[3],f=p[4];o=hShot(id,fi);o.c=o.c||{};o.c[c]=o.c[c]||{};o.c[c][f]=v;if(o.c[c].m!=null&&o.c[c].a!=null&&o.c[c].a<o.c[c].m)o.c[c].a=o.c[c].m;if(o.c[c].m==null&&f==='a'){const s=HOOP.S[id];hRecalc(s,fi);}save();}
+  else if(ds.tlset){const p=ds.tlset.split(':'),x=xOf(p[0],+p[1],decodeURIComponent(p[2]));x.sets=x.sets||[];x.sets[+p[3]]=v;save();}
+  else if(ds.tlkg){const p=ds.tlkg.split(':'),x=xOf(p[0],+p[1],decodeURIComponent(p[2]));x.kg=v;save();}
+  else if(ds.tlnote){const{k,id,rest}=parseKey(ds.tlnote),o2=k==='hoop'?hShot(id,+rest):xOf(k,id,decodeURIComponent(rest));o2.note=t.value;save();}
+  else if(ds.tlamin){const[iso,a]=ds.tlamin.split('|'),en=teamEntry(iso);en.acts[a].min=v;saveBB();}
+  else if(ds.tlanote){const[iso,a]=ds.tlanote.split('|'),en=teamEntry(iso);en.acts[a].note=t.value;saveBB();}
+  else if(ds.tlcoach){const en=teamEntry(ds.tlcoach);en.coach=t.value;saveBB();}
+  else return;
+  const card=t.closest('.tldrill');if(card&&ds.tlnote==null&&ds.tlanote==null){const sc=window.scrollY;renderTL();window.scrollTo(0,sc);}});
+const _closeSheetTL=closeSheet;closeSheet=function(){TLADD=null;_closeSheetTL();};
+const _renderAllTL=renderAll;renderAll=function(){_renderAllTL();if($('v-tlog').classList.contains('on'))renderTL();};
+// workout screen: say what "tried" means for "until" drills
+const _renderDrillL=renderDrill;renderDrill=function(step,body,foot){_renderDrillL(step,body,foot);if(step.t)return;const m=hMode(step.d);
+  if(m==='until'||m==='until2'||m==='row')body.querySelectorAll('.hst small').forEach(x=>{if(/Tried|ניסה/.test(x.textContent))x.textContent='Attempts';});};
+/* data: training log graphs */
+let TLDCH=null;
+const _renderDataTL=renderData;renderData=function(){_renderDataTL();const S=ST.hoop,per={},feel={},att={};
+  HOOP.S.forEach(s=>{const R=(S.shots||{})[s.id];if(!R||!inRange(s.date))return;Object.values(R).forEach(r=>{const n=(r.n||'').replace(/^Finish \d\/9: /,'');if(!n)return;
+    const A=(r.subs||r.spots||[]).map(Number).filter(Boolean);if(A.length){(att[n]=att[n]||[]).push({d:s.date,v:A.reduce((a,b)=>a+b,0)});}
+    if(r.feel)(feel[n]=feel[n]||[]).push(r.feel);});});
+  Object.values(PLANS).forEach(p=>{if(p.key==='hoop')return;const X=ST[p.key].xlog||{};Object.entries(X).forEach(([id,o])=>{const s=p.S[id];if(!s||!inRange(s.date))return;Object.entries(o).forEach(([n,x])=>{if(x.feel)(feel[n]=feel[n]||[]).push(x.feel);
+    let L;try{L=effList(p,s)||normList(p,s);}catch(e){L=[];}const e=L.find(z=>z.n===n);if(e&&x.sets){let pl=0,dn=0;e.sets.forEach((v,j)=>{if(typeof v==='number'&&x.sets[j]!=null){pl+=v;dn+=+x.sets[j];}});if(pl)(per[p.key]=per[p.key]||[]).push({d:s.date,v:Math.round(dn/pl*100)});}});});});
+  const acts={};BB.log.filter(e=>e.acts&&inRange(dOf(e.date))).forEach(e=>Object.entries(e.acts).forEach(([a,o])=>{const z=acts[a]=acts[a]||{n:0,f:[]};z.n++;if(o.feel)z.f.push(o.feel);}));
+  const dr=Object.keys(att);if(!TLDCH||!att[TLDCH])TLDCH=dr[0]||null;const fl=Object.entries(feel).map(([n,a])=>({l:n.slice(0,10),v:+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1)})).sort((a,b)=>b.v-a.v).slice(0,10);
+  const ch=(t,b)=>`<div class="dch"><div class="dcht">${t}</div>${b}</div>`;
+  const html=`<div class="card"><h3>🏋️ Training log</h3>
+   ${dr.length?ch('Attempts needed (fewer = better)',`<div class="chips">${dr.map(n=>`<button class="chip ${TLDCH===n?'on':''}" data-tldch="${esc(n)}">${esc(n)}</button>`).join('')}</div>${lineChart(att[TLDCH].sort((a,b)=>a.d-b.d),{color:'#ff8c1a'})}`):'<p class="muted" style="font-size:13px">Log drills in the 🏋️ Log tab to see them here.</p>'}
+   ${fl.length?ch('How each drill feels (5 = 😄)',barChart(fl,{max:5,color:'#3ddc84'})):''}
+   ${Object.entries(per).map(([k,a])=>ch(`${PLANS[k].emoji} % of planned reps you did`,lineChart(a.sort((x,y)=>x.d-y.d),{min:0,max:Math.max(110,...a.map(x=>x.v)),goal:100,color:PLANS[k].color}))).join('')}
+   ${Object.keys(acts).length?ch('👥 Team practice — what you did (times)',barChart(Object.entries(acts).sort((a,b)=>b[1].n-a[1].n).slice(0,10).map(([a,o])=>({l:a.split(' ')[0],v:o.n})),{color:'#8d8d98'}))+ch('👥 How each part felt (5 = 😄)',barChart(Object.entries(acts).filter(([,o])=>o.f.length).map(([a,o])=>({l:a.split(' ')[0],v:+(o.f.reduce((x,y)=>x+y,0)/o.f.length).toFixed(1)})),{max:5,color:'#5aa9ff'})):''}</div>`;
+  const first=$('v-data').querySelectorAll('.card')[1];first?first.insertAdjacentHTML('beforebegin',html):$('v-data').insertAdjacentHTML('beforeend',html);};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tldch]');if(b){TLDCH=b.dataset.tldch;renderData();}});
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -3729,6 +3883,10 @@ Object.assign(HE,{'🧮 Your numbers':'🧮 המספרים שלך','Use these nu
  ['Sweet drinks','משקאות מתוקים'],['Sweets & snacks','ממתקים וחטיפים'],['Protein in my meals','חלבון בארוחות'],['Water','מים'],['Every meal','כל ארוחה'],['Most meals','רוב הארוחות'],['Few meals','מעט ארוחות']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 [['Rest day','יום מנוחה'],['Easy day','יום קל'],['Training day','יום אימון'],['Big day / game','יום גדול / משחק'],['Let the app pick','תן לאפליקציה לבחור']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 [['Your days by mood','הימים שלך לפי מצב רוח'],['Awful','נורא'],['Amazing','מדהים'],['Great','מעולה'],['Meh','ככה ככה']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+Object.assign(HE,{'Log':'יומן אימון','Closest to today':'הכי קרוב להיום','Mark done':'סמן בוצע','➕ Add a drill / exercise':'➕ הוסף תרגיל','What did we do?':'מה עשינו?','Whole practice':'כל האימון','+ Other':'+ אחר','Full log':'יומן מלא',
+ '📝 Log the game & my stats':'📝 רשום את המשחק והסטטיסטיקה שלי','Note (optional)':'הערה (לא חובה)','What did you do / learn?':'מה עשית / למדת?','🗣 What the coach said':'🗣 מה המאמן אמר','No training this day.':'אין אימון ביום הזה.','🏋️ Training log':'🏋️ יומן אימון','Weight used (kg)':'משקל (ק״ג)'});
+[['Training Log','יומן אימון'],['attempts until','ניסיונות עד'],['makes','קליעות'],['in a row','ברצף'],['Right hand','יד ימין'],['Left hand','יד שמאל'],['Spot','נקודה'],['Round','סיבוב'],['Total shots (optional)','סה״כ זריקות (לא חובה)'],
+ ['Attempts needed (fewer = better)','ניסיונות שנדרשו (פחות = יותר טוב)'],['How each drill feels','איך כל תרגיל מרגיש'],['of planned reps you did','מהחזרות המתוכננות שעשית'],['what you did','מה עשית'],['How each part felt','איך כל חלק הרגיש'],['How hard','כמה קשה'],['How I felt after','איך הרגשתי אחרי']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 function tr(s){if(LANG!=='he'||!s)return s;const t=s.trim();if(!t)return s;if(HE[t]!=null)return s.replace(t,HE[t]);
   let r=t;for(const[rx,rep]of HE_RX)r=r.replace(rx,rep);
   const longTxt=t.length>60;for(const[a,b]of HE_PH){if(longTxt&&HE_GENERIC.has(a))continue;if(r.includes(a)){const re=new RegExp('(^|[^A-Za-z])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![A-Za-z])','g');r=r.replace(re,(m,p1)=>p1+b);}}
