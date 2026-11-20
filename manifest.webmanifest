@@ -1,7 +1,7 @@
 {
-  "name": "My Training",
-  "short_name": "Training",
-  "description": "Nitay's pull-up, jump high and push-up plans",
+  "name": "Train & Play",
+  "short_name": "Train & Play",
+  "description": "Nitay's training plans + basketball tracker",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,8 +9,21 @@
   "theme_color": "#0d0d10",
   "orientation": "portrait",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

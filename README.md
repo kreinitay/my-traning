@@ -1,30 +1,32 @@
-# My Training
+# Train & Play
 
-Nitay's training app: Pull-Up Plan, Jump High Plan and Push-Up Plan.
-It's a plain website (no build step), so it works on Netlify straight away.
+Nitay's training + basketball app:
+- Plans: Hoops, Hands & Legs, Pull-Ups, Jump High, Push-Ups
+- Basketball log, season schedule, tests and coach notes
+- Journal, food log, school timetable + exams
+- Calendar and badges
 
-## Put it on Netlify (fastest)
-1. Unzip this folder.
-2. Go to https://app.netlify.com/drop
-3. Drag the whole folder onto the page. Done — you get a link.
+It's a plain website with no build step, so it works on Netlify straight away.
 
-## Put it on GitHub + Netlify (updates automatically)
-1. On GitHub make a new repository (for example `my-training`).
-2. Click **Add file → Upload files**, drag in everything from this folder, then **Commit changes**.
-3. On Netlify: **Add new site → Import an existing project → GitHub** → pick the repo.
-4. Build command: leave empty. Publish directory: `.`  → **Deploy**.
-5. To update later, upload the new `index.html` to GitHub — Netlify updates the site by itself.
+## Files (all in one folder, no subfolders)
+- `index.html`: the whole app
+- `sw.js`: lets it work offline
+- `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`: app name and icon
+- `netlify.toml`: Netlify settings
+- `README.md`: this file
+
+## Update on GitHub + Netlify
+1. Open your repository on GitHub → **Add file → Upload files**.
+2. Drag in all the files → **Commit changes**.
+3. Netlify updates the site by itself in about a minute.
+4. On the phone, close the app and open it again (twice if it still shows the old version).
 
 ## Put it on your phone like an app
 Open your Netlify link in Chrome → **⋮ → Add to Home screen / Install app**.
-It opens full screen and works without internet.
 
-## Moving your progress
-Progress is saved in the phone's browser. To move it (for example from the old file to the website):
-Progress tab → **Copy backup**, then on the new one → **Restore** and paste.
+## Login on several devices
+Settings → **Account & sync** → follow the 5 steps (free Firebase).
+After that, log in with the same account on every device.
 
-## Files
-- `index.html` — the whole app
-- `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` — app name and icon
-- `sw.js` — lets it work offline
-- `netlify.toml` — Netlify settings
+## Moving your progress without an account
+Progress tab → **Copy backup**, then on the other device → **Restore** and paste.
