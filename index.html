@@ -371,6 +371,14 @@ body.pc nav .in{max-width:760px}body.pc .bgrid{grid-template-columns:repeat(5,1f
 .gmrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);cursor:pointer}.gmrow.nx{background:rgba(255,140,26,.1);border-radius:10px}
 .gmr{flex:0 0 26px;height:26px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:12px;font-weight:800}
 .gmres{font-weight:900;font-size:13px;padding:3px 8px;border-radius:8px;background:var(--card2)}.gmres.W{color:#3ddc84}.gmres.L{color:#ff7a6b}
+/* sleep + data */
+.slsum{display:flex;flex-direction:column;background:linear-gradient(135deg,rgba(124,108,255,.25),var(--card2));border-radius:16px;padding:12px 14px;margin:10px 0}.slsum b{font-size:34px;font-weight:900;line-height:1}.slsum span{font-weight:700;margin-top:4px}.slsum small{color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:6px;margin:6px 0 4px}.kpis div{background:var(--card2);border-radius:12px;padding:8px 4px;text-align:center}.kpis b{display:block;font-size:17px}.kpis small{font-size:10px;color:var(--muted);font-weight:700}
+.dch{margin-top:12px}.dcht{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:2px}
+.dleg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--muted);margin-top:2px}.dleg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.heat{width:100%;display:block;margin:6px 0}
+.qnav{grid-template-columns:repeat(4,minmax(0,1fr))!important}body.pc .qnav{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+body.pc #v-data.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;align-items:start}body.pc #v-data>*{grid-column:1/-1}body.pc #v-data>.card{grid-column:auto}
 </style>
 </head>
 <body class="home">
@@ -385,6 +393,7 @@ body.pc nav .in{max-width:760px}body.pc .bgrid{grid-template-columns:repeat(5,1f
   <section class="view" id="v-log"></section>
   <section class="view" id="v-food"></section>
   <section class="view" id="v-school"></section>
+  <section class="view" id="v-data"></section>
   <!-- SETTINGS -->
   <section class="view" id="v-settings"></section>
   <!-- PLAN -->
@@ -1463,7 +1472,7 @@ function renderHome(){
       <div class="nx">${nx}</div><span class="go">Open →</span></button>`;};
   const gs=globalStreak(),nb=Object.keys(loadBadges()).length;
   $('v-home').innerHTML=`<div class="hello">Hey ${NAME} 👋 ${gs.c?`<span class="streak">🔥 ${gs.c}</span>`:''}</div>${lookBar()}<p class="sub">Training + basketball tracker — pick something to open.</p>
-  <div class="qnav"><button data-view="cal"><b>📅</b>Calendar</button><button data-view="bb"><b>🏀</b>Basketball</button><button data-view="log"><b>📔</b>Journal</button><button data-view="food"><b>🍽</b>Food</button><button data-view="school"><b>🏫</b>School</button><button data-view="badges"><b>🏅</b>Badges <small>${nb}/${BADGES.length}</small></button></div>
+  <div class="qnav"><button data-view="cal"><b>📅</b>Calendar</button><button data-view="bb"><b>🏀</b>Basketball</button><button data-view="log"><b>📔</b>Journal</button><button data-view="food"><b>🍽</b>Food</button><button data-view="school"><b>🏫</b>School</button><button data-view="data"><b>📊</b>Data</button><button data-view="badges"><b>🏅</b>Badges <small>${nb}/${BADGES.length}</small></button></div>
   ${weekSummary()}${todayBox()}${banner}${card(HOOP)}${card(STR)}${card(PULL)}${card(JUMP)}${card(PUSH)}${bbHomeCard()}`;
 }
 function renderHero(){
@@ -1790,7 +1799,7 @@ function lineChart(pts,o={}){if(!pts.length)return '<p class="muted" style="font
   const col=o.color||'var(--accent)',id='g'+Math.random().toString(36).slice(2,8);
   const line=pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)} ${y(p.v).toFixed(1)}`).join(' ');
   const area=line+` L${x(pts.length-1).toFixed(1)} ${H-pb} L${x(0).toFixed(1)} ${H-pb} Z`;
-  const fmtV=v=>Math.round(v*10)/10;
+  const fmtV=o.fmt||(v=>Math.round(v*10)/10);
   return `<svg class="lchart" viewBox="0 0 ${W} ${H}"><defs><linearGradient id="${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:${col};stop-opacity:.35"/><stop offset="1" style="stop-color:${col};stop-opacity:0"/></linearGradient></defs>
    <line x1="${pl}" x2="${W-pr}" y1="${H-pb}" y2="${H-pb}" style="stroke:var(--line)"/>
    <text x="${pl-6}" y="${y(mx)+4}" text-anchor="end" class="lcl">${fmtV(mx)}</text><text x="${pl-6}" y="${y(mn)}" text-anchor="end" class="lcl">${fmtV(mn)}</text>
@@ -2869,8 +2878,9 @@ function monthReport(off){const t=new Date();t.setHours(23,59,59);const ms=new D
   const m=dayMap();let act=0;for(const d=new Date(ms);d<=end;d.setDate(d.getDate()+1)){const o=m.get(d.toDateString());if(o&&o.did)act++;}
   let jn=0;for(const d=new Date(ms);d<=end;d.setDate(d.getDate()+1))if(jHasContent(JR.e[isoD(d)]))jn++;
   let tmN=0,tmL=0;for(const d=new Date(ms);d<=end;d.setDate(d.getDate()+1)){teamOn(d).forEach(x=>{if(d<new Date(new Date().setHours(0,0,0,0))){tmN++;if(BB.log.some(e=>e.date===isoD(d)&&e.type===x.type))tmL++;}});}
+  let slp=0;for(const d=new Date(ms);d<=end;d.setDate(d.getDate()+1)){const h=sleepH(JR.e[isoD(d)]);if(h!=null)slp+=Math.min(1,h/9);}const sl=slp/days;
   const tr=pl?dn/pl:0,cons=Math.min(1,act/(days*5/7)),jr=jn/days,bb=tmN?tmL/tmN:0;
-  const parts=[['🏋️ Trainings done',Math.round(tr*55),55],['🔥 Active days',Math.round(cons*20),20],['📔 Journal days',Math.round(Math.min(1,jr*1.2)*10),10],['🏀 Team days logged',Math.round(bb*15),15]];
+  const parts=[['🏋️ Trainings done',Math.round(tr*50),50],['🔥 Active days',Math.round(cons*15),15],['😴 Sleep (9 h nights)',Math.round(sl*10),10],['📔 Journal days',Math.round(Math.min(1,jr*1.2)*10),10],['🏀 Team days logged',Math.round(bb*15),15]];
   const score=parts.reduce((a,x)=>a+x[1],0);return{ms,score,parts,per,pl,dn};}
 const gradeOf=s=>s>=90?['A+','🏆']:s>=80?['A','🔥']:s>=70?['B','💪']:s>=60?['C','🙂']:s>=50?['D','😐']:['F','😬'];
 function reportCard(){const r=monthReport(RPM),[g,e]=gradeOf(r.score);if(!r.pl&&RPM===0&&r.score===0)return '';
@@ -3150,6 +3160,179 @@ function gmLog(r){const g=SEASON.find(x=>x.r===r);bbNew('game',g.d);BBE.opp=OPP[
 const _bbSaveG=bbSave;bbSave=function(){const e=BBE;if(e&&e.type==='game'){const g=gameOf(e.date);if(g&&e.us!==''&&e.us!=null&&e.them!==''&&e.them!=null){const S=ST.hoop;S.scores=S.scores||{};S.scores[g.r]=[+e.us,+e.them];save();}}_bbSaveG();};
 (()=>{try{const sc=(ST.hoop.scores||{});SEASON.forEach(g=>{if(sc[g.r]){g.us=sc[g.r][0];g.them=sc[g.r][1];}});}catch(e){}})();
 document.addEventListener('click',e=>{const b=e.target.closest('[data-gmlog]');if(b){gmLog(+b.dataset.gmlog);}});
+/* ================= SLEEP TRACKER ================= */
+const PHONE2H=['None','< 30 min','30–60 min','1–2 hours','The whole time'],PHONEBED=['No','A few min','15–30 min','30–60 min','1 hour +'],
+ WAKEN=['0','1','2','3+'],WHYW=['⏰ Alarm','😊 By myself','👪 Parents','🔊 Noise','🚽 Bathroom','😰 Bad dream','🌡 Too hot / cold','📱 Phone','🤷 Other'],NAP=['No','< 30 min','30–60 min','1 hour +'];
+const SLEEPF=[{k:'bed',t:'time',l:'Got in bed (last night)'},{k:'asleep',t:'time',l:'Fell asleep (about)'},{k:'wake',t:'time',l:'Woke up'},{k:'up',t:'time',l:'Got out of bed'},
+ {k:'phone2h',t:'choice',l:'📱 Phone in the 2 hours before bed',o:PHONE2H},{k:'phonebed',t:'choice',l:'📱 Phone in bed',o:PHONEBED},
+ {k:'wakeups',t:'choice',l:'Woke up in the night',o:WAKEN},{k:'whywake',t:'multi',l:'Why did you wake up this morning?',o:WHYW},
+ {k:'sleepq',t:'score',l:'Sleep quality'},{k:'rested',t:'score',l:'How rested I feel'},{k:'nap',t:'choice',l:'Nap yesterday',o:NAP}];
+JTPL[0].f=SLEEPF;JTPL[0].name='Sleep';
+JSC.splice(2,0,['rested','Rested']);
+const SLEEP_GOAL=9;
+const hm2m=t=>{if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m;};
+const m2hm=m=>{m=((Math.round(m)%1440)+1440)%1440;return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;};
+const nightM=t=>{const m=hm2m(t);return m==null?null:(m<12*60?m+1440:m);};   // 23:30 → 1410 · 00:30 → 1470
+sleepH=function(e){if(!e)return null;const s=e.v.asleep||e.v.bed,w=e.v.wake;if(!s||!w)return null;let m=hm2m(w)-hm2m(s);if(m<=0)m+=1440;return +(m/60).toFixed(1);};
+function fallMin(e){if(!e||!e.v.bed||!e.v.asleep)return null;let m=hm2m(e.v.asleep)-hm2m(e.v.bed);if(m<0)m+=1440;return m>300?null:m;}
+const hasSleep=e=>!!(e&&(e.v.bed||e.v.wake||e.v.sleepq));
+const _jField=jField;jField=function(f,e,pre){const k=pre?pre+'_'+f.k:f.k,v=e.v[k];
+  if(f.t==='choice')return `<div class="jf"><b>${esc(f.l)}</b><div class="chips">${f.o.map((o,i)=>`<button class="chip ${v===i?'on':''}" data-jopt="${k}:${i}">${o}</button>`).join('')}</div></div>`;
+  if(f.t==='multi')return `<div class="jf"><b>${esc(f.l)}</b><div class="chips">${f.o.map((o,i)=>`<button class="chip ${(v||[]).includes(i)?'on':''}" data-jmul="${k}:${i}">${o}</button>`).join('')}</div></div>`;
+  return _jField(f,e,pre);};
+function sleepLine(e){const h=sleepH(e);if(!hasSleep(e))return '';const p=e.v.phone2h,fm=fallMin(e);
+  return [h!=null?`😴 ${h} h`:'',e.v.bed?`in bed ${e.v.bed}`:'',fm!=null?`asleep after ${fm} min`:'',e.v.wake?`up ${e.v.wake}`:'',p!=null?`📱 before bed: ${PHONE2H[p]}`:''].filter(Boolean).join(' · ');}
+function wakeAvg(n=7){const a=[];for(let i=0;i<n;i++){const d=new Date();d.setDate(d.getDate()-i);const e=JR.e[isoD(d)];if(e&&e.v.wake)a.push(hm2m(e.v.wake));}return a.length?a.reduce((x,y)=>x+y,0)/a.length:hm2m('06:45');}
+const bedGoal=()=>m2hm(wakeAvg()-SLEEP_GOAL*60-15);
+function sleepDebt(n=7){let s=0,c=0;for(let i=0;i<n;i++){const d=new Date();d.setDate(d.getDate()-i);const h=sleepH(JR.e[isoD(d)]);if(h!=null){s+=SLEEP_GOAL-h;c++;}}return c?{h:+s.toFixed(1),n:c}:null;}
+// quick sleep sheet (morning)
+let SLD=null;
+function sleepSheet(iso){const keep=SLD===iso&&$('ov').classList.contains('on')?$('sheet').scrollTop:0;SLD=iso;const e=jEnt(iso,true);if(!e.used.includes('sleep'))e.used.unshift('sleep');const h=sleepH(e),fm=fallMin(e);
+  $('sheet').innerHTML=`<div class="grab"></div><h2>😴 Sleep · ${isToday(dOf(iso))?'last night':fmt(dOf(iso))}</h2>
+   ${h!=null?`<div class="slsum"><b>${h} h</b><span>${h>=SLEEP_GOAL?'Great — 9+ hours 🔥':h>=8?'OK — a bit under 9':'Too little — go to bed earlier tonight'}</span>${fm!=null?`<small>Fell asleep after ${fm} min</small>`:''}</div>`:''}
+   ${SLEEPF.map(f=>jField(f,e,'')).join('')}
+   <p class="muted" style="font-size:12px;margin:10px 0 0">For 9 hours, be asleep by <b>${bedGoal()}</b> (based on when you wake up).</p>
+   <button class="btn main" style="width:100%;margin-top:14px" data-sldone>Save ✓</button>`;$('ov').classList.add('on');$('sheet').scrollTop=keep;}
+// sleep on the home screen: morning prompt, last night summary, evening bedtime reminder
+const _todayBoxSL=todayBox;todayBox=function(){let h=_todayBoxSL();const n=new Date(),iso=isoD(n),e=JR.e[iso],hr=n.getHours();let r='';
+  if(hasSleep(e))r=`<div class="titem dn" style="--c:#7c6cff" data-sleep="${iso}"><span class="temo">😴</span><div class="tmid"><b>Last night: ${sleepH(e)??'–'} h</b><small>${esc(sleepLine(e))}</small></div><span class="chev">›</span></div>`;
+  else if(hr>=4&&hr<15)r=`<div class="titem" style="--c:#7c6cff" data-sleep="${iso}"><span class="temo">😴</span><div class="tmid"><b>How did you sleep?</b><small>30 seconds · bedtime, phone, waking up</small></div><span class="tlog" style="background:#7c6cff">+ Log</span></div>`;
+  if(hr>=20){const bg=bedGoal(),ph=m2hm(hm2m(bg)-60);r+=`<div class="titem" style="--c:#7c6cff"><span class="temo">📵</span><div class="tmid"><b>Phone away at ${ph}</b><small>Asleep by ${bg} = 9 hours before you wake up</small></div></div>`;}
+  return r?h.replace(/<\/div>$/,r+'</div>'):h;};
+const _dayTotalSL=dayTotal;dayTotal=function(d){const L=_dayTotalSL(d),e=JR.e[isoD(d)];if(hasSleep(e))L.unshift(sleepLine(e));return L;};
+const _openCalDaySL=openCalDay;openCalDay=function(iso){_openCalDaySL(iso);const e=JR.e[iso],h2=$('sheet').querySelector('h2');h2&&h2.insertAdjacentHTML('afterend',`<div class="titem" style="--c:#7c6cff" data-sleep="${iso}"><span class="temo">😴</span><div class="tmid"><b>${hasSleep(e)?`Sleep: ${sleepH(e)??'–'} h`:'Log sleep'}</b><small>${hasSleep(e)?esc(sleepLine(e)):'bedtime, phone, waking up'}</small></div><span class="chev">›</span></div>`);};
+const _bbNewSL=bbNew;bbNew=function(type,date){_bbNewSL(type,date);const h=sleepH(JR.e[BBE.date]);if(h!=null&&BBE.sleep==null){BBE.sleep=h;renderBBForm();}};
+const _weekSummarySL=weekSummary;weekSummary=function(){const h=_weekSummarySL();if(!h)return h;const[s,e]=weekRange(-1);const a=[];for(const d=new Date(s);d<=e;d.setDate(d.getDate()+1)){const v=sleepH(JR.e[isoD(d)]);if(v!=null)a.push(v);}
+  if(!a.length)return h;const av=(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1);return h.replace('</summary>',`</summary><div class="wrow"><span>😴</span><div class="dmid"><b>Sleep</b><div class="muted" style="font-size:12px">${av} h a night · ${a.length} nights logged${+av<SLEEP_GOAL?` · <span style="color:#ff7a6b">${(SLEEP_GOAL-av).toFixed(1)} h under 9</span>`:' ✓'}</div></div></div>`);};
+// short sleep / lots of phone → light day hint
+const _lightReasonSL=lightReason;lightReason=function(plan,s){const r=_lightReasonSL(plan,s);if(r||!s||s.optional||s.final||s.kind==='final')return r;const e=JR.e[isoD(s.date)];
+  if(e&&e.v.sleepq!=null&&e.v.sleepq!==''&&+e.v.sleepq<=3)return '😴 Bad sleep last night';return '';};
+const _aggrSL=aggr;aggr=function(){const a=_aggrSL();let n9=0,nophone=0;Object.values(JR.e).forEach(e=>{const h=sleepH(e);if(h!=null&&h>=SLEEP_GOAL)n9++;if(e.v.phone2h===0)nophone++;});a.n9=n9;a.nophone=nophone;return a;};
+BADGES.push(['sl9','😴','Sleep champ','Sleep 9+ hours 7 times',a=>a.n9>=7],['nph','📵','Phone free','No phone 2 h before bed — 5 times',a=>a.nophone>=5]);
+
+/* ================= DATA PAGE: all your data in graphs ================= */
+function barChart(items,o={}){if(!items.length||items.every(x=>!(Array.isArray(x.v)?x.v.some(Boolean):x.v)))return '<p class="muted" style="font-size:13px;margin:6px 0">No data yet.</p>';
+  const W=320,H=o.h||140,pl=30,pb=o.labels===false?8:24,pt=14,tot=x=>Array.isArray(x.v)?x.v.reduce((a,b)=>a+(b||0),0):(x.v||0);
+  const mx=Math.max(o.max||0,o.goal||0,...items.map(tot))||1,n=items.length,bw=Math.max(3,(W-pl-6)/n*.72),gap=(W-pl-6)/n,y=v=>pt+(1-v/mx)*(H-pt-pb);
+  const fmtV=o.fmt||(v=>Math.round(v*10)/10);const step=Math.ceil(n/8);
+  let bars='';items.forEach((x,i)=>{const x0=pl+i*gap+(gap-bw)/2;let acc=0;(Array.isArray(x.v)?x.v:[x.v]).forEach((v,j)=>{if(!v)return;const h=(v/mx)*(H-pt-pb);bars+=`<rect x="${x0.toFixed(1)}" y="${(y(acc+v)).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" style="fill:${(x.c&&x.c[j])||x.col||o.color||'var(--accent)'}"/>`;acc+=v;});
+    if(o.vals!==false&&n<=14&&tot(x))bars+=`<text x="${(x0+bw/2).toFixed(1)}" y="${(y(tot(x))-3).toFixed(1)}" text-anchor="middle" class="lcl">${fmtV(tot(x))}</text>`;
+    if(o.labels!==false&&i%step===0)bars+=`<text x="${(x0+bw/2).toFixed(1)}" y="${H-8}" text-anchor="middle" class="lcl">${esc(x.l)}</text>`;});
+  return `<svg class="lchart" viewBox="0 0 ${W} ${H}"><line x1="${pl}" x2="${W-4}" y1="${H-pb}" y2="${H-pb}" style="stroke:var(--line)"/><text x="${pl-5}" y="${pt+4}" text-anchor="end" class="lcl">${fmtV(mx)}</text>
+   ${o.goal!=null?`<line x1="${pl}" x2="${W-4}" y1="${y(o.goal)}" y2="${y(o.goal)}" style="stroke:var(--ink);opacity:.45" stroke-dasharray="5 5"/><text x="${W-4}" y="${y(o.goal)-4}" text-anchor="end" class="lcl">${o.goalTxt||'goal '+fmtV(o.goal)}</text>`:''}${bars}</svg>`;}
+function legend(L){return `<div class="dleg">${L.map(([c,l])=>`<span><i style="background:${c}"></i>${l}</span>`).join('')}</div>`;}
+function heatmap(weeks=18){const m=dayMap(),t=new Date();t.setHours(0,0,0,0);const s=new Date(t);s.setDate(t.getDate()-t.getDay()-7*(weeks-1));let cells='';
+  for(let w=0;w<weeks;w++)for(let d=0;d<7;d++){const x=new Date(s);x.setDate(s.getDate()+w*7+d);if(x>t)continue;const iso=isoD(x);let n=0;
+    Object.values(PLANS).forEach(p=>p.A.forEach(z=>{if(z.date.toDateString()===x.toDateString()&&didIt(ST[p.key],z.id))n++;}));n+=BB.log.filter(e=>e.date===iso).length;
+    const o=m.get(x.toDateString()),miss=o&&o.planned&&!o.did&&x<t;cells+=`<rect x="${w*15}" y="${d*15}" width="12" height="12" rx="3" style="fill:${n?'var(--accent)':miss?'rgba(255,90,90,.35)':'var(--card2)'};fill-opacity:${n?Math.min(1,.3+n*.25):1}"><title>${iso}: ${n}</title></rect>`;}
+  return `<svg viewBox="0 0 ${weeks*15} 105" class="heat">${cells}</svg>`;}
+let DRANGE=30;
+function inRange(d){const t=new Date();t.setHours(23,59,59);return DRANGE===0||(t-d)/864e5<DRANGE;}
+function daysBack(){const n=DRANGE||Math.max(30,Math.ceil((new Date()-new Date(START[0],START[1],START[2]))/864e5)+1),o=[];for(let i=n-1;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);o.push(d);}return o;}
+function weeksBack(){const n=Math.max(4,Math.ceil((DRANGE||120)/7)),o=[];for(let i=n-1;i>=0;i--)o.push(weekRange(-i));return o;}
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const PCOL=()=>Object.values(PLANS).map(p=>[p.color,p.emoji+' '+p.name.replace(' Plan','')]);
+function renderData(){const D=daysBack(),Wk=weeksBack(),E=D.map(d=>({d,e:JR.e[isoD(d)]}));
+  const SL=E.filter(x=>hasSleep(x.e)),hrs=SL.map(x=>sleepH(x.e)).filter(v=>v!=null),beds=SL.map(x=>nightM(x.e.v.asleep||x.e.v.bed)).filter(v=>v!=null),wakes=SL.map(x=>hm2m(x.e.v.wake)).filter(v=>v!=null),falls=SL.map(x=>fallMin(x.e)).filter(v=>v!=null);
+  const debt=sleepDebt();const col=h=>h>=SLEEP_GOAL?'#3ddc84':h>=8?'#ffb627':'#ff6b6b';
+  const shortD=d=>`${d.getDate()}/${d.getMonth()+1}`;
+  const byCat=(k,labels,val)=>labels.map((l,i)=>{const a=SL.filter(x=>x.e.v[k]===i).map(x=>val(x.e)).filter(v=>v!=null);return{l:l.replace(/ min| hours/,'').replace('The whole time','all').replace('None','0'),v:a.length?+avg(a).toFixed(1):0,n:a.length};});
+  const why=WHYW.map((l,i)=>({l:l.split(' ')[0],v:SL.filter(x=>(x.e.v.whywake||[]).includes(i)).length}));
+  // training
+  const wkPlan=Wk.map(([s,e])=>({l:shortD(s),v:Object.values(PLANS).map(p=>p.A.filter(z=>z.date>=s&&z.date<=e&&didIt(ST[p.key],z.id)).length),c:Object.values(PLANS).map(p=>p.color)}));
+  const wkPct=Wk.map(([s,e])=>{let pl=0,dn=0;Object.values(PLANS).forEach(p=>p.A.forEach(z=>{if(z.date<s||z.date>e||z.optional||z.phase==='hist')return;pl++;if(didIt(ST[p.key],z.id))dn++;}));return{d:s,v:pl?Math.round(dn/pl*100):null};}).filter(x=>x.v!=null&&x.d<=new Date());
+  const feels=[0,0,0,0];Object.values(PLANS).forEach(p=>{const S=ST[p.key];p.A.forEach(z=>{if(inRange(z.date)&&S.feel[z.id]!=null)feels[S.feel[z.id]]++;});});
+  const hours=Array(24).fill(0);Object.values(PLANS).forEach(p=>{const S=ST[p.key];Object.entries(S.doneAt||{}).forEach(([id,t])=>{const d=new Date(t);if(inRange(d))hours[d.getHours()]++;});});
+  // basketball shooting per week
+  const shotW=Wk.map(([s,e])=>{const c={};HOOP.S.forEach(z=>{if(z.date<s||z.date>e)return;const t=hTot(ST.hoop,z.id);Object.entries(t.c).forEach(([k,v])=>{c[k]=c[k]||{m:0,a:0};c[k].m+=v.m;c[k].a+=v.a;});});(ST.hoop.free||[]).forEach(f=>{const d=new Date(f.d);if(d<s||d>e)return;Object.entries(f.c).forEach(([k,v])=>{c[k]=c[k]||{m:0,a:0};c[k].m+=v.m;c[k].a+=v.a;});});return{s,c};});
+  const makesW=shotW.map(x=>({l:shortD(x.s),v:Object.values(x.c).reduce((a,v)=>a+v.m,0)}));
+  const pctLine=k=>shotW.filter(x=>x.c[k]&&x.c[k].a).map(x=>({d:x.s,v:Math.round(x.c[k].m/x.c[k].a*100)}));
+  const G=BB.log.filter(e=>e.type==='game'&&inRange(dOf(e.date))).sort((a,b)=>a.date.localeCompare(b.date));
+  // food
+  const food=D.slice(-14).map(d=>{const f=foodDay(isoD(d));return{l:shortD(d),k:f.kcal,p:f.p};});
+  // tests
+  const pullT=testHist(PULL).filter(x=>inRange(x.d)),pushT=pushTests(ST.push).filter(x=>inRange(x.d)),jE=jEntries(ST.jump).filter(x=>inRange(x.d));
+  // mood & body
+  const jl=k=>E.filter(x=>x.e&&jVal(x.e,k)!=null).map(x=>({d:x.d,v:jVal(x.e,k)}));const moods=E.filter(x=>x.e&&x.e.mood).map(x=>({d:x.d,v:x.e.mood}));
+  // school
+  const grades=SC.exams.filter(x=>x.grade!=null&&x.grade!==''&&inRange(dOf(x.date))).sort((a,b)=>a.date.localeCompare(b.date)).map(x=>({d:dOf(x.date),v:Math.round(+x.grade/(+x.max||100)*100)}));
+  const studyW=Wk.map(([s,e])=>({l:shortD(s),v:SC.exams.reduce((n,x)=>n+(x.study||[]).filter(z=>z.done&&dOf(z.d)>=s&&dOf(z.d)<=e).length,0)}));
+  // connections
+  const bucket=h=>h<7?0:h<8?1:h<9?2:3,BK=['< 7 h','7–8 h','8–9 h','9 h +'];
+  const feelBy=[[],[],[],[]],ptsBy=[[],[],[],[]];Object.values(PLANS).forEach(p=>{const S=ST[p.key];p.A.forEach(z=>{if(S.feel[z.id]==null||!inRange(z.date))return;const h=sleepH(JR.e[isoD(z.date)]);if(h!=null)feelBy[bucket(h)].push(3-S.feel[z.id]);});});
+  G.forEach(g=>{const h=sleepH(JR.e[g.date])??g.sleep;if(h!=null)ptsBy[bucket(+h)].push(bbPts(g));});
+  const ch=(t,b)=>`<div class="dch"><div class="dcht">${t}</div>${b}</div>`;
+  const kpi=a=>`<div class="kpis">${a.map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('')}</div>`;
+  $('v-data').innerHTML=`<div class="top"><button class="back" data-home>‹</button><h1>Your <span>Data</span> 📊</h1></div>
+  <div class="chips" style="margin-bottom:12px">${[[14,'2 weeks'],[30,'Month'],[90,'3 months'],[0,'All']].map(([v,l])=>`<button class="chip ${DRANGE===v?'on':''}" data-drange="${v}">${l}</button>`).join('')}</div>
+  <div class="card"><h3>🔥 Activity</h3>${heatmap()}<div class="muted" style="font-size:12px">Each square = a day. Darker = more trainings. Red = planned but missed.</div></div>
+  <div class="card"><h3>😴 Sleep</h3>${kpi([[hrs.length?avg(hrs).toFixed(1)+' h':'–','average'],[beds.length?m2hm(avg(beds)):'–','asleep at'],[wakes.length?m2hm(avg(wakes)):'–','wake up'],[falls.length?Math.round(avg(falls))+'′':'–','to fall asleep'],[debt?(debt.h>0?debt.h+' h':'0 ✓'):'–','under 9 h (7 days)']])}
+   ${ch('Hours a night',barChart(D.slice(-Math.min(D.length,31)).map(d=>{const h=sleepH(JR.e[isoD(d)]);return{l:shortD(d),v:h||0,col:h?col(h):''};}),{goal:SLEEP_GOAL,max:11,vals:false}))}
+   ${ch('Time you fell asleep',lineChart(SL.filter(x=>x.e.v.asleep||x.e.v.bed).map(x=>({d:x.d,v:nightM(x.e.v.asleep||x.e.v.bed)})),{fmt:m2hm,color:'#7c6cff'}))}
+   ${ch('Time you woke up',lineChart(SL.filter(x=>x.e.v.wake).map(x=>({d:x.d,v:hm2m(x.e.v.wake)})),{fmt:m2hm,color:'#ffb627'}))}
+   ${ch('Minutes to fall asleep',lineChart(SL.filter(x=>fallMin(x.e)!=null).map(x=>({d:x.d,v:fallMin(x.e)})),{color:'#5aa9ff'}))}
+   ${ch('Sleep quality & how rested (1–10)',lineChart(jl('sleepq'),{min:1,max:10,color:'#7c6cff'})+lineChart(jl('rested'),{min:1,max:10,color:'#3ddc84'}))}
+   ${ch('📱 Phone before bed → hours of sleep',barChart(byCat('phone2h',PHONE2H,sleepH),{max:11,goal:SLEEP_GOAL,color:'#7c6cff'}))}
+   ${ch('📱 Phone before bed → sleep quality',barChart(byCat('phone2h',PHONE2H,e=>e.v.sleepq!=null&&e.v.sleepq!==''?+e.v.sleepq:null),{max:10,color:'#c77dff'}))}
+   ${ch('📱 Phone in bed → minutes to fall asleep',barChart(byCat('phonebed',PHONEBED,fallMin),{color:'#5aa9ff'}))}
+   ${ch('Why you woke up',barChart(why,{color:'#ffb627'}))}
+   ${ch('Woke up in the night',barChart(WAKEN.map((l,i)=>({l:l+'×',v:SL.filter(x=>x.e.v.wakeups===i).length})),{color:'#ff8c1a'}))}
+   <button class="btn sec" style="width:100%;margin-top:8px" data-sleep="${isoD(new Date())}">😴 Log sleep</button></div>
+  <div class="card"><h3>🏋️ Training</h3>${kpi([[wkPlan.reduce((a,x)=>a+x.v.reduce((b,c)=>b+c,0),0),'workouts'],[wkPct.length?Math.round(avg(wkPct.map(x=>x.v)))+'%':'–','done'],[globalStreak().best,'best streak']])}
+   ${ch('Workouts per week',barChart(wkPlan,{})+legend(PCOL()))}
+   ${ch('% of planned trainings done',lineChart(wkPct,{min:0,max:100}))}
+   ${ch('How it felt',barChart(FEEL.map((f,i)=>({l:f.split(' ')[0],v:feels[i],col:['#3ddc84','#5aa9ff','#ffb627','#ff6b6b'][i]})),{}))}
+   ${ch('What time you train',barChart(hours.map((v,i)=>({l:String(i),v})).slice(6,23),{color:'#ff8c1a',vals:false}))}</div>
+  <div class="card"><h3>🏀 Basketball</h3>
+   ${ch('Shots made per week (your workouts)',barChart(makesW,{color:'#ff8c1a'}))}
+   ${ch('Mid-range % per week',lineChart(pctLine('mid'),{min:0,max:100,color:'#ff8c1a'}))}
+   ${ch('Free throw % per week',lineChart(pctLine('ft'),{min:0,max:100,color:'#5aa9ff'}))}
+   ${ch('3-point % per week',lineChart(pctLine('three'),{min:0,max:100,color:'#ff6b6b'}))}
+   ${ch('Layups & finishes % per week',lineChart(pctLine('lay'),{min:0,max:100,color:'#3ddc84'}))}
+   ${G.length?ch('Points per game',barChart(G.map(g=>({l:shortD(dOf(g.date)),v:bbPts(g),col:bbRes(g)==='W'?'#3ddc84':bbRes(g)==='L'?'#ff6b6b':''})),{}))+ch('Rebounds & assists per game',barChart(G.map(g=>({l:shortD(dOf(g.date)),v:[bbReb(g),g.ast||0],c:['#5aa9ff','#ffb627']})),{})+legend([['#5aa9ff','REB'],['#ffb627','AST']])):''}
+   ${Object.values(BTESTS).flatMap(X=>X.L).filter(t=>btVals(t.k).length).map(t=>ch(`📊 ${t.n}`,lineChart(btVals(t.k),t.t==='made'?{min:0,max:t.of}:{}))).join('')}</div>
+  <div class="card"><h3>💪 Tests</h3>${ch('Pull-ups (max)',lineChart(pullT,{goal:14}))}${ch('Push-ups (max)',lineChart(pushT.filter(x=>x.r!=null).map(x=>({d:x.d,v:x.r})),{goal:40}))}
+   ${ch('Perfect push-ups',lineChart(pushT.filter(x=>x.p!=null).map(x=>({d:x.d,v:x.p})),{goal:10}))}${ch('Vertical jump (cm)',lineChart(jE.filter(x=>x.m.vert!=null).map(x=>({d:x.d,v:x.m.vert})),{goal:45}))}
+   ${ch('Broad jump (cm)',lineChart(jE.filter(x=>x.m.broad!=null).map(x=>({d:x.d,v:x.m.broad}))))}</div>
+  <div class="card"><h3>🙂 Mood & body</h3>${ch('Mood (1–5)',lineChart(moods,{min:1,max:5,color:'#c77dff'}))}${['rec','energy','dayq','felt','sore'].map(k=>ch((JSC.find(x=>x[0]===k)||[k,k])[1]+' (1–10)',lineChart(jl(k),{min:1,max:10}))).join('')}</div>
+  <div class="card"><h3>🔗 How it connects</h3>
+   ${ch('Sleep → how training felt (higher = easier)',barChart(feelBy.map((a,i)=>({l:BK[i],v:a.length?+avg(a).toFixed(1):0})),{max:3,color:'#3ddc84'}))}
+   ${ch('Sleep → your points in games',barChart(ptsBy.map((a,i)=>({l:BK[i],v:a.length?+avg(a).toFixed(1):0})),{color:'#ff8c1a'}))}
+   <p class="muted" style="font-size:12px;margin:4px 0 0">The more days you log, the clearer these get.</p></div>
+  <div class="card"><h3>🍽 Food (2 weeks)</h3>${ch('Calories',barChart(food.map(x=>({l:x.l,v:Math.round(x.k)})),{color:'#ff8c1a',goal:FD.goals&&FD.goals.kcal?+FD.goals.kcal:undefined}))}${ch('Protein (g)',barChart(food.map(x=>({l:x.l,v:Math.round(x.p)})),{color:'#3ddc84',goal:FD.goals&&FD.goals.p?+FD.goals.p:undefined}))}</div>
+  <div class="card"><h3>🏫 School</h3>${ch('Grades',lineChart(grades,{min:0,max:100,color:'#5aa9ff'}))}${ch('Study sessions per week',barChart(studyW,{color:'#c77dff'}))}</div>`;}
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if((b=t.closest('[data-view]'))&&b.dataset.view==='data'){renderData();show('data');return;}
+  if(b=t.closest('[data-drange]')){DRANGE=+b.dataset.drange;renderData();return;}
+  if(b=t.closest('[data-sleep]')){sleepSheet(b.dataset.sleep);return;}
+  if(b=t.closest('[data-jopt]')){const[k,i]=b.dataset.jopt.split(':'),iso=SLD||JD;if(!iso)return;const en=jEnt(iso,true);en.v[k]=en.v[k]===+i?null:+i;saveJR();SLD?sleepSheet(SLD):renderJEdit();return;}
+  if(b=t.closest('[data-jmul]')){const[k,i]=b.dataset.jmul.split(':'),iso=SLD||JD;if(!iso)return;const en=jEnt(iso,true);const a=en.v[k]||[];en.v[k]=a.includes(+i)?a.filter(x=>x!==+i):[...a,+i];saveJR();SLD?sleepSheet(SLD):renderJEdit();return;}
+  if(SLD&&(b=t.closest('[data-jsc]'))){e.stopImmediatePropagation();const[k,n]=b.dataset.jsc.split(':'),en=jEnt(SLD,true);en.v[k]=+en.v[k]===+n?'':+n;saveJR();sleepSheet(SLD);return;}
+  if(t.closest('[data-sldone]')){const iso=SLD;SLD=null;closeSheet();renderAll();if($('v-data').classList.contains('on'))renderData();const h=sleepH(JR.e[iso]);toast(h!=null?`😴 ${h} h saved`:'😴 Saved');checkBadges();return;}
+},true);
+document.addEventListener('input',e=>{if(!SLD)return;const t=e.target;if(t.dataset&&t.dataset.jf){jEnt(SLD,true).v[t.dataset.jf]=t.value;saveJR();}});
+document.addEventListener('change',e=>{if(SLD&&e.target.dataset&&e.target.dataset.jf&&e.target.type==='time'){const sc=$('sheet').scrollTop;sleepSheet(SLD);$('sheet').scrollTop=sc;}});
+const _closeSheetSL=closeSheet;closeSheet=function(){if(SLD){const iso=SLD;SLD=null;const en=JR.e[iso];if(en&&!jHasContent(en)&&!hasSleep(en))delete JR.e[iso];saveJR();}_closeSheetSL();};
+const _renderJEditS=renderJEdit;renderJEdit=function(){const k=JD_LAST===JD&&$('ov').classList.contains('on')?$('sheet').scrollTop:0;JD_LAST=JD;_renderJEditS();$('sheet').scrollTop=k;};let JD_LAST=null;
+const _closeSheetJL=closeSheet;closeSheet=function(){JD_LAST=null;_closeSheetJL();};
+const _renderAllD=renderAll;renderAll=function(){_renderAllD();if($('v-data').classList.contains('on'))renderData();};
+
+/* journal: all templates on by themselves (yours too) */
+const _jEntA=jEnt;jEnt=function(iso,make){const had=!!JR.e[iso],e=_jEntA(iso,make);if(e&&!had&&make){const off=JR.autoOff||{};jTpls().forEach(t=>{if(!off[t.id]&&!e.used.includes(t.id))e.used.push(t.id);});}return e;};
+jHasContent=function(e){return !!(e&&((e.text||'').trim()||e.mood||(e.ph||[]).length||(e.tags||[]).length||Object.values(e.v||{}).some(v=>v!==''&&v!=null&&!(Array.isArray(v)&&!v.length))));};
+const _jTplSheetA=jTplSheet;jTplSheet=function(edit){_jTplSheetA(edit);if(edit)return;const off=JR.autoOff||{};const h2=$('sheet').querySelector('h2');
+  h2&&h2.insertAdjacentHTML('afterend',`<div class="timebox"><b>✨ On by itself every day</b><div class="muted" style="font-size:12px;margin:2px 0 6px">Tap to turn one off. You can still remove it from a single day with ✕.</div><div class="chips">${jTpls().map(t=>`<button class="chip ${off[t.id]?'':'on'}" data-jauto="${t.id}">${off[t.id]?'○':'✓'} ${t.emo} ${esc(t.name)}</button>`).join('')}</div></div>`);};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-jauto]');if(!b)return;JR.autoOff=JR.autoOff||{};const id=b.dataset.jauto;JR.autoOff[id]?delete JR.autoOff[id]:JR.autoOff[id]=true;saveJR();
+  if(JD){const en=JR.e[JD];if(en){if(!JR.autoOff[id]&&!en.used.includes(id))en.used.push(id);}}jTplSheet();});
+
+/* journal 🏀 template: game or practice? */
+const BBKIND=['🏀 Game','🏃 Team practice','⛹️ My own workout','🏋️ Gym','😴 None today'];
+(()=>{const t=JTPL.find(x=>x.id==='bb');t.name='Game / practice';t.f.unshift({k:'bbkind',t:'choice',l:'What was it?',o:BBKIND});})();
+const _jEntK=jEnt;jEnt=function(iso,make){const had=!!JR.e[iso],e=_jEntK(iso,make);if(e&&!had&&make&&e.v.bbkind==null){const L=BB.log.filter(x=>x.date===iso);
+  if(L.some(x=>x.type==='game'))e.v.bbkind=0;else if(L.some(x=>x.type==='practice'))e.v.bbkind=1;else if(HOOP.A.some(z=>isoD(z.date)===iso&&didIt(ST.hoop,z.id)))e.v.bbkind=2;
+  if(e.v.bbkind!=null&&!Object.keys(e.v).some(k=>k!=='bbkind'))e.auto=e.v.bbkind+1;}return e;};
+const _jHasK=jHasContent;jHasContent=function(e){if(e&&e.auto&&e.v.bbkind===e.auto-1&&!(e.text||'').trim()&&!e.mood&&Object.keys(e.v).filter(k=>e.v[k]!==''&&e.v[k]!=null).every(k=>k==='bbkind')&&!(e.ph||[]).length&&!(e.tags||[]).length)return false;return _jHasK(e);};
+const _dayTotalK=dayTotal;dayTotal=function(d){const L=_dayTotalK(d),e=JR.e[isoD(d)];if(e&&e.v.bbkind!=null&&e.v.bbkind!==''&&!BB.log.some(x=>x.date===isoD(d)))L.push(BBKIND[e.v.bbkind]+(e.v.bbq?` · played ${e.v.bbq}/10`:''));return L;};
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -3292,6 +3475,17 @@ Object.assign(HE,{'School':'בית ספר','📝 Exams':'📝 מבחנים','+ E
 [['Exam tomorrow','מבחן מחר'],['study sessions','זמני לימוד'],['Study','ללמוד'],['Past exams','מבחנים שעברו'],['add your grade','הוסף ציון'],['Grades · average','ציונים · ממוצע'],['lessons','שיעורים'],['Next','הבא'],['Now','עכשיו'],
  ['No school','אין בית ספר'],['until','עד'],['room','חדר'],['Study reminders on','תזכורות ללמידה פעילות'],['No study reminders','בלי תזכורות'],['+ add a class','+ הוסף שיעור'],['You\'re in school until','אתה בבית הספר עד'],['test tomorrow','מבחן מחר']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 [['Season 2026/27','עונה 2026/27'],['All 22 rounds','כל 22 המחזורים'],['NEXT GAME','המשחק הבא'],['round','מחזור'],['Last time','בפעם הקודמת'],['pts for','נק׳ זכות'],['against per game','נגד למשחק'],['Home','בית'],['Away','חוץ']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+Object.assign(HE,{'Data':'נתונים','How did you sleep?':'איך ישנת?','😴 Log sleep':'😴 רישום שינה','Log sleep':'רישום שינה','Save ✓':'שמור ✓','2 weeks':'שבועיים','Month':'חודש','3 months':'3 חודשים','All':'הכל',
+ '🔥 Activity':'🔥 פעילות','😴 Sleep':'😴 שינה','🏋️ Training':'🏋️ אימונים','🏀 Basketball':'🏀 כדורסל','💪 Tests':'💪 מבחנים','🙂 Mood & body':'🙂 מצב רוח וגוף','🔗 How it connects':'🔗 איך זה מתחבר','🏫 School':'🏫 בית ספר'});
+[['Got in bed (last night)','נכנסתי למיטה (אתמול בלילה)'],['Fell asleep (about)','נרדמתי (בערך)'],['Got out of bed','קמתי מהמיטה'],['Phone in the 2 hours before bed','טלפון בשעתיים לפני השינה'],['Phone in bed','טלפון במיטה'],
+ ['Woke up in the night','התעוררתי בלילה'],['Why did you wake up this morning?','למה התעוררת הבוקר?'],['Sleep quality','איכות שינה'],['How rested I feel','כמה אני רענן'],['Nap yesterday','שנ״צ אתמול'],['Alarm','שעון מעורר'],
+ ['By myself','לבד'],['Parents','הורים'],['Noise','רעש'],['Bathroom','שירותים'],['Bad dream','חלום רע'],['Too hot / cold','חם / קר מדי'],['The whole time','כל הזמן'],['None','בכלל לא'],['A few min','כמה דקות'],
+ ['Hours a night','שעות בלילה'],['Time you fell asleep','מתי נרדמת'],['Time you woke up','מתי קמת'],['Minutes to fall asleep','דקות עד שנרדמת'],['Phone before bed','טלפון לפני השינה'],['hours of sleep','שעות שינה'],
+ ['Why you woke up','למה התעוררת'],['Workouts per week','אימונים בשבוע'],['of planned trainings done','מהאימונים המתוכננים בוצעו'],['How it felt','איך הרגיש'],['What time you train','באיזו שעה אתה מתאמן'],
+ ['Shots made per week','קליעות בשבוע'],['Points per game','נקודות למשחק'],['Rebounds & assists per game','ריבאונדים ואסיסטים למשחק'],['Last night','אתמול בלילה'],['Phone away at','טלפון בצד ב-'],['Asleep by','לישון עד'],
+ ['to fall asleep','עד שנרדמת'],['asleep at','נרדם ב'],['wake up','קם'],['average','ממוצע'],['under 9 h','פחות מ-9 שעות'],['Sleep champ','אלוף שינה'],['Phone free','בלי טלפון'],['Bad sleep last night','שינה רעה בלילה']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+[['On by itself every day','מופעל אוטומטית כל יום']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+[['What was it?','מה זה היה?'],['Team practice','אימון קבוצה'],['My own workout','אימון שלי'],['None today','כלום היום'],['Gym','חדר כושר'],['Game / practice','משחק / אימון']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 function tr(s){if(LANG!=='he'||!s)return s;const t=s.trim();if(!t)return s;if(HE[t]!=null)return s.replace(t,HE[t]);
   let r=t;for(const[rx,rep]of HE_RX)r=r.replace(rx,rep);
   const longTxt=t.length>60;for(const[a,b]of HE_PH){if(longTxt&&HE_GENERIC.has(a))continue;if(r.includes(a)){const re=new RegExp('(^|[^A-Za-z])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![A-Za-z])','g');r=r.replace(re,(m,p1)=>p1+b);}}
