@@ -3036,7 +3036,8 @@ if(fbCfg())setTimeout(fbInit,800);
 /* ================= SCHOOL: timetable, exams, grades, holidays ================= */
 const SUBJ=[['math','📐','Math','מתמטיקה'],['eng','🇬🇧','English','אנגלית'],['lashon','✍️','Hebrew (Lashon)','לשון'],['lit','📖','Literature','ספרות'],['tanakh','📜','Tanakh','תנ"ך'],
  ['hist','🏛','History','היסטוריה'],['geo','🌍','Geography','גיאוגרפיה'],['sci','🔬','Science & Technology','מדעים וטכנולוגיה'],['arab','🗣','Arabic','ערבית'],['civ','⚖️','Civics','אזרחות'],
- ['pe','🏀','PE','חינוך גופני'],['hinuch','🧑‍🏫','Homeroom','חינוך'],['torah','📘','Oral Torah','תושב"ע'],['comp','💻','Computers','מחשבים'],['art','🎨','Art','אמנות'],['music','🎵','Music','מוזיקה'],['society','🤝','Society','חברה']];
+ ['pe','🏀','PE','חינוך גופני'],['hinuch','🧑‍🏫','Homeroom','חינוך'],['torah','📘','Oral Torah','תושב"ע'],['comp','💻','Computers','מחשבים'],['art','🎨','Art','אמנות'],['music','🎵','Music','מוזיקה'],['society','🤝','Society','חברה'],
+ ['ivrit','✍️','Hebrew','עברית'],['jcult','🕯','Jewish-Israeli Culture','תרבות יהודית ישראלית'],['world','🌐','World Knowledge','ידע עולם'],['multi','🧩','Multi-subject','רב תחומי'],['lab','🧪','Science Lab','מעבדת מדעים'],['shelah','🧭','Shelah','של"ח']];
 const HOLI=[['2026-12-06','2026-12-12','🕎 Hanukkah break','חופשת חנוכה'],['2027-03-23','2027-03-24','🎭 Purim','פורים'],['2027-04-13','2027-04-28','🍷 Passover break','חופשת פסח'],
  ['2027-05-12','2027-05-12','🇮🇱 Independence Day','יום העצמאות'],['2027-06-10','2027-06-12','🌾 Shavuot','שבועות'],['2027-06-21','2027-08-31','☀️ Summer break','חופש גדול']];
 const EXK=[['test','📝 Test','מבחן'],['quiz','✏️ Quiz','בוחן'],['project','📁 Project','עבודה'],['pres','🎤 Presentation','מצגת'],['oral','🗣 Oral','בעל פה']];
@@ -3044,6 +3045,14 @@ let SC={days:[0,1,2,3,4,5],bells:[['08:15','09:00'],['09:00','09:45'],['10:05','
 try{const o=JSON.parse(localStorage.getItem('training-school')||'null');if(o)SC=Object.assign(SC,o);}catch(e){}
 if(JSON.stringify(SC.bells)===JSON.stringify([['08:00','08:45'],['08:45','09:30'],['09:45','10:30'],['10:30','11:15'],['11:35','12:20'],['12:20','13:05'],['13:15','14:00'],['14:00','14:45']]))SC.bells=[['08:15','09:00'],['09:00','09:45'],['10:05','10:50'],['10:50','11:35'],['11:50','12:35'],['12:35','13:20'],['13:35','14:15'],['14:15','14:55']];
 const saveSC=()=>{try{localStorage.setItem('training-school',JSON.stringify(SC))}catch(e){}};
+/* real timetable · class ח'8 מופת בינלאומית (loaded once, Sun–Thu) */
+(()=>{if(SC.ttReal8)return;const R='320',G='321 / 1,320',L=(s,teacher,room)=>({s,room:room||R,teacher});
+ SC.tt[0]={0:L('math','עמרני יצחק'),1:L('math','עמרני יצחק'),2:L('sci','ברק אייל'),3:L('eng','יונס דארין'),4:L('world','דגש וגיה, נבולי שני · שילוב'),5:L('multi','פוניס תמר'),6:L('hinuch','יונס דארין, רובינשטיין'),7:L('eng','יונס דארין')};
+ SC.tt[1]={0:L('tanakh','כהן אודליה'),1:L('jcult','פוניס תמר, כורש טליה · סל אישי'),2:L('tanakh','כהן אודליה, נבולי שני · שילוב'),3:L('pe','לוי ברשיש, כהן עומר',G),4:L('ivrit','יששכר חלי, בן אברהם · פרטני אופק'),5:L('multi','פוניס תמר'),6:L('multi','פוניס תמר'),7:L('shelah','נאמן נצח')};
+ SC.tt[2]={0:L('arab','זידאן מונא'),1:L('eng','יונס דארין'),2:L('ivrit','יששכר חלי, כורש טליה · סל אישי'),3:L('ivrit','יששכר חלי'),4:L('sci','ברק אייל'),5:L('eng','יונס דארין')};
+ SC.tt[3]={0:L('arab','זידאן מונא'),1:L('math','עמרני יצחק'),2:L('sci','ברק אייל'),3:L('world','דגש וגיה, איתאי שי · סל אישי'),4:L('math','עמרני יצחק'),5:L('math','עמרני יצחק'),6:L('lab','ברק אייל, אבו חמד'),7:L('eng','יונס דארין')};
+ SC.tt[4]={0:L('pe','לוי ברשיש, כהן עומר',G),1:L('math','עמרני יצחק'),2:L('math','עמרני יצחק'),3:L('multi','פוניס תמר'),4:L('eng','יונס דארין'),5:L('jcult','פוניס תמר'),6:L('hinuch','יונס דארין'),7:L('arab','זידאן מונא')};
+ SC.ttReal8=1;saveSC();})();
 SYNCK.school='training-school';SYNCV.push('training-school');
 const subjAll=()=>[...SUBJ,...(SC.subj||[]).map(s=>[s.k,s.e||'📚',s.n,s.n])];
 const subjOf=k=>subjAll().find(s=>s[0]===k)||[k,'📚',k,k];
