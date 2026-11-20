@@ -381,6 +381,12 @@ body.pc nav .in{max-width:760px}body.pc .bgrid{grid-template-columns:repeat(5,1f
 body.pc #v-data.on{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;align-items:start}body.pc #v-data>*{grid-column:1/-1}body.pc #v-data>.card{grid-column:auto}
 .tagdel{border-color:#ff7a6b!important;color:#ff7a6b}
 .flim{margin-top:10px;font-size:13px}.gmneed{background:var(--card2);border-radius:14px;padding:10px 12px;margin:10px 0}.gmneed .chip{margin:6px 6px 0 0}.jplace{margin:-4px 0 8px}
+#v-food a,#sheet a{color:var(--accent)}.fpre{margin:4px 0 6px}.fpre .chip{font-size:12px;padding:6px 10px}
+.jmood{gap:4px}.jmood button{width:44px;height:44px;font-size:24px;filter:grayscale(.35);opacity:.8;box-shadow:inset 0 -4px 0 var(--mc)}.jdate small{color:inherit!important;opacity:.85}.jmood button.on{filter:none;opacity:1;background:var(--mc);box-shadow:0 0 0 3px var(--mc);transform:scale(1.12)}
+.mlab{text-align:center;font-size:14px;margin:-4px 0 10px}.cday.mfill{color:#fff}.cday.mfill .cn{color:#fff;font-weight:900}
+.mleg{display:flex;justify-content:space-between;gap:3px;margin-top:8px}.mleg span{flex:1;text-align:center;border-radius:8px;padding:3px 0;font-size:15px}
+.rate{flex-wrap:wrap}.rate button{width:34px;height:34px;font-size:20px;box-shadow:inset 0 -4px 0 var(--mc)}.rate div{gap:3px}
+.cday.jbig .cicons{font-size:22px;line-height:1}.mface{font-size:15px;display:block}
 </style>
 </head>
 <body class="home">
@@ -3313,7 +3319,7 @@ function renderData(){const D=daysBack(),Wk=weeksBack(),E=D.map(d=>({d,e:JR.e[is
   <div class="card"><h3>💪 Tests</h3>${ch('Pull-ups (max)',lineChart(pullT,{goal:14}))}${ch('Push-ups (max)',lineChart(pushT.filter(x=>x.r!=null).map(x=>({d:x.d,v:x.r})),{goal:40}))}
    ${ch('Perfect push-ups',lineChart(pushT.filter(x=>x.p!=null).map(x=>({d:x.d,v:x.p})),{goal:10}))}${ch('Vertical jump (cm)',lineChart(jE.filter(x=>x.m.vert!=null).map(x=>({d:x.d,v:x.m.vert})),{goal:45}))}
    ${ch('Broad jump (cm)',lineChart(jE.filter(x=>x.m.broad!=null).map(x=>({d:x.d,v:x.m.broad}))))}</div>
-  <div class="card"><h3>🙂 Mood & body</h3>${ch('Mood (1–5)',lineChart(moods,{min:1,max:5,color:'#c77dff'}))}${['rec','energy','dayq','felt','sore'].map(k=>ch((JSC.find(x=>x[0]===k)||[k,k])[1]+' (1–10)',lineChart(jl(k),{min:1,max:10}))).join('')}</div>
+  <div class="card"><h3>🙂 Mood & body</h3>${ch('Mood (1–7)',lineChart(moods,{min:1,max:7,color:'#c77dff'}))}${['rec','energy','dayq','felt','sore'].map(k=>ch((JSC.find(x=>x[0]===k)||[k,k])[1]+' (1–10)',lineChart(jl(k),{min:1,max:10}))).join('')}</div>
   <div class="card"><h3>🔗 How it connects</h3>
    ${ch('Sleep → how training felt (higher = easier)',barChart(feelBy.map((a,i)=>({l:BK[i],v:a.length?+avg(a).toFixed(1):0})),{max:3,color:'#3ddc84'}))}
    ${ch('Sleep → your points in games',barChart(ptsBy.map((a,i)=>({l:BK[i],v:a.length?+avg(a).toFixed(1):0})),{color:'#ff8c1a'}))}
@@ -3408,15 +3414,26 @@ const ACTS=[[1.55,'Trains 3–4 days a week'],[1.75,'Trains almost every day'],[
 function calcGoals(P){const bmr=10*P.kg+6.25*P.cm-5*P.age+5,kcal=Math.round(bmr*P.act/50)*50,p=Math.round(1.5*P.kg),f=Math.round(kcal*.3/9),c=Math.round((kcal-p*4-f*9)/4);
   return{bmr:Math.round(bmr),kcal,p,f,c,su:50,sa:5};}
 if(!FD.goals||!Object.keys(FD.goals).length){const g=calcGoals(FD.prof);FD.goals={kcal:g.kcal,p:g.p,c:g.c,f:g.f,su:g.su,sa:g.sa};saveFD();}
+// Nov 20: your own numbers — 2350 kcal, 90–105 g protein
+if(!FD.gv2){FD.goals={kcal:2350,p:90,pmax:105,c:310,f:78,su:(FD.goals||{}).su||50,sa:(FD.goals||{}).sa||5};FD.gv2=true;saveFD();}
+
+// 4 kinds of day — the app picks one by itself, tap to change it for that day
+const PRESETS=[['rest','😴','Rest day'],['easy','🙂','Easy day'],['train','🏀','Training day'],['big','🔥','Big day / game']];
+FD.pre=FD.pre||{rest:1850,easy:2000,train:2350,big:2550};
+function autoPreset(iso){const d=dOf(iso);try{if(hGame(d))return 'big';const L=dayLoad(d);return L>=6.5?'big':L>=3?'train':L>0?'easy':'rest';}catch(e){return 'train';}}
+const dayPreset=iso=>(FD.days[iso]||{}).pre||autoPreset(iso);
+function dayGoals(iso){const G={...(FD.goals||{})},k=FD.pre[dayPreset(iso)];if(k){const pm=G.pmax?(G.p+G.pmax)/2:(G.p||90);G.kcal=k;G.f=Math.round(k*.3/9);G.c=Math.round((k-pm*4-G.f*9)/4);}return G;}
 let FEDIT=null,FFAV=false;
-renderFood=function(){if(!FDATE)FDATE=isoD(new Date());const D=FD.days[FDATE]||{items:[]},T=foodSum(D.items),G=FD.goals||{},P=FD.prof,cg=calcGoals(P);
+renderFood=function(){if(!FDATE)FDATE=isoD(new Date());const D=FD.days[FDATE]||{items:[]},T=foodSum(D.items),G=dayGoals(FDATE),P=FD.prof,cg=calcGoals(P),pk=dayPreset(FDATE),pAuto=!(FD.days[FDATE]||{}).pre;
   const ring=(k,l,u,col,min)=>{const v=T[k],g=+G[k]||0,p=g?Math.min(1,v/g):0,r=30,C=2*Math.PI*r;
-    return `<div class="fring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--card2)" stroke-width="8"/><circle cx="38" cy="38" r="${r}" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-p)}" transform="rotate(-90 38 38)"/></svg><b>${Math.round(v)}</b><small>${l}${g?` / ${g}${u}`:` ${u}`}</small></div>`;};
+    return `<div class="fring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--card2)" stroke-width="8"/><circle cx="38" cy="38" r="${r}" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-p)}" transform="rotate(-90 38 38)"/></svg><b>${Math.round(v)}</b><small>${l}${g?` / ${g}${k==='p'&&G.pmax?'–'+G.pmax:''}${u}`:` ${u}`}</small></div>`;};
   const limit=(k,l,u,col)=>{const v=T[k],g=+G[k]||0,over=g&&v>g;return `<div class="flim"><div class="rrow"><span>${l}</span><span><b style="color:${over?'#ff6b6b':'inherit'}">${+v.toFixed(1)}</b> <small class="muted">/ max ${g}${u}</small></span></div><div class="bar" style="margin:3px 0 0"><i style="width:${g?Math.min(100,v/g*100):0}%;background:${over?'#ff6b6b':col}"></i></div></div>`;};
   const hist=[];for(let i=13;i>=0;i--){const d=new Date(dOf(FDATE));d.setDate(d.getDate()-i);const s=foodSum((FD.days[isoD(d)]||{items:[]}).items);if(s.kcal||s.p)hist.push({d,v:Math.round(s[FCH])});}
   const favs=FD.foods.map((f,i)=>({f,i})).sort((a,b)=>(b.f.n||0)-(a.f.n||0));
   $('v-food').innerHTML=`<div class="top"><button class="back" data-home>‹</button><h1>Food <span>Log</span> 🍽</h1></div>
   <div class="calhead" style="margin-top:0"><button class="lbtn" data-fnav="-1">‹</button><b>${isToday(dOf(FDATE))?'Today · ':''}${fmt(dOf(FDATE))}</b><button class="lbtn" data-fnav="1">›</button></div>
+  <div class="chips fpre">${PRESETS.map(([k,e,n])=>`<button class="chip ${pk===k?'on':''}" data-fpre="${k}">${e} ${n} · ${FD.pre[k]}</button>`).join('')}</div>
+  <p class="muted" style="font-size:12px;margin:0 0 10px">${pAuto?'✨ Picked by itself from your trainings and games today — tap to change.':'You picked this for today. <a href="#" data-fpre="auto">Let the app pick</a>'}</p>
   <div class="card"><div class="frings" style="padding:0">${ring('kcal','kcal','','#ff8c1a')}${ring('p','protein','g','#3ddc84')}${ring('c','carbs','g','#5aa9ff')}${ring('f','fat','g','#ffb627')}</div>
    ${limit('su','🍬 Sugar','g','#c77dff')}${limit('sa','🧂 Salt','g','#8d8d98')}
    <p class="muted" style="font-size:12px;margin:8px 0 0">${T.kcal?(T.p>=G.p?'💪 Protein goal done! ':`💪 ${Math.max(0,Math.round(G.p-T.p))} g protein to go. `)+(G.su&&T.su>G.su?'🍬 A lot of sugar today — water instead of sweet drinks tomorrow.':''):'Hungry? Eat. These numbers are a guide, not a limit — you are growing.'}</p></div>
@@ -3436,9 +3453,9 @@ renderFood=function(){if(!FDATE)FDATE=isoD(new Date());const D=FD.days[FDATE]||{
     <li>× ${P.act} for your training = <b>about ${cg.kcal} kcal</b> a day (more on game days or two-training days)</li>
     <li>Protein: 1.5 g × ${P.kg} kg = <b>${cg.p} g</b> — spread it over every meal</li><li>Fat: 30% of calories = <b>${cg.f} g</b> · Carbs (energy for basketball): the rest = <b>${cg.c} g</b></li>
     <li>Sugar: max <b>50 g</b>, less is better (sweet drinks are the easiest to cut) · Salt: max <b>5 g</b></li></ol>
-   <button class="btn sec" style="width:100%" data-fusecalc>Use these numbers as my goals</button>
+   <p class="muted" style="font-size:12px;margin:0">Your own days: 😴 ${FD.pre.rest} · 🙂 ${FD.pre.easy} · 🏀 ${FD.pre.train} · 🔥 ${FD.pre.big}</p>
    <h4 style="margin:14px 0 4px">🎯 My goals (change them)</h4>
-   ${[['kcal','Calories','kcal'],['p','Protein (at least)','g'],['c','Carbs','g'],['f','Fat','g'],['su','Sugar (max)','g'],['sa','Salt (max)','g']].map(([k,l,u])=>`<label class="erow">${l} (${u})<input type="number" inputmode="numeric" data-fgoal="${k}" value="${G[k]??''}" placeholder="–" style="width:90px"></label>`).join('')}
+   ${PRESETS.map(([k,e,n])=>`<label class="erow">${e} ${n} (kcal)<input type="number" inputmode="numeric" data-fprev="${k}" value="${FD.pre[k]}" style="width:90px"></label>`).join('')}${[['p','Protein (at least)','g'],['pmax','Protein (up to)','g'],['su','Sugar (max)','g'],['sa','Salt (max)','g']].map(([k,l,u])=>`<label class="erow">${l} (${u})<input type="number" inputmode="numeric" data-fgoal="${k}" value="${(FD.goals||{})[k]??''}" placeholder="–" style="width:90px"></label>`).join('')}<p class="muted" style="font-size:12px;margin:6px 0 0">Carbs and fat follow the calories by themselves (fat 30%, carbs the rest).</p>
    <p class="muted" style="font-size:12px;margin:8px 0 0">You're still growing, so don't eat less than your body needs. A guide, not a diet. Want to change your body? Ask your doctor or a sports dietitian first.</p></div>
   <button class="btn sec" style="width:100%" data-fprompt>📝 Copy the message for your other Claude chat</button>`;
   fillPhotos($('v-food'));};
@@ -3530,6 +3547,27 @@ const _renderDataF=renderData;renderData=function(){_renderDataF();const D=daysB
   const ch=(t,b)=>`<div class="dch"><div class="dcht">${t}</div>${b}</div>`;
   fc&&fc.insertAdjacentHTML('beforeend',ch('🍬 Sugar (g)',barChart(su,{color:'#c77dff',goal:FD.goals&&FD.goals.su?+FD.goals.su:undefined}))+ch('How well I ate (1–10)',lineChart(jl('eatq'),{min:1,max:10,color:'#3ddc84'}))+ch('How much I ate (1–10)',lineChart(jl('eatamt'),{min:1,max:10,color:'#ff8c1a'}))
     +ch('🥤 Sweet drinks — how many days',barChart(cnt('sweetdr',4).map((v,i)=>({l:sd[i],v})),{color:'#ff6b6b'}))+ch('🍬 Sweets & snacks — how many days',barChart(cnt('sweets',4).map((v,i)=>({l:sw[i],v})),{color:'#c77dff'})));};
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fpre]');if(!b)return;e.preventDefault();const k=b.dataset.fpre,D=FD.days[FDATE]=FD.days[FDATE]||{items:[]};if(k==='auto')delete D.pre;else D.pre=k;saveFD();renderFood();});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.fprev;if(!k)return;const v=parseFloat(e.target.value);if(isNaN(v)||v<1200||v>4500){toast('Pick 1200–4500');e.target.value=FD.pre[k];return;}FD.pre[k]=v;saveFD();renderFood();});
+const _foodDayP=foodDay;foodDay=function(iso){const o=_foodDayP(iso);o.goal=FD.pre[dayPreset(iso)];return o;};
+
+/* ================= 7 MOODS WITH COLOURS ================= */
+MOODS.length=0;MOODS.push('😭','😫','😕','😐','🙂','😄','🤩');
+const MOODC=['#b91c1c','#ef4444','#f97316','#eab308','#84cc16','#22c55e','#14b8a6'],MOODN=['Awful','Bad','Meh','OK','Good','Great','Amazing'];
+if(!JR.m7){Object.values(JR.e).forEach(e=>{if(e.mood)e.mood=[0,1,3,4,5,7][e.mood]||e.mood;});JR.m7=true;saveJR();}
+const moodBg=m=>m?MOODC[m-1]:null;
+function paintMoods(root){(root||document).querySelectorAll('[data-jmood],[data-rate]').forEach(b=>{const n=+(b.dataset.jmood||b.dataset.rate);b.style.setProperty('--mc',MOODC[n-1]);b.title=MOODN[n-1];});}
+const _renderJEditM=renderJEdit;renderJEdit=function(){_renderJEditM();const sh=$('sheet'),e=JR.e[JD];paintMoods(sh);const r=sh.querySelector('.jmood');
+  r&&r.insertAdjacentHTML('afterend',`<div class="mlab">${e&&e.mood?`<b style="color:${MOODC[e.mood-1]}">${MOODS[e.mood-1]} ${MOODN[e.mood-1]}</b>`:'<span class="muted">How was your day? From 😭 awful to 🤩 amazing</span>'}</div>`);};
+const _renderLogM=renderLog;renderLog=function(){_renderLogM();document.querySelectorAll('#v-log .cday[data-jopen]').forEach(b=>{const e=JR.e[b.dataset.jopen];if(e&&e.mood){b.style.background=MOODC[e.mood-1];b.classList.add('mfill','jbig');}});
+  const cal=document.querySelector('#v-log .cal');cal&&cal.insertAdjacentHTML('afterend',`<div class="mleg">${MOODC.map((c,i)=>`<span style="background:${c}">${MOODS[i]}</span>`).join('')}</div>`);};
+const _renderHomeM=renderHome;renderHome=function(){_renderHomeM();paintMoods($('v-home'));};
+const _renderCalM=renderCal;renderCal=function(){_renderCalM();document.querySelectorAll('#v-cal .cday[data-calday]').forEach(b=>{const e=JR.e[b.dataset.calday];if(e&&e.mood){b.style.background=MOODC[e.mood-1]+'99';b.classList.add('mfill');const ic=b.querySelector('.cicons');ic&&ic.insertAdjacentHTML('afterbegin',`<span class="mface">${MOODS[e.mood-1]}</span>`);}});};
+const _jPreviewM=jPreview;jPreview=function(iso,e){const h=_jPreviewM(iso,e);return e.mood?h.replace('<div class="jdate">',`<div class="jdate" style="background:${MOODC[e.mood-1]};color:#fff;border-radius:12px;padding:4px 0">`):h;};
+const _renderDataM=renderData;renderData=function(){_renderDataM();const D=daysBack(),cnt=Array(7).fill(0);D.forEach(d=>{const e=JR.e[isoD(d)];if(e&&e.mood)cnt[e.mood-1]++;});
+  const c=[...$('v-data').querySelectorAll('.card')].find(x=>/Mood|מצב רוח/.test(x.querySelector('h3').textContent));
+  c&&c.querySelector('h3').insertAdjacentHTML('afterend',`<div class="dch"><div class="dcht">Your days by mood</div>${barChart(cnt.map((v,i)=>({l:MOODS[i],v,col:MOODC[i]})),{})}</div>`);};
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -3689,6 +3727,8 @@ Object.assign(HE,{'🧮 Your numbers':'🧮 המספרים שלך','Use these nu
  'Built-in templates (you can change them)':'תבניות מובנות (אפשר לשנות)','↺ Back to the original':'↺ חזרה למקור','+ 1–10 question':'+ שאלה 1–10','+ Text question':'+ שאלת טקסט','Eating':'אכילה','Age':'גיל','Weight (kg)':'משקל (ק״ג)','Height (cm)':'גובה (ס״מ)'});
 [['Sugar','סוכר'],['Salt','מלח'],['Trains almost every day','מתאמן כמעט כל יום'],['Trains 3–4 days a week','מתאמן 3–4 ימים בשבוע'],['Trains every day, often twice','מתאמן כל יום, הרבה פעמיים'],['How well did I eat','כמה טוב אכלתי'],['How much did I eat','כמה אכלתי'],
  ['Sweet drinks','משקאות מתוקים'],['Sweets & snacks','ממתקים וחטיפים'],['Protein in my meals','חלבון בארוחות'],['Water','מים'],['Every meal','כל ארוחה'],['Most meals','רוב הארוחות'],['Few meals','מעט ארוחות']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+[['Rest day','יום מנוחה'],['Easy day','יום קל'],['Training day','יום אימון'],['Big day / game','יום גדול / משחק'],['Let the app pick','תן לאפליקציה לבחור']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
+[['Your days by mood','הימים שלך לפי מצב רוח'],['Awful','נורא'],['Amazing','מדהים'],['Great','מעולה'],['Meh','ככה ככה']].forEach(x=>HE_PH.push(x));HE_PH.sort((a,b)=>b[0].length-a[0].length);
 function tr(s){if(LANG!=='he'||!s)return s;const t=s.trim();if(!t)return s;if(HE[t]!=null)return s.replace(t,HE[t]);
   let r=t;for(const[rx,rep]of HE_RX)r=r.replace(rx,rep);
   const longTxt=t.length>60;for(const[a,b]of HE_PH){if(longTxt&&HE_GENERIC.has(a))continue;if(r.includes(a)){const re=new RegExp('(^|[^A-Za-z])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?![A-Za-z])','g');r=r.replace(re,(m,p1)=>p1+b);}}
