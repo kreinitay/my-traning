@@ -459,6 +459,10 @@ body.home .fab{display:block}.ov.on~.fab,.wo.on~.fab{display:none}
 body.pc .stks{grid-template-columns:repeat(8,1fr)!important}
 .view .card>h3{font-size:16.5px;letter-spacing:.1px}
 body.home .view{padding-bottom:100px}
+.chrow{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.chrow:last-child{border:0}
+.ftdots.ch span{font-size:11px}.chend{text-align:center;font-weight:800;padding:10px;border-radius:12px;background:#ff6b6b22;margin-bottom:10px}.chend.ok{background:#3ddc8433}
+.tag.t-htday{background:linear-gradient(90deg,#ffd70044,#ff8c1a44);color:#ffd23a}
+.tdnote{margin:6px 0 10px;padding:10px 14px;border-radius:14px;border:1px dashed #ffd23a88;color:#ffd23a;font-size:13px;font-weight:700}
 </style>
 </head>
 <body class="home">
@@ -1112,7 +1116,7 @@ HW.shots.A=[H4.form,H4.foot,H4.pu,H4.clock,H4.tired,H4.dd,H4.pft,H4.pump,H4.ss];
 HW.weak.A=[HWU,H5.jstop,H5.drib,H5.lay,H5.hook,H5.stance,H5.close];HW.weak.B=[HWU,H5.jstop,H5.drib,H5.rform,H5.lay,H5.flt,H5.hook,H5.stance,H5.close,H5.zig];HW.weak.C=[...HW.weak.B,H5.c1];
 HW.play.A=[HWU,H6.lay1,H6.atw,H6.g33,H6.free];HW.play.B=hIns(HW.play.A,[H6.horse]);HW.play.C=hIns(HW.play.B,[H6.ko]);
 const HORDER=['found','finish','cond','shots','weak','play'];
-Object.assign(PHASE,{hfound:'Shooting',hfinish:'Finishing',hcond:'Conditioning',hshots:'Game Shots',hweak:'Weak Hand',hplay:'Play'});
+Object.assign(PHASE,{htday:'🏁 Test day',hfound:'Shooting',hfinish:'Finishing',hcond:'Conditioning',hshots:'Game Shots',hweak:'Weak Hand',hplay:'Play'});
 // Sessions: weeks from Sun Nov 15. Slots: day 1 (Mon), day 2 (Sat), 3rd day (Tue — only the week after you miss one).
 const HSTART=new Date(2026,10,15),HFIRST=new Date(2026,10,21),HWEEKS=17,HBASE=HWEEKS*3,HDAYS=126;
 const HOOP_S=[];for(let w=0;w<HWEEKS;w++)['d1','d2','x'].forEach(slot=>HOOP_S.push({id:HOOP_S.length,hw:w,slot,kind:'main',type:'found',phase:'hfound',test:false,final:false,ex:[],date:new Date(HSTART)}));
@@ -1163,7 +1167,7 @@ const HOOP={
   title(s){const w=HW[s.type];return `${w.emo} ${w.name}${w.B?' · '+hOpt(s):''}`;},
   count(s,S){return hTot(S,s.id).m;},
   rowBody(s,S){const w=HW[s.type],t=hTot(S,s.id),N=hNames(hDrills(s));
-    return{mid:`<div class="dtxt"><b>${w.emo} ${w.name}</b> · ${w.B?hOpt(s)+' · ':''}~${hMin(s)} min${s.slot==='x'?' · 3rd this week':''}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${N.slice(0,6).join(' · ')}${N.length>6?' …':''}</div>`,
+    return{mid:`<div class="dtxt"><b>${w.emo} ${w.name}</b> · ${w.B?hOpt(s)+' · ':''}~${hMin(s)} min${s.slot==='x'&&!s.tday?' · 3rd this week':''}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${N.slice(0,6).join(' · ')}${N.length>6?' …':''}</div>`,
       tot:t.a?totHtml(`${t.m}<small style="font-size:12px">/${t.a}</small>`,'shots'):totHtml('~'+hMin(s),'min')};},
   heroBody(s){const w=HW[s.type];return `<div class="bigsets"><b style="font-size:17px">${w.emo} ${w.name}${w.B?' · '+hOpt(s):''}</b></div><div class="meta" style="margin-top:8px">${w.lvl} · ~${hMin(s)} min · ${hNames(hDrills(s)).join(', ')}</div>`;},
   sheetTop(s){const w=HW[s.type],o=hOpt(s),t=hTot(ST.hoop,s.id);
@@ -1607,9 +1611,9 @@ function renderList(){
   h+=`<button class="btn sec" style="width:100%;margin-top:${mk?10:14}px" data-newtr>+ Add your own training</button>`;
   const A=plan.A;A.forEach((s,i)=>{
     if(i===0||A[i-1].week!==s.week){const wk=A.filter(x=>x.week===s.week);
-      h+=`<div class="wk"><h3>Week ${s.week} <span class="muted" style="font-weight:600;font-size:12px">· ${wk.length} trainings</span></h3><span>${short(wk[0].date)} – ${short(wk[wk.length-1].date)}</span></div>${plan.offBtn&&wk.find(x=>!x.extra)?plan.offBtn(bWeek(wk.find(x=>!x.extra))):''}`;}
+      h+=`<div class="wk"><h3>Week ${s.week} <span class="muted" style="font-weight:600;font-size:12px">· ${wk.filter(x=>!x.tday).length} trainings${wk.some(x=>x.tday)?' + 🏁 test day':''}</span></h3><span>${short(wk[0].date)} – ${short(wk[wk.length-1].date)}</span></div>${plan.offBtn&&wk.find(x=>!x.extra)?plan.offBtn(bWeek(wk.find(x=>!x.extra))):''}`;}
     const tags=[`<span class="tag t-${s.phase}">${PHASE[s.phase]}</span>`];
-    if(s.test&&s.phase!=='test')tags.push('<span class="tag t-test">Test</span>');
+    if(s.test&&s.phase!=='test'&&s.phase!=='htday')tags.push('<span class="tag t-test">Test</span>');
     if(isBday(s))tags.push('<span class="tag t-bday">🎂 Birthday</span>');
     if(!s.optional&&s.phase!=='hist'&&!stOf(S,s.id)&&isLightDay(plan,s))tags.push('<span class="tag t-light">🌿 Light</span>');
     if(s.optional)tags.push('<span class="tag t-light">Optional</span>');
@@ -1672,7 +1676,7 @@ function openSheet(id){
   const redoBox=redo?`<div class="result" style="color:#ffb03a">🔁 You'll redo this day on ${fmt(plan.S[plan.base+redo.i].date)}</div>`:(s.makeupOf!=null?`<div class="result" style="color:#ffb03a">🔁 Redo of Day ${plan.S[s.makeupOf].day} (${fmt(plan.S[s.makeupOf].date)})</div>`:'');
   const bday=isBday(s)?`<div class="bdaybox">🎂 ${s.kind==='final'?`Birthday challenge — Happy birthday, ${NAME}! This is the day you've trained 90 days for.`:`It's your birthday, ${NAME}! Training on your birthday = legend. 💪`}</div>`:'';
   $('sheet').innerHTML=`<div class="grab"></div>
-   <div class="dtop"><span class="tag t-${s.phase}">${PHASE[s.phase]}</span>${s.test&&s.phase!=='test'?'<span class="tag t-test">Test</span>':''}${isToday(s.date)?'<span class="tag t-today">Today</span>':''}<span>Week ${s.week}</span></div>
+   <div class="dtop"><span class="tag t-${s.phase}">${PHASE[s.phase]}</span>${s.test&&s.phase!=='test'&&s.phase!=='htday'?'<span class="tag t-test">Test</span>':''}${isToday(s.date)?'<span class="tag t-today">Today</span>':''}<span>Week ${s.week}</span></div>
    <h2>Day ${s.day} · ${fmtLong(s.date)}</h2>${redoBox}${bday}${sheetTopFor(plan,s)}${res}
    <div class="timebox"><div class="tt"><span>🕒 Training time</span><b>${t}</b></div>
      <div class="muted" style="font-size:12px;margin-top:2px">${changed?'Changed for this day only':'Change it for this day only:'}</div>
@@ -2275,11 +2279,12 @@ function hoopDaysCard(){const v=hDaysFor(hCurW()),dn=d=>DOW[d].slice(0,3);
    <p class="muted" style="font-size:12px;margin:8px 0 0">Changes start this week. Days you already marked stay where they are. The order of the 6 workouts keeps going — a missed one is done next time.</p></details>`;}
 function hoopWeekCard(){const t=new Date();t.setHours(0,0,0,0);const s0=new Date(t);s0.setDate(t.getDate()-t.getDay());let h='';
   for(let i=0;i<7;i++){const d=new Date(s0);d.setDate(s0.getDate()+i);
-    const bits=[...teamOn(d).map(x=>x.type==='game'?'🆚 Game':`👥 ${x.time} team`),...HOOP.A.filter(s=>s.date.toDateString()===d.toDateString()).map(s=>`⛹️ ${timeOf(HOOP,s)} ${s.extra?esc(s.title):HW[s.type].name}${didIt(ST.hoop,s.id)?' ✓':''}`)];
+    const bits=[...teamOn(d).map(x=>x.type==='game'?'🆚 Game':`👥 ${x.time} team`),...HOOP.A.filter(s=>s.date.toDateString()===d.toDateString()).map(s=>`⛹️ ${timeOf(HOOP,s)} ${s.extra?esc(s.title):s.tday?'🏁 Test day':HW[s.type].name}${didIt(ST.hoop,s.id)?' ✓':''}`)];
     h+=`<div class="hwk ${isToday(d)?'on':''}" data-calday="${isoD(d)}"><b>${d.toLocaleDateString(LOC,{weekday:'short'})} ${d.getDate()}</b><span>${bits.join(' · ')||'<span class="muted">Rest</span>'}</span></div>`;}
   return `<details class="tip hweek" open><summary>🏀 Your basketball week</summary>${h}</details>`;}
 const _renderList=renderList;renderList=function(){_renderList();if(cur==='hoop')$('list').insertAdjacentHTML('afterbegin',hoopDaysCard());};
-HOOP.offBtn=w=>{const hw=w-2,x=HOOP_S[hw*3+2];if(!x||x.date<HFIRST)return '';const f=(ST.hoop.force3||{})[hw];
+const HOOP_OFF0=w=>{const hw=w-2,x=HOOP_S[hw*3+2];if(!x||x.date<HFIRST)return '';const f=(ST.hoop.force3||{})[hw];return x.off?`<button class="offbtn" data-h3="${hw}:1">➕ Add a 3rd training this week (${DOW[x.date.getDay()]})</button>`:`<button class="offbtn" data-h3="${hw}:0">3️⃣ 3 trainings this week${f?'':' — you missed one last week'} · tap to remove the 3rd</button>`;};
+HOOP.offBtn=w=>{const hw=w-2,x=HOOP_S[hw*3+2];if(!x||x.date<HFIRST)return '';const spx=HOOP.A.filter(z=>z.special&&z.hw===hw);if(spx.length)return `<div class="tdnote">🏁 ${spx.map(z=>BTESTS[z.htest].name).join(' + ')} this week — a special extra day, not one of your trainings</div>`+HOOP_OFF0(w);const f=(ST.hoop.force3||{})[hw];
   return x.off?`<button class="offbtn" data-h3="${hw}:1">➕ Add a 3rd training this week (${DOW[x.date.getDay()]})</button>`
     :`<button class="offbtn" data-h3="${hw}:0">3️⃣ 3 trainings this week${f?'':' — you missed one last week'} · tap to remove the 3rd</button>`;};
 HOOP.progressCard=function(S){const tot={},add=(c,v)=>{const o=tot[c]=tot[c]||{m:0,a:0};o.m+=v.m;o.a+=v.a;},sess=[];
@@ -2493,7 +2498,7 @@ function btLogSheet(kind){kind=kind||'shoot';const X=BTESTS[kind];
 function btCard(){const rows=btG().map(([kind,X])=>`<details class="tip"><summary>${X.emo} ${X.no?X.no+' · ':''}${X.name}</summary>${X.L.map(t=>{const a=btVals(t.k),f=a.length?a[0].v:null,l=btLast(t.k),b=btBest(t.k);
     const g=a.length>1?(t.t==='time'?+(f-l).toFixed(1):+(l-f).toFixed(1)):null;
     return `<details class="btrow"><summary><span>${t.n}</span><span><b>${btFmt(t,l)}</b> <small class="muted">best ${btFmt(t,b)}</small>${g!=null?` <small style="color:${g>0?'#3ddc84':g<0?'#ff7a6b':'var(--muted)'}">${g>0?'▲':g<0?'▼':''}${Math.abs(g)}${t.t==='time'?'s':''}</small>`:''}</span></summary>${lineChart(a,t.t==='made'?{min:0,max:t.of}:{})}</details>`;}).join('')}</details>`).join('');
-  return `<div class="card"><h3>📊 Tests</h3><p class="muted" style="font-size:12px;margin:0 0 6px">The 7 tests are split into 🏁 Test day A (1 · 4 · 7) and B (2 · 3 · 5 · 6), 6 test days a year. Jump tests: log them whenever you do them. ▲ = better than your first test.</p>${rows}<button class="btn sec" style="width:100%;margin-top:10px" id="btLog">+ Log a test</button></div>`;}
+  return `<div class="card"><h3>📊 Tests</h3><p class="muted" style="font-size:12px;margin:0 0 6px">The 7 tests are split into 🏁 Test day A (1 · 4 · 7 + finishes 1–6 of test 3) and B (2 · 5 · 6 + finishes 7–12), 6 test days a year. Jump tests: log them whenever you do them. ▲ = better than your first test.</p>${rows}<button class="btn sec" style="width:100%;margin-top:10px" id="btLog">+ Log a test</button></div>`;}
 (()=>{const PC=HOOP.progressCard;HOOP.progressCard=function(S){return PC.call(this,S)+btCard();};})();
 const _aggr2=aggr;aggr=function(){const a=_aggr2(),T=ST.hoop.tests||[];a.btests=T.length;a.ft50=Math.max(0,...T.map(x=>x.r.ft50||0));a.mid25=Math.max(0,...T.map(x=>x.r.mid25||0));return a;};
 BADGES.push(['bt1','📊','Tested','Finish your first basketball test',a=>a.btests>=1],['ft40','🧊','40/50','40 of 50 free throws in a test',a=>a.ft50>=40],['ft45','🎯','45/50','45 of 50 free throws in a test',a=>a.ft50>=45],['mid20','🎯','Mid-range sniper','20 of 25 mid-range in a test',a=>a.mid25>=20]);
@@ -4215,27 +4220,38 @@ function btG(){return Object.entries(BTESTS).filter(([,x])=>!x.hide);}
   const old=['ft50','mid25','three20','lay1','sprint','suicide','lane','s17'].map(k).filter(Boolean);
   for(const x of Object.keys(BTESTS))delete BTESTS[x];
   Object.assign(BTESTS,{
-   shoot:{name:'Shooting test',emo:'🎯',min:45,L:[M('three30','30 threes · 6 from each spot',30,'5 spots: both corners, both wings, top. 6 shots from each spot. Count makes.'),
-     M('ft100','100 free throws',100,'Your normal routine. 10 sets of 10, short rest between sets. Count makes.'),
-     M('cs20','20 catch & shoot mid-range',20,'Spin the ball out to yourself, catch, square up and shoot from mid-range. Move spots every few shots.')]},
+   shoot:{name:'Shooting test',emo:'🎯',min:35,L:[M('three30','30 threes · 6 from each spot',30,'5 spots: both corners, both wings, top. 6 shots from each spot. Count makes.'),
+     M('ft100','100 free throws',100,'Your normal routine. 10 sets of 10, short rest between sets. Count makes.')]},
    mid:{name:'Mid-range & close test',emo:'🏀',min:40,L:[M('mid100','100 mid-range · move after every shot',100,'Free-throw distance. Never 2 in a row from the same spot: baselines, short corners, elbows, top.'),
      M('close40','40 shots in / near the paint',40,'Inside the paint or just outside it: bank shots, short jumpers, push shots. Move after every shot.')]},
-   lay:{name:'Layup types test',emo:'🏃',min:20,L:[k('layL'),M('rev10','10 reverse layups',10,'Drive along the baseline, finish on the other side of the rim. 5 from each side.'),
-     M('pow10','10 power layups',10,'Jump stop with 2 feet, then go up strong, ball high with both hands.'),M('euro10','10 euro steps',10,'Step one way, then a long step the other way, finish. 5 from each side.'),
-     M('flo10','10 floaters',10,'From the middle of the paint: soft one-hand shot, high over an imaginary tall defender.')]},
-   hard:{name:'Hard layups test',emo:'🔥',min:25,L:[
-     M('cmb1','Key combo ×10',10,'Top of the key → between the legs → pump fake right → drive left → gather step → euro step → finish. Full game speed. Travel or lost ball = miss.'),
-     M('cmb2','Spin combo ×10',10,'Left wing → crossover → hard drive to the baseline → spin back to the middle → reverse layup. 5 from each side.'),
-     M('cmb3','Hesi combo ×10',10,'Speed dribble from half court → hesitation at the 3-point line → behind the back → wrong-foot layup. 5 from each side.'),
-     M('cmb4','Pro-hop combo ×10',10,'Elbow → in-and-out dribble → jab step right → pro hop (jump stop on 2 feet) → pump fake → up-and-under finish.'),
-     M('cmb5','Off-hand combo ×10',10,'Right corner → drive with the RIGHT hand → between the legs → euro step → right-hand finish.'),
+   lay:{name:'Finishing test',emo:'🏃',min:30,L:[M('fin1','1 · Layup · 5 left + 5 right',10,'Normal layup off the backboard. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin2','2 · Reverse layup · 5 left + 5 right',10,'Go under the rim and finish on the other side, off the backboard. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin3','3 · Rim cross · 5 left + 5 right',10,'Cross under the rim and finish on the far side — the rim protects the ball. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin4','4 · Euro step · 5 left + 5 right',10,'Step one way, then a long step the other way, finish. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin5','5 · Floater · 5 left + 5 right',10,'Soft, high shot from 2–3 m. Let it go early, before the big man can block it. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin6','6 · Power layup · 5 left + 5 right',10,'Jump stop on 2 feet, go up strong, ball protected at your chin. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin7','7 · Push + step · 5 left + 5 right',10,'Shoulder into a pad / wall / friend, push off to make space, then step and finish. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin8','8 · Gather step · 5 left + 5 right',10,'Long gather step to get around the defender, then finish high. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin9','9 · Wrong-foot layup · 5 left + 5 right',10,'Jump off the foot on the SAME side as the hand — hard to block. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin10','10 · Up-and-under · 5 left + 5 right',10,'Jump stop, pump fake up, then step through under the defender and finish. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin11','11 · Finger roll · 5 left + 5 right',10,'Ball rolls off your fingertips over the rim, palm up, soft. 5 with the left hand, 5 with the right. From the wing, game speed.'),
+     M('fin12','12 · Scoop layup · 5 left + 5 right',10,'Underhand scoop from low, ball goes up high and soft off the glass. 5 with the left hand, 5 with the right. From the wing, game speed.')]},
+   hard:{name:'Hard combos test',emo:'🔥',min:30,L:[
+     M('cmb1','Key combo ×10',10,'Top of the key → between the legs → pump fake right → drive left → gather step → euro step → finish. Full game speed. Travel or lost ball = miss. ⏱ Counts only if you finish within 5 seconds of the first dribble.'),
+     M('cmb2','Spin combo ×10',10,'Left wing → crossover → hard drive to the baseline → spin back to the middle → reverse layup. 5 from each side. ⏱ Counts only if you finish within 5 seconds of the first dribble.'),
+     M('cmb3','Hesi combo ×10',10,'Speed dribble from half court → hesitation at the 3-point line → behind the back → wrong-foot layup. 5 from each side. ⏱ Counts only if you finish within 5 seconds of the first dribble.'),
+     M('cmb4','Pro-hop combo ×10',10,'Elbow → in-and-out dribble → jab step right → pro hop (jump stop on 2 feet) → pump fake → up-and-under finish. ⏱ Counts only if you finish within 5 seconds of the first dribble.'),
+     M('cmb5','Off-hand combo ×10',10,'Right corner → drive with the RIGHT hand → between the legs → euro step → right-hand finish. ⏱ Counts only if you finish within 5 seconds of the first dribble.'),
+     M('cmb6','Step-back combo ×10',10,'Right wing → between the legs → crossover → step back → mid-range jump shot. 5 from each side. ⏱ Counts only if you shoot within 5 seconds of the first dribble.'),
      C('rmikan','1-minute reverse Mikan',60,'makes','Under the rim: reverse layups with one hand, then the other, nonstop. The ball never touches the floor. Count makes.')]},
-   drib:{name:'Dribble test',emo:'🤹',min:15,L:[k('cross30'),C('btl30','30-second between the legs',30,'times','Count every time the ball goes between your legs.'),
+   drib:{name:'Dribble test',emo:'🤹',min:20,L:[k('cross30'),C('btl30','30-second between the legs',30,'times','Count every time the ball goes between your legs.'),
      C('bhb30','30-second behind the back',30,'times','Count every behind-the-back.'),T('fcspeed','Full-court speed dribble','Down and back as fast as you can — any hand, under control. Stopwatch.'),
+     C('twoball','30-second two-ball dribble',30,'left bounces','A ball in each hand, bounce both at the same time, waist high. Count the LEFT-hand bounces.'),
+     C('spider','30-second spider dribble',30,'touches','Ball between your feet: right, left in front, then right, left behind — fast little taps. Count every touch.'),
      T('zigzag','Zig-zag cones','6 cones/shoes in a zig-zag up the court, crossover at each one, down and back. Stopwatch.')]},
    off:{name:'Off-hand (right) test',emo:'💪',min:15,L:[k('layR'),k('rh30'),k('fcdrib'),M('rform10','10 right-hand form shots',10,'1 metre from the rim, right hand only, perfect form.'),
      M('rhook10','10 right-hand hooks',10,'From the right block: step and hook with the right hand.')]},
-   game:{name:'Game moments test',emo:'⏱',min:15,L:[M('clutchft','Clutch free throws ×5',10,'Sprint baseline to baseline and back, then 2 free throws right away. 5 rounds = 10 shots.'),
+   game:{name:'Game moments test',emo:'⏱',min:25,L:[M('cs20','20 tired catch & shoot mid-range',20,'1 round = sprint to half court and back, then spin the ball out to yourself, catch and shoot 2 mid-range shots. 10 rounds = 20 shots. Move spots every round.'),M('clutchft','Clutch free throws ×5',10,'Sprint baseline to baseline and back, then 2 free throws right away. 5 rounds = 10 shots.'),
      M('buzzer','Buzzer beaters ×5',5,'Start at half court and count down 5 seconds out loud: dribble and get a shot off before 0 (pull-up or 3).'),
      M('fbreak','Fast-break layups ×6',6,'Full-court speed dribble and finish at full speed. 3 with each hand.'),
      M('tired3','Tired 3s ×5',5,'20 seconds of defensive slides, then catch and shoot one 3. 5 rounds.')]},
@@ -4243,29 +4259,39 @@ function btG(){return Object.entries(BTESTS).filter(([,x])=>!x.hide);}
    old:{name:'Old tests',emo:'🗂',min:0,hide:1,L:old}});
   Object.defineProperty(BTESTS,'ath',{value:{name:'Athletic test',emo:'⚡',min:25,L:[]},enumerable:false,configurable:true});
   ['shoot','mid','lay','hard','drib','off','game'].forEach((k,i)=>BTESTS[k].no=i+1);
-  const grp=(n,ks)=>({name:n,emo:'🏁',min:ks.reduce((a,k)=>a+BTESTS[k].min,0),ks,L:ks.flatMap(k=>BTESTS[k].L)});
-  Object.defineProperty(BTESTS,'tA',{value:grp('Test day A',['shoot','hard','game']),enumerable:false,configurable:true});
-  Object.defineProperty(BTESTS,'tB',{value:grp('Test day B',['mid','lay','drib','off']),enumerable:false,configurable:true});
+  const grp=(n,ks,half)=>{const H=BTESTS.lay.L,h=half===1?H.slice(0,6):H.slice(6);return{name:n,emo:'🏁',half,min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+15,ks,L:[...ks.flatMap(k=>BTESTS[k].L),...h]};};
+  Object.defineProperty(BTESTS,'tA',{value:grp('Test day A',['shoot','hard','game'],1),enumerable:false,configurable:true});
+  Object.defineProperty(BTESTS,'tB',{value:grp('Test day B',['mid','drib','off'],2),enumerable:false,configurable:true});
   Object.defineProperty(BTESTS,'all',{value:{name:'Test day',emo:'🏁',min:175,L:btG().filter(([,x])=>!x.opt).flatMap(([,x])=>x.L)},enumerable:false,configurable:true});
   Object.defineProperty(BTESTS,'combine',{get(){return BTESTS.all;},enumerable:false,configurable:true});})();
 /* Test day: all 6 tests in one day, 3 times a year, as an extra (3rd) day that week. Trainings a week: 1, 2 or 3. */
 const tdays=()=>(LF.tdays&&LF.tdays.length>3?LF.tdays:['2026-12-08','2027-02-09','2027-04-20','2027-06-08','2027-07-20','2027-09-07']).slice().sort();
-const tdG=d=>tdays().indexOf(d)%2?'tB':'tA';const tdNos=g=>BTESTS[g].ks.map(k=>BTESTS[k].no).join(' · ');
+const tdG=d=>tdays().indexOf(d)%2?'tB':'tA';const tdAct=()=>tdays().map((d,i)=>({d:(LF.spMove||{})['td'+i]||d,g:i%2?'tB':'tA',i}));const tdNos=g=>[...BTESTS[g].ks.map(k=>BTESTS[k].no),...(BTESTS[g].half?[`3 (${BTESTS[g].half===1?'1–6':'7–12'})`]:[])].sort((a,b)=>parseInt(a)-parseInt(b)).join(' · ');
 const hWkOf=iso=>Math.floor((dOf(iso)-HSTART)/(7*864e5));
 function hPerWk(w){let n=2;(ST.hoop.perWk||[]).forEach(e=>{if(e.from<=w)n=e.n;});return n;}
-const _hoopTypesTD=hoopTypes;hoopTypes=function(){const S=ST.hoop,B=HOOP_S.slice(0,HBASE),rem=S.removed||{},T={};
-  tdays().forEach(d=>{const w=hWkOf(d);if(w>=0&&w<HWEEKS)T[w]=d;});
+const _hoopTypesTD=hoopTypes;hoopTypes=function(){const S=ST.hoop,B=HOOP_S.slice(0,HBASE),rem=S.removed||{},mvS=LF.spMove||{};
   const f0=S.force3,f3={...(S.force3||{})};
-  for(let w=0;w<HWEEKS;w++){const n=hPerWk(w),d2=B[w*3+1];if(n===1&&!rem[d2.id]&&!(S.done||{})[d2.id])d2.del=true;if(n===3&&f3[w]==null)f3[w]=true;if(T[w])B[w*3+2].del=true;}
+  for(let w=0;w<HWEEKS;w++){const n=hPerWk(w),d2=B[w*3+1];if(n===1&&!rem[d2.id]&&!(S.done||{})[d2.id])d2.del=true;if(n===3&&f3[w]==null)f3[w]=true;}
   S.force3=f3;try{_hoopTypesTD();}finally{S.force3=f0;}
-  B.forEach(s=>{s.htest=null;s.test=false;s.tday=null;});
-  Object.entries(T).forEach(([w,d])=>{const x=B[w*3+2];x.del=!!rem[x.id];x.off=false;x.date=dOf(d);x.tday=d;x.htest=tdG(d);x.test=true;x.type=x.auto='play';x.phase='hplay';});
-  /* mini tests: one test at a time on a normal training, 1→7, twice a year (every ~26 days), never in a test-day week */
-  const mv=S.testOv||{},used=new Set(Object.keys(T).map(Number));let n=0;
-  for(let k=0;k<60;k++){const tg=new Date(MT0);tg.setDate(MT0.getDate()+Math.round(k*365/14));let w=Math.floor((tg-HSTART)/(7*864e5));while(used.has(w))w++;if(w>=HWEEKS)break;
-    const a=B.filter(x=>x.hw===w&&!x.off&&!x.del&&!x.tday).sort((x,y)=>x.date-y.date);if(!a.length)continue;const x=a.find(z=>mv[w]!=null&&z.id===mv[w])||a[0];x.htest=MTORD[n%7];x.test=true;x.mini=n+1;used.add(w);n++;}};
-const MT0=new Date(2026,10,29),MTORD=['shoot','mid','lay','hard','drib','off','game'];
-const _hDrillsTD=hDrills;hDrills=function(s){return s.tday&&s.htest?[HWU]:_hDrillsTD(s);};
+  B.forEach(s=>{s.htest=null;s.test=false;s.tday=null;s.mini=null;});
+  const SP=[],spWeeks=new Set(),wkOf=d=>Math.floor((d-HSTART)/(7*864e5));
+  /* special test days A / B (an extra day — not one of the trainings) */
+  tdays().forEach((d,i)=>{const key='td'+i,dt=dOf(mvS[key]||d),w=wkOf(dOf(d));if(w<0||w>=HWEEKS)return;SP.push({key,id:SPID+i,plan:dOf(d),date:dt,g:i%2?'tB':'tA'});});
+  /* mini tests: 11 a year = 8 single (on the shortest training that week) + 3 double days (extra day: 2 tests + a bit of defense) → all 7 tests twice a year */
+  SP.forEach(x=>spWeeks.add(wkOf(x.date)));const used=new Set(spWeeks),mvT=S.testOv||{};let t=0,dj=0,lastW=-9;
+  for(let k=0;k<40;k++){const tg=new Date(MT0);tg.setDate(MT0.getDate()+Math.round(k*365/11));let w=wkOf(tg);while(used.has(w)||spWeeks.has(w-1)||spWeeks.has(w+1)||w<lastW+3)w++;if(w>=HWEEKS)break;
+    const dbl=EVP[k%EVP.length]==='d';
+    if(dbl){const ws=new Date(HSTART);ws.setDate(ws.getDate()+w*7);const busy=new Set([...B.filter(x=>x.hw===w&&!x.del&&!x.off).map(x=>x.date.toDateString())]);
+      let day=null;for(const o of [2,3,0,4,5,1,6]){const d=new Date(ws);d.setDate(ws.getDate()+o);let g=false;try{g=hGame(d)||hGame(new Date(d.getTime()+864e5));}catch(e){}if(!busy.has(d.toDateString())&&!g){day=d;break;}}
+      if(!day){continue;}lastW=w;const key='m2_'+dj,ks=[MTORD[t%7],MTORD[(t+1)%7]];m2Group(key,ks);SP.push({key,id:SPID+100+dj,plan:day,date:mvS[key]?dOf(mvS[key]):day,g:key});dj++;t+=2;used.add(w);}
+    else{const a=B.filter(x=>x.hw===w&&!x.off&&!x.del).sort((x,y)=>(mvT[w]===x.id?-1:mvT[w]===y.id?1:0)||(_hMinTD(x)+(HARDT.includes(x.type)?40:0))-(_hMinTD(y)+(HARDT.includes(y.type)?40:0))||x.date-y.date);if(!a.length)continue;
+      const x=a[0];x.htest=MTORD[t%7];x.test=true;x.mini=t+1;t++;used.add(w);lastW=w;}}
+  const st0=new Date(START[0],START[1],START[2]);SP.forEach(x=>{const k=Math.round((x.date-st0)/864e5);HOOP.S[x.id]={id:x.id,hw:wkOf(x.date),slot:'sp',kind:'main',type:'play',auto:'play',phase:'htday',special:x.key,spPlan:isoD(x.plan),
+    date:x.date,baseDate:x.date,week:Math.floor(k/7)+1,day:k+1,tday:isoD(x.date),htest:x.g,test:true,extra:false,del:!!rem[x.id],off:false,ex:[]};});};
+const HARDT=['cond','finish'],SPID=9000,MT0=new Date(2026,10,29),EVP=['s','s','d','s','s','d','s','s','d','s','s'],MTORD=['shoot','mid','lay','hard','drib','off','game'];
+function m2Group(key,ks){Object.defineProperty(BTESTS,key,{value:{name:'Mini test day',emo:'🏁',min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+11,ks,L:ks.flatMap(k=>BTESTS[k].L),m2:1},enumerable:false,configurable:true});}
+
+const _hDrillsTD=hDrills;hDrills=function(s){return s.tday&&s.htest?(BTESTS[s.htest]&&BTESTS[s.htest].m2?[HWU,H5.stance,H5.close]:[HWU]):_hDrillsTD(s);};
 const _hMinTD=hMin;hMin=function(s){return s.tday&&s.htest?10+BTESTS[s.htest].min:_hMinTD(s);};
 (()=>{const T=HOOP.title,TP=HOOP.tips,ST2=HOOP.sheetTop;
   HOOP.title=function(s){return s.tday&&s.htest?`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`:T.call(this,s);};
@@ -4382,9 +4408,9 @@ document.addEventListener('click',e=>{const t=e.target;let b;
     if(mk>B.b10&&LF.ftc.length>1)try{levelUpFx('🏆','New best!',`${mk}/10 free throws`);}catch(x){}else toast(`🎯 ${mk}/10 saved`);return;}});
 
 /* ---- combine day ---- */
-const combNext=()=>tdays().find(d=>daysTo(d)>=0)||tdays().slice(-1)[0];
+const combNext=()=>{const L=tdAct().map(x=>x.d).sort();return L.find(d=>daysTo(d)>=0)||L.slice(-1)[0];};
 function combSheet(){const X=BTESTS.combine;
-  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test day</h2><p class="muted" style="font-size:13px;margin:4px 0 8px">Test day A = tests 1 · 4 · 7, Test day B = tests 2 · 3 · 5 · 6. Fill in the ones you did today. Warm up first. Fill in what you did — skip what you didn't.</p>
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test day</h2><p class="muted" style="font-size:13px;margin:4px 0 8px">Test day A = tests 1 · 4 · 7 + finishes 1–6, Test day B = tests 2 · 5 · 6 + finishes 7–12. Fill in the ones you did today. Warm up first. Fill in what you did — skip what you didn't.</p>
    <div class="timebox"><label class="erow">Date<input type="date" id="cbD" value="${isoD(new Date())}"></label></div>
    <h4>💪 Body</h4>${[['pull','Max pull-ups','reps'],['push','Max push-ups','reps'],['h','Height','cm'],['reach','Standing reach','cm']].map(([k,l,u])=>`<div class="hlrow2"><span style="flex:1"><b>${l}</b></span><span><input type="number" step="0.5" inputmode="decimal" data-cb="${k}"><i>${u}</i></span></div>`).join('')}
    ${btG().map(([,G])=>`<h4>${G.emo} ${G.no?G.no+' · ':''}${G.name.replace(' test','')}${G.opt?' <small class="muted">· only when you do them</small>':''}</h4>${G.L.map(t=>`<div class="hlrow2"><span style="flex:1"><b>${t.n}</b><small class="muted" style="display:block;font-size:11px">best ${btFmt(t,btBest(t.k))}</small></span><span><input type="number" step="0.1" inputmode="decimal" data-btl="${t.k}" placeholder="${t.t==='time'?'sec':t.t==='cm'?'cm':'#'}"><i>${btUnit(t)}</i></span></div>`).join('')}`).join('')}
@@ -4402,14 +4428,14 @@ document.addEventListener('click',e=>{const t=e.target;
     try{levelUpFx('🏁','Test day done!',pbs.length?`${pbs.length} new bests: ${pbs.slice(0,3).join(', ')}`:'Saved — see the 📊 Tests card');}catch(x){}return;}});
 
 function tdCard(){return `<div class="card"><div class="fmh"><h3 style="margin:0">🏁 Test days</h3><button class="chip" data-tdedit>✏️ Dates</button></div>
-  <p class="muted" style="font-size:12px;margin:6px 0">6 test days a year, taking turns: <b>A</b> = ${['tA'].map(g=>BTESTS[g].ks.map(k=>`${BTESTS[k].emo} ${BTESTS[k].no}`).join(' '))} · <b>B</b> = ${BTESTS.tB.ks.map(k=>`${BTESTS[k].emo} ${BTESTS[k].no}`).join(' ')}. Each one is an extra training that week.</p>
-  ${tdays().map(d=>`<div class="trow"><span>🏁 <b>${tdG(d)==='tA'?'A':'B'}</b> ${fmtLong(dOf(d))}</span><span class="muted">${daysTo(d)<0?'done':inTxt(daysTo(d))}</span></div>`).join('')}
-  ${(()=>{const M=HOOP.A.filter(s=>s.htest&&!s.tday&&!didIt(ST.hoop,s.id)&&s.date>=new Date(new Date().setHours(0,0,0,0))).slice(0,3);
-    return `<h4>➕ Mini tests</h4><p class="muted" style="font-size:12px;margin:0 0 4px">One test at a time, added to a normal training. All 7 in order, twice a year. Extra — test days A and B stay.</p>`+
-     (M.length?M.map(s=>`<div class="trow"><span>${BTESTS[s.htest].emo} ${BTESTS[s.htest].no} · ${BTESTS[s.htest].name}</span><span class="muted">${fmt(s.date)}</span></div>`).join(''):'<p class="muted" style="font-size:12px">None left in this plan.</p>');})()}
+  <p class="muted" style="font-size:12px;margin:6px 0">6 test days a year, taking turns: <b>A</b> = tests ${tdNos('tA')} · <b>B</b> = tests ${tdNos('tB')}. Each one is a special extra day — not one of your trainings.</p>
+  ${tdAct().map(({d,g})=>`<div class="trow"><span>🏁 <b>${g==='tA'?'A':'B'}</b> ${fmtLong(dOf(d))}</span><span class="muted">${daysTo(d)<0?'done':inTxt(daysTo(d))}</span></div>`).join('')}
+  ${(()=>{const M=HOOP.A.filter(s=>s.htest&&s.htest!=='tA'&&s.htest!=='tB'&&!didIt(ST.hoop,s.id)&&s.date>=new Date(new Date().setHours(0,0,0,0))).slice(0,4);
+    return `<h4>➕ Mini tests</h4><p class="muted" style="font-size:12px;margin:0 0 4px">All 7 tests in order, twice a year: most go on your shortest training that week, and 3 times a year 2 tests get their own extra day (+ a bit of defense). Test days A and B stay.</p>`+
+     (M.length?M.map(s=>`<div class="trow"><span>${s.special?`🏁 Mini test day · tests ${tdNos(s.htest)}`:`${BTESTS[s.htest].emo} ${BTESTS[s.htest].no} · ${BTESTS[s.htest].name}`}</span><span class="muted">${fmt(s.date)}</span></div>`).join(''):'<p class="muted" style="font-size:12px">None left in this plan.</p>');})()}
   <button class="btn sec" style="width:100%;margin-top:10px" data-cbopen>📝 Log a test day</button></div>`;}
 document.addEventListener('click',e=>{if(!e.target.closest('[data-tdedit]'))return;const T=tdays();
-  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test days</h2><div class="timebox">${[0,1,2,3,4,5].map(i=>`<label class="erow">${i+1} · ${i%2?'B (2 3 5 6)':'A (1 4 7)'}<input type="date" data-tdd value="${T[i]||''}"></label>`).join('')}</div>
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test days</h2><div class="timebox">${[0,1,2,3,4,5].map(i=>`<label class="erow">${i+1} · ${i%2?'B (2 5 6 +½ 3)':'A (1 4 7 +½ 3)'}<input type="date" data-tdd value="${T[i]||''}"></label>`).join('')}</div>
    <div class="row2"><button class="btn main" data-tdsave>Save</button><button class="btn sec" data-close>Cancel</button></div>`;$('ov').classList.add('on');});
 document.addEventListener('click',e=>{if(!e.target.closest('[data-tdsave]'))return;LF.tdays=[...document.querySelectorAll('[data-tdd]')].map(i=>i.value).filter(Boolean).sort();saveLF();refresh();save();closeSheet();renderAll();if($('v-bb').classList.contains('on'))renderBB();toast('🏁 Test days saved');});
 /* ---- records wall ---- */
@@ -4587,7 +4613,7 @@ document.addEventListener('click',e=>{const t=e.target;let b;if(t.closest('[data
 
 /* ================= QUICK ADD (+) ================= */
 document.body.insertAdjacentHTML('beforeend','<button class="fab" id="fab" aria-label="Quick add">＋</button>');
-function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free throws ×10','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst']];
+function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst']];
   $('sheet').innerHTML=`<div class="grab"></div><h2>＋ Quick add</h2><div class="qgrid">${Q.map(([e,l,k])=>`<button class="qbtn" data-q="${k}"><b>${e}</b>${l}</button>`).join('')}</div><button class="btn sec" style="width:100%;margin-top:12px" data-close>Close</button>`;$('ov').classList.add('on');}
 document.addEventListener('click',e=>{const t=e.target;let b;if(t.id==='fab'){fabSheet();return;}
   if(!(b=t.closest('[data-q]')))return;const k=b.dataset.q;closeSheet();const iso=isoD(new Date());
@@ -4756,6 +4782,55 @@ const _renderLifeUI=renderLife;renderLife=function(){_renderLifeUI();const v=$('
 const _streakCardUI=streakCard;streakCard=function(){return _streakCardUI().replace(/<div class="stk[^"]*"><span>✅<\/span>.*?<\/div>/,'');};
 /* player card gets a title */
 const _playerCardUI=playerCard;playerCard=function(){return _playerCardUI().replace('<div class="card pcard">','<div class="card pcard"><h3>🪪 My player card</h3>');};
+
+/* ================= CHALLENGES: X in a row with a max of tries, + around the world ================= */
+const CHAL=[{k:'ft',e:'🧊',n:'Free throws',goal:10,max:20,row:1,how:'Make 10 free throws in a row. You have 20 shots max.'},
+ {k:'three',e:'🔥',n:'Threes',goal:5,max:25,row:1,how:'Make 5 threes in a row from any spot. You have 25 shots max.'},
+ {k:'rlay',e:'💪',n:'Right-hand layups',goal:10,max:20,row:1,how:'Make 10 right-hand layups in a row (both sides). You have 20 tries max.'},
+ {k:'atw',e:'🌍',n:'Around the world',goal:7,max:30,row:0,how:'7 mid-range spots: corner, wing, elbow, top, elbow, wing, corner. Make it to move to the next spot. 30 shots max.'}];
+LF.chal=LF.chal||{};CHAL.forEach(c=>{LF.chal[c.k]=LF.chal[c.k]||[];});
+const chOf=k=>CHAL.find(c=>c.k===k);
+function chRes(c,r){const made=(r.match(/1/g)||[]).length,run=Math.max(0,...(r.match(/1+/g)||['']).map(x=>x.length)),ok=c.row?run>=c.goal:made>=c.goal;return{ok,tries:r.length,made,run};}
+function chBest(k){const c=chOf(k),L=LF.chal[k].map(x=>chRes(c,x.r));const W=L.filter(x=>x.ok);
+  if(W.length)return{ok:true,tries:Math.min(...W.map(x=>x.tries)),txt:`${c.row?c.goal+' in a row':'done'} in ${Math.min(...W.map(x=>x.tries))} shots`};
+  if(L.length){const b=c.row?Math.max(...L.map(x=>x.run)):Math.max(...L.map(x=>x.made));return{ok:false,txt:c.row?`best ${b} in a row`:`best ${b}/${c.goal} spots`};}return null;}
+function chalCard(){return `<div class="card"><h3>🎯 Challenges</h3><p class="muted" style="font-size:12px;margin:0 0 8px">Quick tests you can do any time. Tap ✓ or ✕ after every shot — it stops by itself.</p>
+  ${CHAL.map(c=>{const b=chBest(c.k),L=LF.chal[c.k],last=L[L.length-1],lr=last?chRes(c,last.r):null;
+   return `<div class="chrow"><div class="dmid"><b>${c.e} ${c.n}</b> <small class="muted">${c.row?`${c.goal} in a row · max ${c.max}`:`${c.goal} spots · max ${c.max}`}</small>
+    <div class="muted" style="font-size:12px">${b?`🏆 ${b.ok?'✅ ':''}${b.txt}`:'Not tried yet'}${lr?` · last: ${lr.ok?'✅ '+lr.tries+' shots':c.row?lr.run+' in a row':lr.made+' spots'}`:''}</div></div><button class="btn main" style="flex:none;padding:8px 14px" data-chgo="${c.k}">▶</button></div>`;}).join('')}</div>`;}
+let CH=null;
+function chSheet(){const c=chOf(CH.k),r=CH.r,R=chRes(c,r),cur=(r.match(/1+$/)||[''])[0].length,end=R.ok||r.length>=c.max||(c.row?cur+(c.max-r.length)<c.goal:R.made+(c.max-r.length)<c.goal),b=chBest(c.k);
+  const SP=['L corner','L wing','L elbow','Top','R elbow','R wing','R corner'];
+  $('sheet').innerHTML=`<div class="grab"></div><h2>${c.e} ${c.n}</h2><p class="muted" style="font-size:13px;margin:4px 0 8px">${c.how}</p>
+   <div class="ftdots ch">${Array.from({length:c.max},(_,i)=>`<span class="${i<r.length?(r[i]==='1'?'ok':'no'):''}">${i<r.length?(r[i]==='1'?'✓':'✕'):''}</span>`).join('')}</div>
+   <div style="text-align:center;margin:12px 0"><b style="font-size:34px">${c.row?`${cur} <small style="font-size:16px">in a row</small>`:`${R.made}/${c.goal} <small style="font-size:16px">spots</small>`}</b>
+    <div class="muted">${r.length}/${c.max} shots${!c.row&&!end?` · now: <b>${SP[R.made]}</b>`:''}${c.row&&R.run>cur?` · best now ${R.run}`:''}${b?` · record: ${b.txt}`:''}</div></div>
+   ${end?`<div class="chend ${R.ok?'ok':''}">${R.ok?`✅ Done in ${r.length} shots!`:`❌ Not this time — ${c.row?'best '+R.run+' in a row':R.made+'/'+c.goal+' spots'}`}</div>
+    <div class="row2"><button class="btn main" data-chsave>Save</button><button class="btn sec" data-chgo="${c.k}">↺ Again</button></div>`
+   :`<div class="row2"><button class="btn main" style="background:#3ddc84" data-chs="1">✓ Made</button><button class="btn sec" data-chs="0">✕ Missed</button></div>${r.length?'<button class="btn sec" style="width:100%;margin-top:10px" data-chs="u">↩ Undo</button>':''}`}
+   <button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');}
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-chgo]')){CH={k:b.dataset.chgo,r:''};chSheet();return;}
+  if(b=t.closest('[data-chs]')){const v=b.dataset.chs;if(v==='u')CH.r=CH.r.slice(0,-1);else{CH.r+=v;try{beep(v==='1'?880:330,110);}catch(x){}}chSheet();return;}
+  if(t.closest('[data-chsave]')){const c=chOf(CH.k),old=chBest(c.k),R=chRes(c,CH.r);LF.chal[c.k].push({d:isoD(new Date()),r:CH.r});saveLF();closeSheet();if($('v-bb').classList.contains('on'))renderBB();
+    if(R.ok&&(!old||!old.ok||R.tries<old.tries))try{levelUpFx('🏆','New record!',`${c.n}: done in ${R.tries} shots`);}catch(x){}else toast(R.ok?`✅ ${c.n} done in ${R.tries}`:'Saved — next time!');return;}});
+ftCard=chalCard;
+const _recordsCH=records;records=function(){const R=_recordsCH().filter(r=>!/^Free throws/.test(r.l));CHAL.forEach(c=>{const b=chBest(c.k);if(b&&b.ok)R.push({e:c.e,l:`${c.n} challenge`,v:`${b.tries} shots`,d:null});});return R;};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-q="qft"]');if(!b)return;e.stopImmediatePropagation();closeSheet();CH={k:'ft',r:''};chSheet();},true);
+
+/* special test days: own look, move ±10 days */
+const _openSheetSP=openSheet;openSheet=function(id){_openSheetSP(id);if(cur!=='hoop')return;const s=HOOP.S[id],sh=$('sheet');if(!s||!s.special)return;
+  sh.querySelectorAll('[data-htype]').forEach(b=>{const p=b.parentElement;if(p&&p!==sh)p.remove();});
+  [...sh.querySelectorAll('.timebox')].forEach(t=>{if(/Move this test/.test(t.textContent))t.remove();});
+  const mv=(LF.spMove||{})[s.special];
+  sh.querySelector('h2')&&sh.querySelector('h2').insertAdjacentHTML('afterend',`<div class="tdnote">🏁 Special test day — not one of your trainings. You can move it up to 10 days earlier or later.
+   <div class="row2" style="margin-top:8px"><input type="date" id="spD" class="ename" value="${isoD(s.date)}" min="${addD(s.spPlan,-10)}" max="${addD(s.spPlan,10)}"><button class="btn sec" style="flex:none;padding:8px 14px" data-spmove="${s.special}">📅 Move</button></div>
+   ${mv?`<button class="chip" style="margin-top:6px" data-spreset="${s.special}">↺ Back to ${fmt(dOf(s.spPlan))}</button>`:''}</div>`);};
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-spmove]')){const k=b.dataset.spmove,s=HOOP.A.find(x=>x.special===k),v=$('spD').value;if(!s||!v)return;
+    if(Math.abs((dOf(v)-dOf(s.spPlan))/864e5)>10){toast('Only up to 10 days earlier or later');return;}
+    LF.spMove=LF.spMove||{};if(v===s.spPlan)delete LF.spMove[k];else LF.spMove[k]=v;saveLF();refresh();save();renderAll();openSheet(s.id);toast('📅 Moved to '+fmt(dOf(v)));return;}
+  if(b=t.closest('[data-spreset]')){const k=b.dataset.spreset;delete LF.spMove[k];saveLF();refresh();save();renderAll();const s=HOOP.A.find(x=>x.special===k);s&&openSheet(s.id);return;}});
 
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
