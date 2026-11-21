@@ -463,6 +463,7 @@ body.home .view{padding-bottom:100px}
 .ftdots.ch span{font-size:11px}.chend{text-align:center;font-weight:800;padding:10px;border-radius:12px;background:#ff6b6b22;margin-bottom:10px}.chend.ok{background:#3ddc8433}
 .tag.t-htday{background:linear-gradient(90deg,#ffd70044,#ff8c1a44);color:#ffd23a}
 .tdnote{margin:6px 0 10px;padding:10px 14px;border-radius:14px;border:1px dashed #ffd23a88;color:#ffd23a;font-size:13px;font-weight:700}
+.tlist span{display:block;margin-top:5px;line-height:1.35}.tlist b{color:var(--ink)}
 </style>
 </head>
 <body class="home">
@@ -594,7 +595,7 @@ body.home .view{padding-bottom:100px}
     </div>
     <div id="tips-hoop">
       <details class="tip" open><summary>How the Hoops plan works</summary><ul>
-        <li><b>6 workouts in a loop:</b> 🎯 Shooting Foundation → 🏃 Dribble & Finishing → ⚡ Game Speed → 🔥 Game Shots → 💪 Weak Hand + Defense → 🏆 Play & Compete → again.</li>
+        <li><b>6 workouts, 12 trainings in a loop:</b> 🎯 → 🏃 → 🔥 → ⚡ → 🏆 → 💪 → 🎯 → ⚡ → 🔥 → 💪 → 🏆 → 🏃 → again. Always easy → hard → easy → hard.</li>
         <li><b>Your days:</b> Monday (or Tuesday) + Saturday. Change them at the top of the plan.</li>
         <li><b>Missed one?</b> Mark it ✕ or 🤒 — next week gets a 3rd training, and the missed workout is the next one you do.</li>
         <li><b>Full version = your normal training.</b> Short on time or tired? Open the day and pick a shorter one.</li>
@@ -1115,10 +1116,15 @@ HW.cond.A=[HWU,H3.fcl,H3.pull,H3.tr1,H3.slide,H3.sft];HW.cond.B=[HWU,H3.fcl,H3.p
 HW.shots.A=[H4.form,H4.foot,H4.pu,H4.clock,H4.tired,H4.dd,H4.pft,H4.pump,H4.ss];
 HW.weak.A=[HWU,H5.jstop,H5.drib,H5.lay,H5.hook,H5.stance,H5.close];HW.weak.B=[HWU,H5.jstop,H5.drib,H5.rform,H5.lay,H5.flt,H5.hook,H5.stance,H5.close,H5.zig];HW.weak.C=[...HW.weak.B,H5.c1];
 HW.play.A=[HWU,H6.lay1,H6.atw,H6.g33,H6.free];HW.play.B=hIns(HW.play.A,[H6.horse]);HW.play.C=hIns(HW.play.B,[H6.ko]);
+/* Short version = the old short one + 5–10 minutes of the full one */
+Object.values(HW).forEach(w=>{if(!w.B)return;const full=w.C||w.B,ex=full.filter(d=>!w.A.includes(d)),add=[];let m=0;
+  for(const d of ex){if(m>=5)break;if(m>0&&m+d.min>10)continue;add.push(d);m+=d.min;}w.S=full.filter(d=>w.A.includes(d)||add.includes(d));w.mins.S=w.mins.A+m;});
 const HORDER=['found','finish','cond','shots','weak','play'];
+/* the order: 1 2 4 3 6 5 · 1 3 4 5 6 2 — always easy → hard → easy → hard */
+const HSEQ=['found','finish','shots','cond','play','weak','found','cond','shots','weak','play','finish'];
 Object.assign(PHASE,{htday:'🏁 Test day',hfound:'Shooting',hfinish:'Finishing',hcond:'Conditioning',hshots:'Game Shots',hweak:'Weak Hand',hplay:'Play'});
 // Sessions: weeks from Sun Nov 15. Slots: day 1 (Mon), day 2 (Sat), 3rd day (Tue — only the week after you miss one).
-const HSTART=new Date(2026,10,15),HFIRST=new Date(2026,10,21),HWEEKS=17,HBASE=HWEEKS*3,HDAYS=126;
+const HSTART=new Date(2026,10,15),HFIRST=new Date(2026,10,21),HWEEKS=59,HBASE=HWEEKS*3,HDAYS=413;   // until Dec 31, 2027
 const HOOP_S=[];for(let w=0;w<HWEEKS;w++)['d1','d2','x'].forEach(slot=>HOOP_S.push({id:HOOP_S.length,hw:w,slot,kind:'main',type:'found',phase:'hfound',test:false,final:false,ex:[],date:new Date(HSTART)}));
 const hsOf=(S,id)=>S.done[id]===true?'done':(S.done[id]||'');
 const hISO=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
@@ -1142,12 +1148,14 @@ function hoopTypes(){const S=ST.hoop,B=HOOP_S.slice(0,HBASE),f3=S.force3||{};
   const act=B.filter(s=>!s.off&&!s.del).sort((a,b)=>a.date-b.date||a.id-b.id);
   let p=S.rot||0;const pend=[];
   act.forEach(s=>{const ok=t=>hAllowed(t,s.date);let pick=null;const i=pend.findIndex(ok);
-    if(i>=0)pick=pend.splice(i,1)[0];else for(let g=0;g<6&&!pick;g++){const t=HORDER[p%6];p++;if(ok(t))pick=t;else pend.push(t);}
+    if(i>=0)pick=pend.splice(i,1)[0];else for(let g=0;g<HSEQ.length&&!pick;g++){const t=HSEQ[p%HSEQ.length];p++;if(ok(t))pick=t;else pend.push(t);}
     pick=pick||'play';const ov=(S.typeOv||{})[s.id];
     s.auto=pick;s.type=ov||pick;s.phase='h'+s.type;
     if((ov&&ov!==pick)||hMissed(s))pend.unshift(pick);});
   B.filter(s=>s.off).forEach(s=>{if(!HW[s.type])s.type='found';s.phase='h'+s.type;});}
-function hOpt(s){const w=HW[s.type],o=(ST.hoop.opt||{})[s.id];if(o&&w[o])return o;if(isLightDay(HOOP,s))return 'A';return w.C?'C':w.B?'B':'A';}
+function hOpt(s){const w=HW[s.type],o=(ST.hoop.opt||{})[s.id],full=w.C?'C':w.B?'B':'A';if(!w.B)return 'A';if(o==='S'||o==='A')return 'S';if(o)return full;if(isLightDay(HOOP,s))return 'S';return full;}
+const optLab=s=>hOpt(s)==='S'?'⏱ Short':'Full';
+function shortUsedWeek(s){const O=ST.hoop.opt||{};return HOOP.A.some(x=>x.id!==s.id&&x.hw===s.hw&&(O[x.id]==='S'||O[x.id]==='A'));}
 function hDrills(s){const w=HW[s.type];let L=w[hOpt(s)];if(!w.B&&!(ST.hoop.opt||{})[s.id]&&isLightDay(HOOP,s))L=L.filter(d=>!d.cut);return L;}
 function hMin(s){const w=HW[s.type],L=hDrills(s);return w.mins[hOpt(s)]-sum(w[hOpt(s)].filter(d=>!L.includes(d)).map(d=>d.min));}
 function hNames(L){const o=[];L.forEach(d=>{if(d===HWU)return;if(/^Finish \d\/9/.test(d.n)){if(!o.includes('9 finishes'))o.push('9 finishes');}else o.push(d.n.replace('🔗 ',''));});return o;}
@@ -1164,16 +1172,16 @@ const HOOP={
   key:'hoop',name:'Hoops Plan',emoji:'⛹️',color:'#ff8c1a',S:HOOP_S,
   times:{0:['17:30'],1:['17:30'],2:['17:30'],3:['17:30'],4:['17:30'],5:['16:00'],6:['17:30']},
   phases:['hfound','hfinish','hcond','hshots','hweak','hplay'],goalLabel:'Your own basketball · 2–3 a week',days:HDAYS,statLbl:'shots made',unit:'shots',
-  title(s){const w=HW[s.type];return `${w.emo} ${w.name}${w.B?' · '+hOpt(s):''}`;},
+  title(s){const w=HW[s.type];return `${w.emo} ${w.name}${w.B&&!s.tday?' · '+optLab(s):''}`;},
   count(s,S){return hTot(S,s.id).m;},
   rowBody(s,S){const w=HW[s.type],t=hTot(S,s.id),N=hNames(hDrills(s));
-    return{mid:`<div class="dtxt"><b>${w.emo} ${w.name}</b> · ${w.B?hOpt(s)+' · ':''}~${hMin(s)} min${s.slot==='x'&&!s.tday?' · 3rd this week':''}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${N.slice(0,6).join(' · ')}${N.length>6?' …':''}</div>`,
+    return{mid:`<div class="dtxt"><b>${w.emo} ${w.name}</b> · ${w.B&&!s.tday?optLab(s)+' · ':''}~${hMin(s)} min${s.slot==='x'&&!s.tday?' · 3rd this week':''}</div><div class="dtxt" style="font-size:12px;color:var(--muted)">${N.slice(0,6).join(' · ')}${N.length>6?' …':''}</div>`,
       tot:t.a?totHtml(`${t.m}<small style="font-size:12px">/${t.a}</small>`,'shots'):totHtml('~'+hMin(s),'min')};},
-  heroBody(s){const w=HW[s.type];return `<div class="bigsets"><b style="font-size:17px">${w.emo} ${w.name}${w.B?' · '+hOpt(s):''}</b></div><div class="meta" style="margin-top:8px">${w.lvl} · ~${hMin(s)} min · ${hNames(hDrills(s)).join(', ')}</div>`;},
+  heroBody(s){const w=HW[s.type];return `<div class="bigsets"><b style="font-size:17px">${w.emo} ${w.name}${w.B&&!s.tday?' · '+optLab(s):''}</b></div><div class="meta" style="margin-top:8px">${w.lvl} · ~${hMin(s)} min · ${hNames(hDrills(s)).join(', ')}</div>`;},
   sheetTop(s){const w=HW[s.type],o=hOpt(s),t=hTot(ST.hoop,s.id);
     return `<div class="bigsets"><b style="font-size:17px">${w.emo} ${w.name}</b></div><div class="muted" style="margin-top:6px">${w.lvl} · ~${hMin(s)} min${s.type!==s.auto?' · you picked this one':''}${s.slot==='x'?' · 3rd training this week':''}</div>
      ${t.a?`<div class="result">🎯 ${t.m}/${t.a} made (${hPct(t.m,t.a)}) · ${hShotLine(t)}</div>`:''}
-     ${w.B?`<div class="timebox"><div class="tt"><span>📏 Version</span><small class="muted">The full one is your normal training</small></div><div class="chips">${['C','B','A'].filter(k=>w[k]).map((k,i,a)=>`<button class="chip ${o===k?'on':''}" data-hopt="${k}">${i===0?'💪 Full':i===a.length-1?'⏱ Short':'Shorter'} · ${w.mins[k]} min</button>`).join('')}</div></div>`:''}
+     ${w.B&&!s.tday?(()=>{const fk=w.C?'C':'B',used=o!=='S'&&shortUsedWeek(s);return `<div class="timebox"><div class="tt"><span>📏 Version</span><small class="muted">Full is your normal training · Short only 1× a week</small></div><div class="chips"><button class="chip ${o!=='S'?'on':''}" data-hopt="F">💪 Full · ${w.mins[fk]} min</button><button class="chip ${o==='S'?'on':''}" data-hopt="S" ${used?'disabled style="opacity:.45"':''}>⏱ Short · ${w.mins.S} min${used?' · used this week':''}</button></div></div>`;})():''}
      <details class="timebox hswap"><summary>🔄 Do a different workout this day</summary><div class="chips">${HORDER.map(k=>`<button class="chip ${s.type===k?'on':''}" data-htype="${k}">${HW[k].emo} ${HW[k].name}</button>`).join('')}</div></details>`;},
   lines(s){return hDrills(s).map(d=>{const cats=d.log?[].concat(d.log).map(c=>SHOTC[c][1]+' '+SHOTC[c][0]).join(', '):'';const r=d.rec?(ST.hoop.rec||{})[d.rec]:null;
     return[`${d.n}: ${d.big} ${d.unit}`,`${d.txt}${cats?' · 📝 log: '+cats:''}${d.rec?` · 🏆 record: ${r||'–'}`:''} · ~${d.min} min`];});},
@@ -1249,7 +1257,9 @@ function strTypes(){const S=ST.str,B=STR_S.slice(0,SBASE);B.forEach(s=>{s.off=s.
     const pick=new Set();for(let k=0;k<legsN;k++){let best=null,bp=1e9;a.forEach(s=>{if(pick.has(s))return;const p=sPenalty(s.date,lastLegs);if(p<bp){bp=p;best=s;}});pick.add(best);}
     a.forEach(s=>{const ov=(S.typeOv||{})[s.id];s.type=ov||(pick.has(s)?'legs':'hands');if(s.type==='legs'){s.wk=nl++%2?'legsB':'legsA';lastLegs=s.date;}else s.wk=nh++%2?'handsB':'handsA';s.phase='s'+s.type;});}}
 const sLvl=s=>((ST.str.lvl||{})[s.type]||0);
-function strList(s){const k=1+.12*sLvl(s);return STRW[s.wk].L.map(e=>({...e,sets:e.sets.map(v=>e.u==='sec'?Math.round(v*(1+.1*sLvl(s))):Math.round(v*k)),tip:e.tip+(sLvl(s)?` · Level ${sLvl(s)+1}: add ${sLvl(s)} kg (books) in the backpack if you can.`:'')}));}
+const sStep=s=>s.type==='hands'?Math.min(8,Math.floor(Math.max(0,s.hw-1)/4)):0;   // hands: +1 step every 4 weeks, up to 8
+function strList(s){const k=1+.12*sLvl(s),st=sStep(s);return STRW[s.wk].L.map(e=>({...e,sets:e.sets.map(v=>{const b=e.u==='sec'?v+5*st:v+st;return e.u==='sec'?Math.round(b*(1+.1*sLvl(s))):Math.round(b*k);}),
+  tip:e.tip+(st?` · 📈 Step ${st+1}: ${e.u==='sec'?'+'+5*st+' sec':'+'+st+' reps'} vs. the start${st>=8?' — top step: add books to the backpack to keep going':''}.`:'')+(sLvl(s)?` · Level ${sLvl(s)+1}: add ${sLvl(s)} kg (books) in the backpack if you can.`:'')}));}
 Object.assign(PHASE,{slegs:'Legs',shands:'Hands'});
 const STR={key:'str',name:'Hands & Legs Plan',emoji:'🏋️',color:'#5aa9ff',S:STR_S,
   times:{0:['15:00'],1:['15:00'],2:['15:30'],3:['15:00'],4:['15:30'],5:['17:00'],6:['10:00']},
@@ -1392,6 +1402,11 @@ try{const raw=localStorage.getItem(KEY);
   if(raw){const o=JSON.parse(raw);['pull','jump','push','hoop','str'].forEach(k=>ST[k]=Object.assign(blank(),o[k]));}
   else{const old=localStorage.getItem('pullup-app-v1');if(old)ST.pull=Object.assign(blank(),JSON.parse(old));}}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
+/* plans got longer (17 → 59 weeks): your own/extra trainings get new numbers — move all their saved data with them */
+(()=>{const NB=HWEEKS*3;['hoop','str'].forEach(k=>{const S=ST[k],OB=S.baseN||51;if(OB===NB)return;const d=NB-OB,inR=v=>{const n=+v;return Number.isInteger(n)&&n>=OB&&n<9000;};
+  Object.keys(S).forEach(p=>{const v=S[p];if(!v||typeof v!=='object'||Array.isArray(v))return;const o={};let ch=false;
+    Object.keys(v).forEach(key=>{let nk=key,val=v[key];if(inR(key)&&p!=='force3'){nk=String(+key+d);ch=true;}if((p==='testOv'||p==='moves')&&inR(val)){val=+val+d;ch=true;}o[nk]=val;});if(ch)S[p]=o;});
+  (S.tests||[]).forEach(t=>{if(inR(t.id))t.id=+t.id+d;});S.baseN=NB;});save();})();
 // Jump measurements you did before starting (Nov 8)
 if(!ST.push.seededNov8){ST.push.extras.push({date:'2026-11-08',title:'Extra push-ups (one time)',list:[
   {n:'Push-ups',sets:[12,12,12],u:'reps',rest:60,tip:'Easy, clean reps — your max test is tomorrow, so don\'t go to failure.'},
@@ -2326,7 +2341,7 @@ const _sharePlan=sharePlan;sharePlan=function(key){if(key!=='hoop')return _share
   let mm=0,ma=0,fm=0,fa=0;HOOP.S.forEach(s=>{const t=hTot(S,s.id);if(t.c.mid){mm+=t.c.mid.m;ma+=t.c.mid.a;}if(t.c.ft){fm+=t.c.ft.m;fa+=t.c.ft.a;}});
   return shareImage({kicker:'Shots made',big:a.hmade,unit:'in my own workouts',lines:[`Mid-range ${hPct(mm,ma)} · Free throws ${hPct(fm,fa)}`,`${done} workouts done · 🔥 ${a.streak}-day streak`],color:HOOP.color});};
 document.addEventListener('click',e=>{const t=e.target;let b;
-  if(b=t.closest('[data-hopt]')){const id=sheetId,S=ST.hoop;S.opt=S.opt||{};S.opt[id]=b.dataset.hopt;save();renderAll();openSheet(id);toast('Version '+b.dataset.hopt);return;}
+  if(b=t.closest('[data-hopt]')){const id=sheetId,S=ST.hoop,v=b.dataset.hopt;if(v==='S'&&shortUsedWeek(HOOP.S[id])){toast('You already used the short one this week');return;}S.opt=S.opt||{};S.opt[id]=v;save();renderAll();openSheet(id);toast(v==='S'?'⏱ Short version':'💪 Full version');return;}
   if(b=t.closest('[data-htype]')){const id=sheetId,S=ST.hoop,s=HOOP.S[id],k=b.dataset.htype;S.typeOv=S.typeOv||{};if(k===s.auto)delete S.typeOv[id];else S.typeOv[id]=k;if(S.opt)delete S.opt[id];
     refresh();save();renderAll();openSheet(id);toast(`${HW[k].emo} ${HW[k].name}`);return;}
   if(b=t.closest('[data-hday]')){const[k,d]=b.dataset.hday.split(':'),S=ST.hoop,w=hCurW();S.days=S.days||[];S.dateOv=S.dateOv||{};
@@ -2474,7 +2489,7 @@ const _hoopTypes=hoopTypes;hoopTypes=function(){_hoopTypes();const B=HOOP_S.slic
   for(let w=0;w<HWEEKS;w+=2){const a=B.filter(s=>s.hw===w&&!s.off&&!s.del).sort((x,y)=>x.date-y.date);if(!a.length)continue;
     const s=a.find(x=>mv[w]!=null&&x.id===mv[w])||a[0];s.htest=(w/2)%2===0?'shoot':'ath';s.test=true;}};
 const _hDrills=hDrills;hDrills=function(s){if(s.htest){const w=HW[s.type];return (ST.hoop.opt||{})[s.id]&&w[ST.hoop.opt[s.id]]?w[ST.hoop.opt[s.id]]:w.A;}return _hDrills(s);};
-const _hOpt=hOpt;hOpt=function(s){if(s.htest&&!(ST.hoop.opt||{})[s.id])return 'A';return _hOpt(s);};
+const _hOpt=hOpt;hOpt=function(s){if(s.htest&&!s.tday&&HW[s.type].B&&!(ST.hoop.opt||{})[s.id])return 'S';return _hOpt(s);};
 const _hMin=hMin;hMin=function(s){return _hMin(s)+(s.htest?BTESTS[s.htest].min:0);};
 (()=>{const T=HOOP.title,ST0=HOOP.steps,LI=HOOP.lines,RB=HOOP.rowBody,HB=HOOP.heroBody,TP=HOOP.tips,ST2=HOOP.sheetTop;
   HOOP.title=function(s){return (s.htest?BTESTS[s.htest].emo+' Test + ':'')+T.call(this,s);};
@@ -4259,13 +4274,13 @@ function btG(){return Object.entries(BTESTS).filter(([,x])=>!x.hide);}
    old:{name:'Old tests',emo:'🗂',min:0,hide:1,L:old}});
   Object.defineProperty(BTESTS,'ath',{value:{name:'Athletic test',emo:'⚡',min:25,L:[]},enumerable:false,configurable:true});
   ['shoot','mid','lay','hard','drib','off','game'].forEach((k,i)=>BTESTS[k].no=i+1);
-  const grp=(n,ks,half)=>{const H=BTESTS.lay.L,h=half===1?H.slice(0,6):H.slice(6);return{name:n,emo:'🏁',half,min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+15,ks,L:[...ks.flatMap(k=>BTESTS[k].L),...h]};};
+  const grp=(n,ks,half)=>{const H=BTESTS.lay.L,h=half===1?H.slice(0,6):H.slice(6);const P=[...ks.map(k=>[BTESTS[k].no,BTESTS[k].L]),[3,h]].sort((a,b)=>a[0]-b[0]);return{name:n,emo:'🏁',half,min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+15,ks,L:P.flatMap(x=>x[1])};};
   Object.defineProperty(BTESTS,'tA',{value:grp('Test day A',['shoot','hard','game'],1),enumerable:false,configurable:true});
   Object.defineProperty(BTESTS,'tB',{value:grp('Test day B',['mid','drib','off'],2),enumerable:false,configurable:true});
   Object.defineProperty(BTESTS,'all',{value:{name:'Test day',emo:'🏁',min:175,L:btG().filter(([,x])=>!x.opt).flatMap(([,x])=>x.L)},enumerable:false,configurable:true});
   Object.defineProperty(BTESTS,'combine',{get(){return BTESTS.all;},enumerable:false,configurable:true});})();
 /* Test day: all 6 tests in one day, 3 times a year, as an extra (3rd) day that week. Trainings a week: 1, 2 or 3. */
-const tdays=()=>(LF.tdays&&LF.tdays.length>3?LF.tdays:['2026-12-08','2027-02-09','2027-04-20','2027-06-08','2027-07-20','2027-09-07']).slice().sort();
+const tdays=()=>(LF.tdays&&LF.tdays.length>3?LF.tdays:['2026-12-08','2027-02-09','2027-04-20','2027-06-08','2027-07-20','2027-09-07','2027-11-09']).slice().sort();
 const tdG=d=>tdays().indexOf(d)%2?'tB':'tA';const tdAct=()=>tdays().map((d,i)=>({d:(LF.spMove||{})['td'+i]||d,g:i%2?'tB':'tA',i}));const tdNos=g=>[...BTESTS[g].ks.map(k=>BTESTS[k].no),...(BTESTS[g].half?[`3 (${BTESTS[g].half===1?'1–6':'7–12'})`]:[])].sort((a,b)=>parseInt(a)-parseInt(b)).join(' · ');
 const hWkOf=iso=>Math.floor((dOf(iso)-HSTART)/(7*864e5));
 function hPerWk(w){let n=2;(ST.hoop.perWk||[]).forEach(e=>{if(e.from<=w)n=e.n;});return n;}
@@ -4286,10 +4301,13 @@ const _hoopTypesTD=hoopTypes;hoopTypes=function(){const S=ST.hoop,B=HOOP_S.slice
       if(!day){continue;}lastW=w;const key='m2_'+dj,ks=[MTORD[t%7],MTORD[(t+1)%7]];m2Group(key,ks);SP.push({key,id:SPID+100+dj,plan:day,date:mvS[key]?dOf(mvS[key]):day,g:key});dj++;t+=2;used.add(w);}
     else{const a=B.filter(x=>x.hw===w&&!x.off&&!x.del).sort((x,y)=>(mvT[w]===x.id?-1:mvT[w]===y.id?1:0)||(_hMinTD(x)+(HARDT.includes(x.type)?40:0))-(_hMinTD(y)+(HARDT.includes(y.type)?40:0))||x.date-y.date);if(!a.length)continue;
       const x=a[0];x.htest=MTORD[t%7];x.test=true;x.mini=t+1;t++;used.add(w);lastW=w;}}
+  B.forEach(x=>{if(x.date>PEND)x.off=true;});
   const st0=new Date(START[0],START[1],START[2]);SP.forEach(x=>{const k=Math.round((x.date-st0)/864e5);HOOP.S[x.id]={id:x.id,hw:wkOf(x.date),slot:'sp',kind:'main',type:'play',auto:'play',phase:'htday',special:x.key,spPlan:isoD(x.plan),
     date:x.date,baseDate:x.date,week:Math.floor(k/7)+1,day:k+1,tday:isoD(x.date),htest:x.g,test:true,extra:false,del:!!rem[x.id],off:false,ex:[]};});};
+const PEND=new Date(2027,11,31,23,59);
+const _strTypesPE=strTypes;strTypes=function(){_strTypesPE();STR_S.slice(0,SBASE).forEach(x=>{if(x.date>PEND)x.off=true;});};
 const HARDT=['cond','finish'],SPID=9000,MT0=new Date(2026,10,29),EVP=['s','s','d','s','s','d','s','s','d','s','s'],MTORD=['shoot','mid','lay','hard','drib','off','game'];
-function m2Group(key,ks){Object.defineProperty(BTESTS,key,{value:{name:'Mini test day',emo:'🏁',min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+11,ks,L:ks.flatMap(k=>BTESTS[k].L),m2:1},enumerable:false,configurable:true});}
+function m2Group(key,ks){ks=ks.slice().sort((a,b)=>BTESTS[a].no-BTESTS[b].no);Object.defineProperty(BTESTS,key,{value:{name:'Mini test day',emo:'🏁',min:ks.reduce((a,k)=>a+BTESTS[k].min,0)+11,ks,L:ks.flatMap(k=>BTESTS[k].L),m2:1},enumerable:false,configurable:true});}
 
 const _hDrillsTD=hDrills;hDrills=function(s){return s.tday&&s.htest?(BTESTS[s.htest]&&BTESTS[s.htest].m2?[HWU,H5.stance,H5.close]:[HWU]):_hDrillsTD(s);};
 const _hMinTD=hMin;hMin=function(s){return s.tday&&s.htest?10+BTESTS[s.htest].min:_hMinTD(s);};
@@ -4297,7 +4315,7 @@ const _hMinTD=hMin;hMin=function(s){return s.tday&&s.htest?10+BTESTS[s.htest].mi
   HOOP.title=function(s){return s.tday&&s.htest?`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`:T.call(this,s);};
   HOOP.tips=function(s){const t=TP.call(this,s);if(s.htest&&!s.tday)t[0]=`Mini test: do ${BTESTS[s.htest].emo} test ${BTESTS[s.htest].no} first while you are fresh, then the short workout.`;if(s.tday&&s.htest)t[0]=`Test day: warm up well, then tests ${tdNos(s.htest)} in order. Rest 1–2 min between tests and drink water. No rush.`;return t;};
   const RB=HOOP.rowBody,HB=HOOP.heroBody;
-  HOOP.rowBody=function(s,S){const r=RB.call(this,s,S);if(s.tday&&s.htest)r.mid=r.mid.replace(/🏁 Test day [AB] \+ [^<]*/,`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`).replace(' · A ·',' ·');return r;};
+  HOOP.rowBody=function(s,S){const r=RB.call(this,s,S);if(s.tday&&s.htest)r.mid=r.mid.replace(/🏁 Test day [AB] \+ [^<]*/,`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`).replace(/ · (Full|⏱ Short) ·/,' ·');return r;};
   HOOP.heroBody=function(s){const h=HB.call(this,s);return s.tday&&s.htest?h.replace(/🏁 Test \+ [^<]*/,`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`):h;};
   HOOP.sheetTop=function(s){let h=ST2.call(this,s).replace('then the short workout','only the tests, nothing else');if(s.tday&&s.htest)h=h.replace(/(Test day [AB]) day/,'$1').replace(/🏆 Play (&amp;|&) Compete/g,'🏁 Test day');
     if(!s.extra&&!didIt(ST.hoop,s.id)&&!s.tday)h+=`<button class="chip" style="margin:0 0 10px" data-hskip="${s.id}">🗑 Skip this day — the order of the workouts stays</button>`;return h;};})();
@@ -4435,7 +4453,7 @@ function tdCard(){return `<div class="card"><div class="fmh"><h3 style="margin:0
      (M.length?M.map(s=>`<div class="trow"><span>${s.special?`🏁 Mini test day · tests ${tdNos(s.htest)}`:`${BTESTS[s.htest].emo} ${BTESTS[s.htest].no} · ${BTESTS[s.htest].name}`}</span><span class="muted">${fmt(s.date)}</span></div>`).join(''):'<p class="muted" style="font-size:12px">None left in this plan.</p>');})()}
   <button class="btn sec" style="width:100%;margin-top:10px" data-cbopen>📝 Log a test day</button></div>`;}
 document.addEventListener('click',e=>{if(!e.target.closest('[data-tdedit]'))return;const T=tdays();
-  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test days</h2><div class="timebox">${[0,1,2,3,4,5].map(i=>`<label class="erow">${i+1} · ${i%2?'B (2 5 6 +½ 3)':'A (1 4 7 +½ 3)'}<input type="date" data-tdd value="${T[i]||''}"></label>`).join('')}</div>
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test days</h2><div class="timebox">${[0,1,2,3,4,5,6].map(i=>`<label class="erow">${i+1} · ${i%2?'B (2 5 6 +½ 3)':'A (1 4 7 +½ 3)'}<input type="date" data-tdd value="${T[i]||''}"></label>`).join('')}</div>
    <div class="row2"><button class="btn main" data-tdsave>Save</button><button class="btn sec" data-close>Cancel</button></div>`;$('ov').classList.add('on');});
 document.addEventListener('click',e=>{if(!e.target.closest('[data-tdsave]'))return;LF.tdays=[...document.querySelectorAll('[data-tdd]')].map(i=>i.value).filter(Boolean).sort();saveLF();refresh();save();closeSheet();renderAll();if($('v-bb').classList.contains('on'))renderBB();toast('🏁 Test days saved');});
 /* ---- records wall ---- */
@@ -4831,6 +4849,56 @@ document.addEventListener('click',e=>{const t=e.target;let b;
     if(Math.abs((dOf(v)-dOf(s.spPlan))/864e5)>10){toast('Only up to 10 days earlier or later');return;}
     LF.spMove=LF.spMove||{};if(v===s.spPlan)delete LF.spMove[k];else LF.spMove[k]=v;saveLF();refresh();save();renderAll();openSheet(s.id);toast('📅 Moved to '+fmt(dOf(v)));return;}
   if(b=t.closest('[data-spreset]')){const k=b.dataset.spreset;delete LF.spMove[k];saveLF();refresh();save();renderAll();const s=HOOP.A.find(x=>x.special===k);s&&openSheet(s.id);return;}});
+
+/* ================= TEST DAY: clear info, one block per test ================= */
+function tGroups(code){const X=BTESTS[code];if(!X)return[];if(!X.ks)return[{G:X,items:X.L}];
+  const g=X.ks.map(k=>({G:BTESTS[k],items:BTESTS[k].L}));if(X.half)g.push({G:BTESTS.lay,items:X.half===1?BTESTS.lay.L.slice(0,6):BTESTS.lay.L.slice(6),part:X.half===1?'finishes 1–6':'finishes 7–12'});
+  return g.sort((a,b)=>a.G.no-b.G.no);}
+(()=>{const LI2=HOOP.lines,ST3=HOOP.steps;
+  HOOP.lines=function(s){const L=LI2.call(this,s);if(!s.htest)return L;const X=BTESTS[s.htest],i=L.findIndex(x=>String(x[0]).startsWith(`${X.emo} ${X.name} (`));
+    const gl=tGroups(s.htest).map(({G,items,part})=>[`${G.emo} Test ${G.no} · ${G.name.replace(' test','')}${part?` <span class="muted">(${part})</span>`:''} · ~${part?Math.round(G.min/2):G.min} min`,
+      `<span class="tlist">${G===BTESTS.lay?'<span>All from the wing, game speed. 5 with the left hand, 5 with the right.</span>':''}${items.map(t=>`<span><b>${esc(t.n)}</b>${t.how?` — ${esc(t.how.replace(' 5 with the left hand, 5 with the right. From the wing, game speed.',''))}`:''}</span>`).join('')}</span>`]);
+    const intro=['🏁 How it works',s.tday?`${gl.length} tests, in this order. Rest 1–2 minutes between drills and drink water. Tap ▶ Start — the app goes drill by drill and asks for every score.`:'Do the test first while you are fresh. Then the short version of today\'s workout.'];
+    const out=[...L];if(i>=0)out.splice(i,1,intro,...gl);if(s.tday)out.push(['✅ At the end','Your scores go to 📊 Tests (on the Basketball page) and your 🏅 Records wall. ▲ = better than last time.']);return out;};
+  HOOP.steps=function(s){const out=ST3.call(this,s);if(!s.htest)return out;const G=tGroups(s.htest);
+    out.forEach(st=>{if(!st.t)return;const g=G.find(x=>x.items.includes(st.t));if(g)st.kind=`${g.G.emo} Test ${g.G.no} · ${g.G.name.replace(' test','')} · ${g.items.indexOf(st.t)+1} of ${g.items.length}`;
+      if(st.type==='task'&&st.kind==='Test done ✓'&&s.tday){st.title='All tests done! 🏁';st.text='Great job — now save your scores.';}});
+    if(s.tday){const k=out.findIndex(x=>x.type==='task'&&/short workout/.test(x.title||''));if(k>=0){out[k].title='All tests done! 🏁';out[k].text='Great job. A few minutes of easy shooting to cool down, then save.';}}
+    return out;};})();
+
+/* ================= MORE BADGES ================= */
+const AGX={t:0};const _aggrX=aggr;aggr=function(){const a=_aggrX();try{const S=ST.hoop,D=S.done||{};
+  a.tdDone=Object.keys(D).filter(k=>+k>=SPID&&+k<SPID+100&&didIt(S,+k)).length;
+  a.miniDone=HOOP.A.filter(s=>(s.mini&&didIt(S,s.id))).length+2*Object.keys(D).filter(k=>+k>=SPID+100&&didIt(S,+k)).length;
+  const C=k=>(LF.chal[k]||[]).map(x=>chRes(chOf(k),x.r));a.chFt=C('ft').some(x=>x.ok);a.chThree=C('three').some(x=>x.ok);a.chRlay=C('rlay').some(x=>x.ok);a.chAtw=C('atw').some(x=>x.ok);
+  a.chAll=a.chFt&&a.chThree&&a.chRlay&&a.chAtw;const fb=chBest('ft');a.chFtBest=fb&&fb.ok?fb.tries:0;
+  a.shots=BB.log.reduce((n,e)=>n+(e.shots||[]).length,0);a.oppn=Object.values(LF.oppn||{}).filter(o=>o&&Object.keys(o).length).length;
+  const sa=seasonAvg();a.ovr=sa&&sa.n>=3?ovr(sa):0;a.sgoal=sa&&sa.n>=3?SGL.filter(([k])=>LF.sg[k]&&sa[k]!=null&&sa[k]>=LF.sg[k]).length:0;
+  a.gdAll=Object.values(LF.gd||{}).some(g=>['eat','w1','snack','bag','warm','mind','tip','after','log'].every(k=>g[k]));if(!AGX.t||Date.now()-AGX.t>20000){AGX.t=Date.now();AGX.recs=records().length;AGX.hab=Math.max(0,...habits().map(([,,,f])=>streakOf(f).best));}a.recs=AGX.recs;
+  let wd=0,st=0,wu=0,so=0;Object.entries(LF.d||{}).forEach(([iso,o])=>{if((o.w||0)>=wGoal(iso))wd++;if(o.st)st++;wu+=o.wu||0;if(o.scr!=null&&o.scr<=LF.sgoal)so++;});
+  a.waterDays=wd;a.stretch=st;a.warm=wu;a.scrOk=so;a.healed=LF.inj.filter(x=>x.end).length;a.hgt=LF.hgt.length;a.savDone=LF.sv.filter(g=>g.goal&&g.saved>=g.goal).length;
+  a.bestHab=AGX.hab;
+  const J=Object.values(JR.e);a.actDays=J.filter(e=>e.act&&e.act.length).length;a.phDays=J.filter(e=>e.ph&&e.ph.length).length;a.moodDays=J.filter(e=>e.mood).length;
+  a.hwDone=SC.hw.filter(h=>h.done).length;a.hwOnTime=SC.hw.filter(h=>h.done&&h.due&&h.doneAt<=h.due).length;a.past=SC.past.length;
+  const G=allGrades(),by={};G.forEach(g=>(by[g.subj]=by[g.subj]||[]).push(g.v));a.tgHit=Object.entries(SC.target||{}).filter(([k,t])=>t&&by[k]&&by[k].reduce((x,y)=>x+y,0)/by[k].length>=t).length;
+  let fd=0,pd=0;Object.entries(FD.days||{}).forEach(([iso,d])=>{if(d.items&&d.items.length){fd++;try{if(foodSum(d.items).p>=dayGoals(iso).p)pd++;}catch(e){}}});a.foodDays=fd;a.protDays=pd;}catch(e){console.warn('aggr+',e);}return a;};
+BADGES.push(
+ ['td1','🏁','Test day','Finish a test day (A or B)',a=>a.tdDone>=1],['td4','🏆','Tester','Finish 4 test days',a=>a.tdDone>=4],
+ ['mt1','➕','Mini test','Finish a mini test',a=>a.miniDone>=1],['mt7','🔁','Full circle','Finish 7 mini tests',a=>a.miniDone>=7],
+ ['chft','🧊','Ice cold','Free-throw challenge: 10 in a row',a=>a.chFt],['ch3s','🔥','Hot hand','Threes challenge: 5 in a row',a=>a.chThree],
+ ['chrl','💪','Righty','Right-hand layup challenge done',a=>a.chRlay],['chatw','🌍','World tour','Finish Around the world',a=>a.chAtw],
+ ['chall','🎖','Challenge master','Finish all 4 challenges',a=>a.chAll],['ft12','⚡','Quick ten','10 free throws in a row within 12 shots',a=>a.chFtBest>0&&a.chFtBest<=12],
+ ['sc50','🎯','Shot charter','Put 50 shots in shot charts',a=>a.shots>=50],['sc200','🗺','Mapped out','200 shots in shot charts',a=>a.shots>=200],
+ ['opp3','🆚','Scout','Write notes about 3 opponents',a=>a.oppn>=3],['ovr70','🪪','Rated 70','Reach 70 OVR on your player card',a=>a.ovr>=70],['ovr80','⭐','Rated 80','Reach 80 OVR',a=>a.ovr>=80],
+ ['sgoal','🎯','Goal getter','Reach one of your season goals',a=>a.sgoal>=1],['gdpro','🏀','Game-day pro','Tick every step of game-day mode',a=>a.gdAll],['rec10','🏅','Record wall','10 records on your wall',a=>a.recs>=10],
+ ['wa7','💧','Hydrated','Reach your water goal 7 days',a=>a.waterDays>=7],['wa30','🌊','Water master','Reach your water goal 30 days',a=>a.waterDays>=30],
+ ['stv10','🧘','Flexible','Stretch 10 times',a=>a.stretch>=10],['stv30','🤸','Bendy','Stretch 30 times',a=>a.stretch>=30],['wu10','🔥','Warmed up','Do 10 guided warm-ups',a=>a.warm>=10],
+ ['scr7','📵','Screen boss','7 days under your screen-time goal',a=>a.scrOk>=7],['heal','❤️‍🩹','Healed','Mark an injury as healed',a=>a.healed>=1],['hgt3','📏','Growing','Measure your height 3 times',a=>a.hgt>=3],
+ ['sav','💰','Saved it','Reach a savings goal',a=>a.savDone>=1],['hab7','🔥','Habit streak','Keep a habit streak for 7 days',a=>a.bestHab>=7],['hab30','🌟','Habit hero','Keep a habit streak for 30 days',a=>a.bestHab>=30],
+ ['act10','🧩','Busy bee','Tag activities on 10 journal days',a=>a.actDays>=10],['ph5','📸','Photographer','Add photos to 5 journal days',a=>a.phDays>=5],['mood30','🟩','Pixel year','Pick a mood on 30 days',a=>a.moodDays>=30],
+ ['hw1','📝','First homework','Finish your first homework',a=>a.hwDone>=1],['hw10','📚','Always on time','Finish 10 homeworks on time',a=>a.hwOnTime>=10],
+ ['pg5','📜','Report card','Add 5 past grades',a=>a.past>=5],['tg1','🎯','Target hit','Reach your target grade in a subject',a=>a.tgHit>=1],
+ ['fd7','🍽','Food logger','Log your food on 7 days',a=>a.foodDays>=7],['pr7','🥩','Protein pro','Hit your protein goal on 7 days',a=>a.protDays>=7]);
 
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
