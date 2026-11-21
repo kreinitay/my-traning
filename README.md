@@ -3,10 +3,10 @@
 Nitay's training + basketball app:
 - Plans: Hoops, Hands & Legs, Pull-Ups, Jump High, Push-Ups
 - Basketball log, season schedule, tests and coach notes
-- Basketball: shot chart, player card, season goals, free-throw challenge, opponent notes, game-day mode, combine day, records wall
+- Basketball: shot chart, player card, season goals, free-throw challenge, opponent notes, game-day mode, 7 tests on test days A and B (6 a year) + mini tests (all 7 twice a year), records wall
 - Journal (with Daylio-style activities and Year in Pixels), food log
 - School: timetable, exams + study plans, homework, past grades and targets
-- Life: water, daily care, stretch + warm-up timer, screen time, bedtime, injuries, height & reach, savings goals
+- Life: water, stretch + warm-up timer, screen time, bedtime, injuries, height & reach, savings goals
 - Week & month page: what's coming, totals, pop-ups, countdowns, Wrapped
 - Streak board, month in photos, notification options
 - Search, quick-add button, weekly auto backup

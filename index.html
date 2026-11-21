@@ -449,6 +449,16 @@ body.home .fab{display:block}.ov.on~.fab,.wo.on~.fab{display:none}
 .stk span{font-size:20px}.stk b{font-size:17px}.stk small{font-size:11px;font-weight:700}.stk em{font-size:10px;color:var(--muted);font-style:normal}body.pc .stks{grid-template-columns:repeat(5,1fr)}
 .mph{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px}.mph img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--card2);cursor:pointer}body.pc .mph{grid-template-columns:repeat(6,1fr)}
 .ntrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:7px 0;border-bottom:1px solid var(--line)}.ntrow small{flex-basis:100%;font-size:11px}.ntrow input[type=time]{background:var(--card2);color:inherit;border:1px solid var(--line);border-radius:10px;padding:4px 6px}
+.pgintro{font-size:13px;color:var(--muted);margin:-4px 2px 12px;line-height:1.45}
+.jumpbar{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:8px 2px;margin:0 -4px 10px;background:var(--bg);scrollbar-width:none}.jumpbar::-webkit-scrollbar{display:none}
+.jumpbar button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:700}.jumpbar button.on{border-color:var(--accent);color:var(--accent)}
+.view [data-sec]{scroll-margin-top:62px}.trhide{display:none!important}.showall{margin-top:8px}
+.card.fold>:not(h3){display:none}.card.fold.open>:not(h3){display:revert}.card.fold>h3{cursor:pointer;margin:0}.card.fold.open>h3{margin-bottom:10px}.card.fold>h3::after{content:' ▾ tap to open';font-size:12px;color:var(--muted);font-weight:600}.card.fold.open>h3::after{content:' ▴'}
+.ready summary{display:flex!important;align-items:center}.ready summary::marker{content:''}
+.stks{grid-template-columns:repeat(4,1fr)!important;gap:5px!important}.stk{padding:6px 2px!important;border-radius:12px!important}.stk span{font-size:16px!important}.stk b{font-size:15px!important}.stk small{font-size:10px!important;line-height:1.15}.stk em{font-size:9px!important}
+body.pc .stks{grid-template-columns:repeat(8,1fr)!important}
+.view .card>h3{font-size:16.5px;letter-spacing:.1px}
+body.home .view{padding-bottom:100px}
 </style>
 </head>
 <body class="home">
@@ -580,7 +590,7 @@ body.home .fab{display:block}.ov.on~.fab,.wo.on~.fab{display:none}
     </div>
     <div id="tips-hoop">
       <details class="tip" open><summary>How the Hoops plan works</summary><ul>
-        <li><b>6 workouts in a loop:</b> 🎯 Shooting Foundation → 🏃 Dribble & Finishing → ⚡ Game Speed → 🔥 Game Shots → 💪 Weak Hand + Strength → 🏆 Play & Compete → again.</li>
+        <li><b>6 workouts in a loop:</b> 🎯 Shooting Foundation → 🏃 Dribble & Finishing → ⚡ Game Speed → 🔥 Game Shots → 💪 Weak Hand + Defense → 🏆 Play & Compete → again.</li>
         <li><b>Your days:</b> Monday (or Tuesday) + Saturday. Change them at the top of the plan.</li>
         <li><b>Missed one?</b> Mark it ✕ or 🤒 — next week gets a 3rd training, and the missed workout is the next one you do.</li>
         <li><b>Full version = your normal training.</b> Short on time or tired? Open the day and pick a shorter one.</li>
@@ -1044,7 +1054,10 @@ const H2={drib:HD('Dribble moves (standing)','5 × 30','seconds',5,'Both hands: 
  high:HD('High layups','2 × 1','minute',4,'Jump as high as you can and let the ball go at the very top, off the backboard. 1 minute, count the makes. 2 rounds.',{log:'lay',tm:[60,2],cut:1}),
  pump:HD('Pump fake → finish','5 + 5','each side',6,'Drive, big pump fake (ball to the chin, eyes on the rim), then finish. 5 from the right side, 5 from the left.',{log:'lay',goal:10}),
  wing:HD('Attack from the wing','10','drives',8,'Start on the wing, 1 hard dribble, finish with any of the 9 finishes — mix them up.',{log:'lay',goal:10,cut:1}),
- ft8:HD('Free throws: 8 in a row','8','in a row',15,'Keep shooting until you make 8 in a row — or stop at 50 shots. Write how many you tried.',{log:'ft',goal:8})};
+ ft8:HD('Free throws: 8 in a row','8','in a row',10,'Keep shooting until you make 8 in a row — or stop at 40 shots. Write how many you tried.',{log:'ft',goal:8}),
+ speed:HD('Moves at speed (cones)','6','lengths',6,'5 cones or shoes up the court. Dribble at speed and do a move at each one: crossover, between the legs, behind the back, hesitation, in-and-out. Up with the left hand leading, back with the right.',{cut:1}),
+ combo:HD('Finish 9/9: Combo of the day','5 + 5','each side',4,'Pick one of your test-4 combos (Key, Spin, Hesi, Pro-hop or Off-hand) — a different one each time. Full game speed.',{log:'lay',goal:7})};
+H2.drib.min=4;H2.wing.min=7;
 // 3 · Game Speed Conditioning
 const H3={fcl:HD('Full-court layups','3 × 1','minute',8,'Layup, grab it, sprint to the other basket, layup. 1 minute, count the makes. 3 rounds.',{log:'lay',tm:[60,3]}),
  pull:HD('Sprint → mid-range pull-up','15','shots',12,'Sprint from the baseline to half court and back, 1 dribble, pull-up from mid-range. 15 times.',{log:'mid',tries:15}),
@@ -1056,6 +1069,7 @@ const H3={fcl:HD('Full-court layups','3 × 1','minute',8,'Layup, grab it, sprint
  sft:HD('Sprint + 2 free throws','5','rounds',12,'Sprint down and back, then 2 free throws while breathing hard. 5 rounds.',{log:'ft',tries:10})};
 // 4 · Game Shots
 const H4={form:HD('Warm up + form shots','7','minutes',7,'Easy laps and stretches, then form shots close to the rim — one hand, then both.'),
+ foot:HD('Footwork: triple threat','5','minutes',5,'Catch in triple threat (ball at the hip, knees bent). Jab → shot · jab → drive · shot fake → 1 dribble · front and reverse pivots. Slow first, then game speed.'),
  pu:HD('1-dribble pull-up','5 spots','left + right',10,'From 5 spots: one dribble left → pull-up, one dribble right → pull-up. Straight up, no step-backs.',{log:'mid',tries:10}),
  clock:HD('Shot clock','5 × 24','seconds',8,'24 seconds on each of 5 spots: shoot, rebound, shoot again. Every miss = 5 push-ups after the round.',{log:['mid','three'],tm:[24,5]}),
  tired:HD('Tired shots','5','rounds',10,'Sprint down and back, then 1 three + 1 layup. 5 rounds.',{log:['three','lay'],tries:[5,5],cut:1}),
@@ -1063,12 +1077,17 @@ const H4={form:HD('Warm up + form shots','7','minutes',7,'Easy laps and stretche
  pft:HD('Pressure free throws','5','rounds',8,'Make 2 in a row — miss one and you sprint down and back. 5 rounds.',{log:'ft',tries:10}),
  pump:HD('Pump fake → layup','10 + 10','right + left',7,'Pump fake, one dribble, layup. 10 with the right hand, 10 with the left.',{log:'lay',tries:20}),
  ss:HD('🔗 Superset: game chain','2','rounds',7,'3 threes → sprint → 2 layups → 2 free throws. 2 rounds, no break inside a round.',{log:['three','lay','ft'],tries:[6,4,4],cut:1})};
-// 5 · Weak Hand + Strength (right hand = weak hand)
+// 5 · Weak Hand + Defense + Basics (right hand = weak hand)
 const H5={drib:HD('Right-hand dribble moves','5 × 30','seconds',6,'Right hand only: pound, side-to-side, front-back, crossover to yourself, in-and-out. 30 seconds each.',{tm:[30,5]}),
  lay:HD('Right-hand layups','5 × 5','layups',10,'Right hand only, 5 kinds: normal, reverse, floater, power, high. 5 of each.',{log:'lay',tries:25}),
  hook:HD('Hook shots','10 + 10','each hand',8,'Close to the rim, shoulder to the basket. 10 with the right, 10 with the left.',{log:'close',tries:20}),
  flt:HD('Right-hand floaters','10','floaters',6,'Drive and float it with the right hand — soft and high.',{log:'lay',tries:10}),
- c1:HD('Right-hand finishing — pick one','3','rounds',15,'1-on-1 where you can only finish with the right hand — OR 🔗 superset ×3: 5 squat jumps → 5 right-hand layups.',{log:'lay',tries:15})};
+ c1:HD('Right-hand finishing — pick one','3','rounds',15,'1-on-1 where you can only finish with the right hand — OR 🔗 ×3 rounds: slide across the lane and back 3 times → 5 right-hand layups.',{log:'lay',tries:15}),
+ jstop:HD('Basics: jump stops + pivots','5','minutes',5,'Dribble, jump stop on 2 feet (balanced, no travel), then front pivot and reverse pivot on each foot, ball protected at the hip. Slow and perfect.'),
+ rform:HD('Right-hand form shots','20','shots',4,'1 metre from the rim, RIGHT hand only: elbow in, high follow-through. After 5 makes take a step back.',{log:'close',tries:20}),
+ stance:HD('Defense: stance + slides','4 × 30','seconds',5,'Low and wide, back straight, hands active, weight on the front of your feet. Slide sideline to sideline 30 seconds — never click your heels.',{tm:[30,4]}),
+ close:HD('Defense: closeouts','10','closeouts',6,'Start under the rim. Sprint to a spot on the 3-point line, chop your feet the last 3 steps, one hand high, then slide 2 steps to cut off the drive. 10 times, different spots.'),
+ zig:HD('Defense: zig-zag slides','4','lengths',5,'Slide in a zig-zag up the court (sideline → middle → sideline). Drop step every time you change direction. Down and back = 2 lengths.',{cut:1})};
 const hCirc=n=>HD('Body circuit','× '+n,'rounds',n*7,'Split squats 10 each leg · push-ups 12 · side plank 30s each side · one-leg balance 30s each leg.',{circuit:n});
 const HCIRC=[['Split squats','10','each leg',0,'Lunge position, go straight down until the back knee almost touches the floor, stand up.'],['Push-ups','12','push-ups',0,'Clean push-ups, chest close to the floor.'],
  ['Side plank',0,0,30,'Hips up high, straight line from head to feet.'],['One-leg balance',0,0,30,'Stand on one leg, eyes on one point. Too easy? Close your eyes or dribble a ball.']];
@@ -1084,13 +1103,13 @@ const HW={
  finish:{name:'Dribble & Finishing',emo:'🏃',lvl:'Medium',mins:{A:70}},
  cond:{name:'Game Speed Conditioning',emo:'⚡',lvl:'Hard',mins:{A:55,B:70}},
  shots:{name:'Game Shots',emo:'🔥',lvl:'Hard',mins:{A:70}},
- weak:{name:'Weak Hand + Strength',emo:'💪',lvl:'Medium',mins:{A:45,B:60,C:75}},
+ weak:{name:'Weak Hand + Defense',emo:'💪',lvl:'Medium',mins:{A:45,B:60,C:75}},
  play:{name:'Play & Compete',emo:'🏆',lvl:'Easy',mins:{A:45,B:60,C:75}}};
 HW.found.A=[HWU,H1.form,H1.cs,H1.th,H1.ftp];HW.found.B=hIns(HW.found.A,[H1.elbow,H1.mid4]);HW.found.C=hIns(HW.found.B,[H1.ss]);
-HW.finish.A=[HWU,H2.drib,...H2.fins,H2.high,H2.pump,H2.wing,H2.ft8];
+HW.finish.A=[HWU,H2.drib,H2.speed,...H2.fins.slice(0,8),H2.combo,H2.high,H2.pump,H2.wing,H2.ft8];
 HW.cond.A=[HWU,H3.fcl,H3.pull,H3.tr1,H3.slide,H3.sft];HW.cond.B=[HWU,H3.fcl,H3.pull,H3.tr1,H3.tr2,H3.tr3,H3.slide,H3.fcl10,H3.sft];
-HW.shots.A=[H4.form,H4.pu,H4.clock,H4.tired,H4.dd,H4.pft,H4.pump,H4.ss];
-HW.weak.A=[HWU,H5.drib,H5.lay,H5.hook,hCirc(2)];HW.weak.B=[HWU,H5.drib,H5.lay,H5.hook,H5.flt,hCirc(3)];HW.weak.C=[...HW.weak.B,H5.c1];
+HW.shots.A=[H4.form,H4.foot,H4.pu,H4.clock,H4.tired,H4.dd,H4.pft,H4.pump,H4.ss];
+HW.weak.A=[HWU,H5.jstop,H5.drib,H5.lay,H5.hook,H5.stance,H5.close];HW.weak.B=[HWU,H5.jstop,H5.drib,H5.rform,H5.lay,H5.flt,H5.hook,H5.stance,H5.close,H5.zig];HW.weak.C=[...HW.weak.B,H5.c1];
 HW.play.A=[HWU,H6.lay1,H6.atw,H6.g33,H6.free];HW.play.B=hIns(HW.play.A,[H6.horse]);HW.play.C=hIns(HW.play.B,[H6.ko]);
 const HORDER=['found','finish','cond','shots','weak','play'];
 Object.assign(PHASE,{hfound:'Shooting',hfinish:'Finishing',hcond:'Conditioning',hshots:'Game Shots',hweak:'Weak Hand',hplay:'Play'});
@@ -1135,7 +1154,7 @@ const HTIPS={found:['Same form on every shot: legs, elbow under the ball, follow
  finish:['Right hand = your weak hand. Slow first, then game speed.','Finish high off the backboard — eyes on the square.'],
  cond:['Game speed! Sprint for real, then shoot.','Mid-range is your main shot — threes only where the drill says.'],
  shots:['Shoot like it\'s a game: same speed, same moves.','No side-steps or step-backs — straight-up pull-ups.'],
- weak:['Right hand only in the ball drills — even when it feels bad. That\'s how it gets good.','The circuit is strength and balance: slow and clean.'],
+ weak:['Right hand only in the ball drills — even when it feels bad. That\'s how it gets good.','Defense is effort: stay low the whole time, legs burning = doing it right.'],
  play:['Have fun with it — but chase your records.','Day before a game? Keep it easy, just get your touch.']};
 const HOOP={
   key:'hoop',name:'Hoops Plan',emoji:'⛹️',color:'#ff8c1a',S:HOOP_S,
@@ -2361,7 +2380,15 @@ const HHOW={
  'Right-hand layups':[['5 kinds with the RIGHT hand: normal, reverse, floater, power, high.','5 of each, from the right side.'],[]],
  'Hook shots':[['1–2 m from the rim, shoulder to the basket.','Step with the foot away from the rim, lift the ball over your head with one straight arm, release at the top.','10 right hand, 10 left hand.'],[]],
  'Right-hand floaters':[['Drive from the left wing to the middle.','Jump early off one foot — soft and high with the RIGHT hand.'],[]],
- 'Right-hand finishing — pick one':[['Option 1: 1-on-1 with a friend — you can only score with the right hand.','Option 2: 5 squat jumps → 5 right-hand layups = 1 round. 3 rounds.'],[]],
+ 'Right-hand finishing — pick one':[['Option 1: 1-on-1 with a friend — you can only score with the right hand.','Option 2: slide across the lane and back 3 times → 5 right-hand layups = 1 round. 3 rounds.'],[]],
+'Moves at speed (cones)':[['Put 5 cones or shoes up the court.','At each one do a move at full speed: crossover, between the legs, behind the back, hesitation, in-and-out.','Up the court with the left hand leading, back with the right. 6 lengths.'],[]],
+ 'Finish 9/9: Combo of the day':[['Pick one of your 5 test-4 combos — a different one each time.','Do it at full game speed, 5 from each side.','Travel or lost ball = miss.'],[]],
+ 'Footwork: triple threat':[['Catch in triple threat: ball at the hip, knees bent, eyes on the rim.','Jab step → shot. Jab step → drive. Shot fake → 1 dribble → shot.','Front pivots and reverse pivots on both feet.'],[]],
+ 'Basics: jump stops + pivots':[['Dribble, then jump stop on 2 feet at the same time.','Front pivot, then reverse pivot — on the left foot, then the right.','Keep the ball tight at your hip. Slow and perfect.'],[]],
+ 'Right-hand form shots':[['1 metre from the rim, RIGHT hand only.','Elbow under the ball, high follow-through, hold it.','After 5 makes take one step back.'],[]],
+ 'Defense: stance + slides':[['Feet wider than your shoulders, low, back straight, hands active.','Slide sideline to sideline for 30 seconds without clicking your heels.','4 rounds.'],[]],
+ 'Defense: closeouts':[['Start under the rim, sprint to a spot on the 3-point line.','Chop your feet the last 3 steps, one hand high.','Slide 2 steps like you are cutting off the drive. 10 times.'],[]],
+ 'Defense: zig-zag slides':[['Slide from the sideline to the middle, drop step, slide back to the sideline.','Zig-zag up the court and back.','4 lengths.'],[]],
  'Body circuit':[['Split squats 10 each leg → push-ups 12 → side plank 30s each side → one-leg balance 30s each leg.','No rest inside a round, 1 minute between rounds.'],[]],
  '1-minute layups':[['Start on the right side. Layup, catch it, go to the other side, layup.','Keep going for 1 minute. Count makes.'],[]],
  'Around the world':[['7 spots in a half circle: corner, short wing, elbow, top, elbow, short wing, corner.','Make it to move to the next spot.','There and back. Count every shot.'],[]],
@@ -2459,14 +2486,14 @@ const _hMin=hMin;hMin=function(s){return _hMin(s)+(s.htest?BTESTS[s.htest].min:0
   const EM=HOOP.endMsg;HOOP.endMsg=function(s,S){const m=EM.call(this,s,S);if(!s.htest)return m;const e=(S.tests||[]).find(x=>x.id===s.id);if(!e)return m;
     return m+'<br><br>'+Object.entries(e.r).map(([k,v])=>{const t=BT(k),a=btVals(k),f=a.length>1?a[0].v:null,g=f==null?'':` (${t.t==='time'?(v<=f?'−':'+')+Math.abs(v-f).toFixed(1)+'s':(v-f>=0?'+':'')+(+(v-f).toFixed(1))})`;return `${t.n}: ${btFmt(t,v)}${g}`;}).join('<br>');};})();
 function btLogSheet(kind){kind=kind||'shoot';const X=BTESTS[kind];
-  $('sheet').innerHTML=`<div class="grab"></div><h2>📊 Log a test</h2><div class="chips" style="margin-top:8px">${Object.entries(BTESTS).map(([k,x])=>`<button class="chip ${k===kind?'on':''}" data-btkind="${k}">${x.emo} ${x.name}</button>`).join('')}</div>
+  $('sheet').innerHTML=`<div class="grab"></div><h2>📊 Log a test</h2><div class="chips" style="margin-top:8px">${btG().map(([k,x])=>`<button class="chip ${k===kind?'on':''}" data-btkind="${k}">${x.emo} ${x.name}</button>`).join('')}</div>
    <div class="timebox"><label class="erow">Date<input type="date" id="btDate" value="${isoD(new Date())}"></label></div>
    ${X.L.map(t=>`<div class="hlrow2"><span style="flex:1"><b>${t.n}</b><small class="muted" style="display:block;font-size:11px">best ${btFmt(t,btBest(t.k))}</small></span><span><input type="number" step="0.1" inputmode="decimal" data-btl="${t.k}" placeholder="${t.t==='time'?'sec':t.t==='cm'?'cm':'#'}"><i>${btUnit(t)}</i></span></div>`).join('')}
    <button class="btn main" style="width:100%;margin-top:14px" id="btLogSave" data-kind="${kind}">Save</button><button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');}
-function btCard(){const rows=Object.entries(BTESTS).map(([kind,X])=>`<details class="tip"><summary>${X.emo} ${X.name}</summary>${X.L.map(t=>{const a=btVals(t.k),f=a.length?a[0].v:null,l=btLast(t.k),b=btBest(t.k);
+function btCard(){const rows=btG().map(([kind,X])=>`<details class="tip"><summary>${X.emo} ${X.no?X.no+' · ':''}${X.name}</summary>${X.L.map(t=>{const a=btVals(t.k),f=a.length?a[0].v:null,l=btLast(t.k),b=btBest(t.k);
     const g=a.length>1?(t.t==='time'?+(f-l).toFixed(1):+(l-f).toFixed(1)):null;
     return `<details class="btrow"><summary><span>${t.n}</span><span><b>${btFmt(t,l)}</b> <small class="muted">best ${btFmt(t,b)}</small>${g!=null?` <small style="color:${g>0?'#3ddc84':g<0?'#ff7a6b':'var(--muted)'}">${g>0?'▲':g<0?'▼':''}${Math.abs(g)}${t.t==='time'?'s':''}</small>`:''}</span></summary>${lineChart(a,t.t==='made'?{min:0,max:t.of}:{})}</details>`;}).join('')}</details>`).join('');
-  return `<div class="card"><h3>📊 Tests</h3><p class="muted" style="font-size:12px;margin:0 0 6px">Shooting and athletic tests take turns every 2 weeks on a Hoops day. ▲ = better than your first test.</p>${rows}<button class="btn sec" style="width:100%;margin-top:10px" id="btLog">+ Log a test</button></div>`;}
+  return `<div class="card"><h3>📊 Tests</h3><p class="muted" style="font-size:12px;margin:0 0 6px">The 7 tests are split into 🏁 Test day A (1 · 4 · 7) and B (2 · 3 · 5 · 6), 6 test days a year. Jump tests: log them whenever you do them. ▲ = better than your first test.</p>${rows}<button class="btn sec" style="width:100%;margin-top:10px" id="btLog">+ Log a test</button></div>`;}
 (()=>{const PC=HOOP.progressCard;HOOP.progressCard=function(S){return PC.call(this,S)+btCard();};})();
 const _aggr2=aggr;aggr=function(){const a=_aggr2(),T=ST.hoop.tests||[];a.btests=T.length;a.ft50=Math.max(0,...T.map(x=>x.r.ft50||0));a.mid25=Math.max(0,...T.map(x=>x.r.mid25||0));return a;};
 BADGES.push(['bt1','📊','Tested','Finish your first basketball test',a=>a.btests>=1],['ft40','🧊','40/50','40 of 50 free throws in a test',a=>a.ft50>=40],['ft45','🎯','45/50','45 of 50 free throws in a test',a=>a.ft50>=45],['mid20','🎯','Mid-range sniper','20 of 25 mid-range in a test',a=>a.mid25>=20]);
@@ -4182,23 +4209,80 @@ function d1Text(o){return `${o.h||D1H}\n${o.x}\n\n${D1G}\n${o.g.map((t,i)=>`${i+
   e.d1=1;});JR.places=[...new Set([...(JR.places||[]),...DAYONE.map(o=>o.pl)])].slice(-30);JR.d1v=1;saveJR();}catch(x){console.warn('dayone',x);}})();
 
 /* ================= BASKETBALL+: 5 test groups, shot chart, opponents, player card, goals, FT challenge, game day, combine, records ================= */
-(()=>{const S=BTESTS.shoot.L,A=BTESTS.ath.L,k=x=>[...S,...A].find(t=>t.k===x);
-  const NEW={mikan:{k:'mikan',n:'1-minute Mikan drill',t:'count',timer:60,u:'makes',how:'Under the rim: right-hand layup, left-hand layup, keep going without the ball touching the floor. Count makes in 1 minute.'},
-   lh30:{k:'lh30',n:'30-second left-hand V-dribbles',t:'count',timer:30,u:'dribbles',how:'Left hand only, V-dribble in front of you. Count dribbles in 30 seconds.'},
-   fcdribL:{k:'fcdribL',n:'Full-court dribble, left hand',t:'time',how:'Speed dribble down and back with the LEFT hand only. Stopwatch.'},
-   shuttle:{k:'shuttle',n:'5-10-5 shuttle',t:'time',how:'Start in the middle between 2 lines 10 m apart: sprint 5 m right, touch, 10 m left, touch, 5 m back through the middle. Best of 2.'}};
-  const ath=BTESTS.ath;for(const x of Object.keys(BTESTS))delete BTESTS[x];
+function btG(){return Object.entries(BTESTS).filter(([,x])=>!x.hide);}
+(()=>{const all=[...BTESTS.shoot.L,...BTESTS.ath.L],k=x=>all.find(t=>t.k===x),
+  M=(k,n,of,how)=>({k,n,t:'made',of,how}),C=(k,n,s,u,how)=>({k,n,t:'count',timer:s,u,how}),T=(k,n,how)=>({k,n,t:'time',how});
+  const old=['ft50','mid25','three20','lay1','sprint','suicide','lane','s17'].map(k).filter(Boolean);
+  for(const x of Object.keys(BTESTS))delete BTESTS[x];
   Object.assign(BTESTS,{
-   shoot:{name:'Shooting test',emo:'🎯',min:12,L:[k('ft50'),k('mid25'),k('three20')]},
-   finish:{name:'Finishing test',emo:'🏃',min:8,L:[k('layR'),k('layL'),k('lay1'),NEW.mikan]},
-   handle:{name:'Ball-handling test',emo:'🤹',min:8,L:[k('cross30'),k('rh30'),NEW.lh30,k('fcdrib'),NEW.fcdribL]},
-   speed:{name:'Speed test',emo:'⚡',min:10,L:[k('sprint'),k('lane'),NEW.shuttle,k('suicide')]},
-   power:{name:'Jump test',emo:'🚀',min:8,L:[k('svert'),k('touch'),k('broad')]}});
-  Object.defineProperty(BTESTS,'ath',{value:ath,enumerable:false,configurable:true});
-  Object.defineProperty(BTESTS,'combine',{value:{name:'Combine day',emo:'🏁',min:45,L:[...Object.values(BTESTS).flatMap(x=>x.L),k('s17')]},enumerable:false,configurable:true});})();
-const TGORD=['shoot','finish','power','handle','speed'];
-const _hoopTypesTG=hoopTypes;hoopTypes=function(){_hoopTypesTG();const B=HOOP_S.slice(0,HBASE),mv=ST.hoop.testOv||{};B.forEach(s=>{s.htest=null;s.test=false;});let n=0;
-  for(let w=0;w<HWEEKS;w++){const a=B.filter(s=>s.hw===w&&!s.off&&!s.del).sort((x,y)=>x.date-y.date);if(!a.length)continue;const s=a.find(x=>mv[w]!=null&&x.id===mv[w])||a[0];s.htest=TGORD[n%5];s.test=true;n++;}};
+   shoot:{name:'Shooting test',emo:'🎯',min:45,L:[M('three30','30 threes · 6 from each spot',30,'5 spots: both corners, both wings, top. 6 shots from each spot. Count makes.'),
+     M('ft100','100 free throws',100,'Your normal routine. 10 sets of 10, short rest between sets. Count makes.'),
+     M('cs20','20 catch & shoot mid-range',20,'Spin the ball out to yourself, catch, square up and shoot from mid-range. Move spots every few shots.')]},
+   mid:{name:'Mid-range & close test',emo:'🏀',min:40,L:[M('mid100','100 mid-range · move after every shot',100,'Free-throw distance. Never 2 in a row from the same spot: baselines, short corners, elbows, top.'),
+     M('close40','40 shots in / near the paint',40,'Inside the paint or just outside it: bank shots, short jumpers, push shots. Move after every shot.')]},
+   lay:{name:'Layup types test',emo:'🏃',min:20,L:[k('layL'),M('rev10','10 reverse layups',10,'Drive along the baseline, finish on the other side of the rim. 5 from each side.'),
+     M('pow10','10 power layups',10,'Jump stop with 2 feet, then go up strong, ball high with both hands.'),M('euro10','10 euro steps',10,'Step one way, then a long step the other way, finish. 5 from each side.'),
+     M('flo10','10 floaters',10,'From the middle of the paint: soft one-hand shot, high over an imaginary tall defender.')]},
+   hard:{name:'Hard layups test',emo:'🔥',min:25,L:[
+     M('cmb1','Key combo ×10',10,'Top of the key → between the legs → pump fake right → drive left → gather step → euro step → finish. Full game speed. Travel or lost ball = miss.'),
+     M('cmb2','Spin combo ×10',10,'Left wing → crossover → hard drive to the baseline → spin back to the middle → reverse layup. 5 from each side.'),
+     M('cmb3','Hesi combo ×10',10,'Speed dribble from half court → hesitation at the 3-point line → behind the back → wrong-foot layup. 5 from each side.'),
+     M('cmb4','Pro-hop combo ×10',10,'Elbow → in-and-out dribble → jab step right → pro hop (jump stop on 2 feet) → pump fake → up-and-under finish.'),
+     M('cmb5','Off-hand combo ×10',10,'Right corner → drive with the RIGHT hand → between the legs → euro step → right-hand finish.'),
+     C('rmikan','1-minute reverse Mikan',60,'makes','Under the rim: reverse layups with one hand, then the other, nonstop. The ball never touches the floor. Count makes.')]},
+   drib:{name:'Dribble test',emo:'🤹',min:15,L:[k('cross30'),C('btl30','30-second between the legs',30,'times','Count every time the ball goes between your legs.'),
+     C('bhb30','30-second behind the back',30,'times','Count every behind-the-back.'),T('fcspeed','Full-court speed dribble','Down and back as fast as you can — any hand, under control. Stopwatch.'),
+     T('zigzag','Zig-zag cones','6 cones/shoes in a zig-zag up the court, crossover at each one, down and back. Stopwatch.')]},
+   off:{name:'Off-hand (right) test',emo:'💪',min:15,L:[k('layR'),k('rh30'),k('fcdrib'),M('rform10','10 right-hand form shots',10,'1 metre from the rim, right hand only, perfect form.'),
+     M('rhook10','10 right-hand hooks',10,'From the right block: step and hook with the right hand.')]},
+   game:{name:'Game moments test',emo:'⏱',min:15,L:[M('clutchft','Clutch free throws ×5',10,'Sprint baseline to baseline and back, then 2 free throws right away. 5 rounds = 10 shots.'),
+     M('buzzer','Buzzer beaters ×5',5,'Start at half court and count down 5 seconds out loud: dribble and get a shot off before 0 (pull-up or 3).'),
+     M('fbreak','Fast-break layups ×6',6,'Full-court speed dribble and finish at full speed. 3 with each hand.'),
+     M('tired3','Tired 3s ×5',5,'20 seconds of defensive slides, then catch and shoot one 3. 5 rounds.')]},
+   jump:{name:'Jump test',emo:'🚀',min:10,opt:1,L:[k('svert'),k('touch'),k('broad')]},
+   old:{name:'Old tests',emo:'🗂',min:0,hide:1,L:old}});
+  Object.defineProperty(BTESTS,'ath',{value:{name:'Athletic test',emo:'⚡',min:25,L:[]},enumerable:false,configurable:true});
+  ['shoot','mid','lay','hard','drib','off','game'].forEach((k,i)=>BTESTS[k].no=i+1);
+  const grp=(n,ks)=>({name:n,emo:'🏁',min:ks.reduce((a,k)=>a+BTESTS[k].min,0),ks,L:ks.flatMap(k=>BTESTS[k].L)});
+  Object.defineProperty(BTESTS,'tA',{value:grp('Test day A',['shoot','hard','game']),enumerable:false,configurable:true});
+  Object.defineProperty(BTESTS,'tB',{value:grp('Test day B',['mid','lay','drib','off']),enumerable:false,configurable:true});
+  Object.defineProperty(BTESTS,'all',{value:{name:'Test day',emo:'🏁',min:175,L:btG().filter(([,x])=>!x.opt).flatMap(([,x])=>x.L)},enumerable:false,configurable:true});
+  Object.defineProperty(BTESTS,'combine',{get(){return BTESTS.all;},enumerable:false,configurable:true});})();
+/* Test day: all 6 tests in one day, 3 times a year, as an extra (3rd) day that week. Trainings a week: 1, 2 or 3. */
+const tdays=()=>(LF.tdays&&LF.tdays.length>3?LF.tdays:['2026-12-08','2027-02-09','2027-04-20','2027-06-08','2027-07-20','2027-09-07']).slice().sort();
+const tdG=d=>tdays().indexOf(d)%2?'tB':'tA';const tdNos=g=>BTESTS[g].ks.map(k=>BTESTS[k].no).join(' · ');
+const hWkOf=iso=>Math.floor((dOf(iso)-HSTART)/(7*864e5));
+function hPerWk(w){let n=2;(ST.hoop.perWk||[]).forEach(e=>{if(e.from<=w)n=e.n;});return n;}
+const _hoopTypesTD=hoopTypes;hoopTypes=function(){const S=ST.hoop,B=HOOP_S.slice(0,HBASE),rem=S.removed||{},T={};
+  tdays().forEach(d=>{const w=hWkOf(d);if(w>=0&&w<HWEEKS)T[w]=d;});
+  const f0=S.force3,f3={...(S.force3||{})};
+  for(let w=0;w<HWEEKS;w++){const n=hPerWk(w),d2=B[w*3+1];if(n===1&&!rem[d2.id]&&!(S.done||{})[d2.id])d2.del=true;if(n===3&&f3[w]==null)f3[w]=true;if(T[w])B[w*3+2].del=true;}
+  S.force3=f3;try{_hoopTypesTD();}finally{S.force3=f0;}
+  B.forEach(s=>{s.htest=null;s.test=false;s.tday=null;});
+  Object.entries(T).forEach(([w,d])=>{const x=B[w*3+2];x.del=!!rem[x.id];x.off=false;x.date=dOf(d);x.tday=d;x.htest=tdG(d);x.test=true;x.type=x.auto='play';x.phase='hplay';});
+  /* mini tests: one test at a time on a normal training, 1→7, twice a year (every ~26 days), never in a test-day week */
+  const mv=S.testOv||{},used=new Set(Object.keys(T).map(Number));let n=0;
+  for(let k=0;k<60;k++){const tg=new Date(MT0);tg.setDate(MT0.getDate()+Math.round(k*365/14));let w=Math.floor((tg-HSTART)/(7*864e5));while(used.has(w))w++;if(w>=HWEEKS)break;
+    const a=B.filter(x=>x.hw===w&&!x.off&&!x.del&&!x.tday).sort((x,y)=>x.date-y.date);if(!a.length)continue;const x=a.find(z=>mv[w]!=null&&z.id===mv[w])||a[0];x.htest=MTORD[n%7];x.test=true;x.mini=n+1;used.add(w);n++;}};
+const MT0=new Date(2026,10,29),MTORD=['shoot','mid','lay','hard','drib','off','game'];
+const _hDrillsTD=hDrills;hDrills=function(s){return s.tday&&s.htest?[HWU]:_hDrillsTD(s);};
+const _hMinTD=hMin;hMin=function(s){return s.tday&&s.htest?10+BTESTS[s.htest].min:_hMinTD(s);};
+(()=>{const T=HOOP.title,TP=HOOP.tips,ST2=HOOP.sheetTop;
+  HOOP.title=function(s){return s.tday&&s.htest?`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`:T.call(this,s);};
+  HOOP.tips=function(s){const t=TP.call(this,s);if(s.htest&&!s.tday)t[0]=`Mini test: do ${BTESTS[s.htest].emo} test ${BTESTS[s.htest].no} first while you are fresh, then the short workout.`;if(s.tday&&s.htest)t[0]=`Test day: warm up well, then tests ${tdNos(s.htest)} in order. Rest 1–2 min between tests and drink water. No rush.`;return t;};
+  const RB=HOOP.rowBody,HB=HOOP.heroBody;
+  HOOP.rowBody=function(s,S){const r=RB.call(this,s,S);if(s.tday&&s.htest)r.mid=r.mid.replace(/🏁 Test day [AB] \+ [^<]*/,`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`).replace(' · A ·',' ·');return r;};
+  HOOP.heroBody=function(s){const h=HB.call(this,s);return s.tday&&s.htest?h.replace(/🏁 Test \+ [^<]*/,`🏁 ${BTESTS[s.htest].name} · tests ${tdNos(s.htest)}`):h;};
+  HOOP.sheetTop=function(s){let h=ST2.call(this,s).replace('then the short workout','only the tests, nothing else');if(s.tday&&s.htest)h=h.replace(/(Test day [AB]) day/,'$1').replace(/🏆 Play (&amp;|&) Compete/g,'🏁 Test day');
+    if(!s.extra&&!didIt(ST.hoop,s.id)&&!s.tday)h+=`<button class="chip" style="margin:0 0 10px" data-hskip="${s.id}">🗑 Skip this day — the order of the workouts stays</button>`;return h;};})();
+const _hoopDaysCardPW=hoopDaysCard;hoopDaysCard=function(){const h=_hoopDaysCardPW(),n=hPerWk(hCurW()),i=h.lastIndexOf('</details>');
+  const row=`<div class="hdrow"><span>Trainings a week</span><div class="chips">${[[1,'1'],[2,'2 (+3rd after a miss)'],[3,'3']].map(([v,l])=>`<button class="chip ${n===v?'on':''}" data-hpw="${v}">${l}</button>`).join('')}</div></div>
+   <p class="muted" style="font-size:12px;margin:6px 0 0">1 a week = only Day 1. 3 a week = the 3rd day every week. The order of the 6 workouts never gets mixed: the next training always does the next workout.</p>`;
+  return i<0?h:h.slice(0,i)+row+h.slice(i);};
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-hpw]')){const S=ST.hoop,w=hCurW();S.perWk=(S.perWk||[]).filter(x=>x.from<w);S.perWk.push({from:w,n:+b.dataset.hpw});refresh();save();renderAll();toast(`🏀 ${b.dataset.hpw} a week from this week`);return;}
+  if(b=t.closest('[data-hskip]')){const id=+b.dataset.hskip,S=ST.hoop;if(!confirm('Skip this training day? The next training will do this workout instead.'))return;
+    S.removed=S.removed||{};S.removed[id]=true;refresh();save();closeSheet();renderAll();const nx=HOOP.A.find(s=>s.date>=new Date(new Date().setHours(0,0,0,0))&&!didIt(S,s.id));toast(nx?`Skipped ✓ Next: ${HW[nx.type]?HW[nx.type].name:''} on ${fmt(nx.date)}`:'Skipped ✓');return;}});
 
 /* ---- shot chart ---- */
 const HOOPXY=[250,52],R3=221.5;
@@ -4298,12 +4382,12 @@ document.addEventListener('click',e=>{const t=e.target;let b;
     if(mk>B.b10&&LF.ftc.length>1)try{levelUpFx('🏆','New best!',`${mk}/10 free throws`);}catch(x){}else toast(`🎯 ${mk}/10 saved`);return;}});
 
 /* ---- combine day ---- */
-const combNext=()=>{let d=LF.combNext||'2026-12-26';while(daysTo(d)<-1)d=addD(d,56);return d;};
+const combNext=()=>tdays().find(d=>daysTo(d)>=0)||tdays().slice(-1)[0];
 function combSheet(){const X=BTESTS.combine;
-  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Combine day</h2><p class="muted" style="font-size:13px;margin:4px 0 8px">Every 2 months: all your tests in one day, like the NBA combine. Warm up first. Fill in what you did — skip what you didn't.</p>
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test day</h2><p class="muted" style="font-size:13px;margin:4px 0 8px">Test day A = tests 1 · 4 · 7, Test day B = tests 2 · 3 · 5 · 6. Fill in the ones you did today. Warm up first. Fill in what you did — skip what you didn't.</p>
    <div class="timebox"><label class="erow">Date<input type="date" id="cbD" value="${isoD(new Date())}"></label></div>
    <h4>💪 Body</h4>${[['pull','Max pull-ups','reps'],['push','Max push-ups','reps'],['h','Height','cm'],['reach','Standing reach','cm']].map(([k,l,u])=>`<div class="hlrow2"><span style="flex:1"><b>${l}</b></span><span><input type="number" step="0.5" inputmode="decimal" data-cb="${k}"><i>${u}</i></span></div>`).join('')}
-   ${Object.entries(BTESTS).map(([,G])=>`<h4>${G.emo} ${G.name.replace(' test','')}</h4>${G.L.map(t=>`<div class="hlrow2"><span style="flex:1"><b>${t.n}</b><small class="muted" style="display:block;font-size:11px">best ${btFmt(t,btBest(t.k))}</small></span><span><input type="number" step="0.1" inputmode="decimal" data-btl="${t.k}" placeholder="${t.t==='time'?'sec':t.t==='cm'?'cm':'#'}"><i>${btUnit(t)}</i></span></div>`).join('')}`).join('')}
+   ${btG().map(([,G])=>`<h4>${G.emo} ${G.no?G.no+' · ':''}${G.name.replace(' test','')}${G.opt?' <small class="muted">· only when you do them</small>':''}</h4>${G.L.map(t=>`<div class="hlrow2"><span style="flex:1"><b>${t.n}</b><small class="muted" style="display:block;font-size:11px">best ${btFmt(t,btBest(t.k))}</small></span><span><input type="number" step="0.1" inputmode="decimal" data-btl="${t.k}" placeholder="${t.t==='time'?'sec':t.t==='cm'?'cm':'#'}"><i>${btUnit(t)}</i></span></div>`).join('')}`).join('')}
    <button class="btn main" style="width:100%;margin-top:14px" data-cbsave>Save combine</button><button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');}
 document.addEventListener('click',e=>{const t=e.target;
   if(t.closest('[data-cbopen]')){combSheet();return;}
@@ -4314,9 +4398,20 @@ document.addEventListener('click',e=>{const t=e.target;
     if(Object.keys(r).length){const S=ST.hoop;S.tests=S.tests||[];S.tests.push({id:'cb'+Date.now().toString(36),d,kind:'combine',r});}
     if(body.pull!=null)ST.pull.maxLog.push({d:dOf(d).toISOString(),r:body.pull});if(body.push!=null)ST.push.maxLog.push({d:dOf(d).toISOString(),r:body.push});
     if(body.h!=null||body.reach!=null){LF.hgt=LF.hgt.filter(x=>x.d!==d);LF.hgt.push({d,h:body.h??null,reach:body.reach??null});LF.hgt.sort((a,b)=>a.d.localeCompare(b.d));}
-    LF.comb.push({d,r,body});LF.combNext=addD(d,56);save();saveLF();closeSheet();renderAll();
-    try{levelUpFx('🏁','Combine done!',pbs.length?`${pbs.length} new bests: ${pbs.slice(0,3).join(', ')}`:'Next one in 8 weeks');}catch(x){}return;}});
+    LF.comb.push({d,r,body});save();saveLF();closeSheet();renderAll();
+    try{levelUpFx('🏁','Test day done!',pbs.length?`${pbs.length} new bests: ${pbs.slice(0,3).join(', ')}`:'Saved — see the 📊 Tests card');}catch(x){}return;}});
 
+function tdCard(){return `<div class="card"><div class="fmh"><h3 style="margin:0">🏁 Test days</h3><button class="chip" data-tdedit>✏️ Dates</button></div>
+  <p class="muted" style="font-size:12px;margin:6px 0">6 test days a year, taking turns: <b>A</b> = ${['tA'].map(g=>BTESTS[g].ks.map(k=>`${BTESTS[k].emo} ${BTESTS[k].no}`).join(' '))} · <b>B</b> = ${BTESTS.tB.ks.map(k=>`${BTESTS[k].emo} ${BTESTS[k].no}`).join(' ')}. Each one is an extra training that week.</p>
+  ${tdays().map(d=>`<div class="trow"><span>🏁 <b>${tdG(d)==='tA'?'A':'B'}</b> ${fmtLong(dOf(d))}</span><span class="muted">${daysTo(d)<0?'done':inTxt(daysTo(d))}</span></div>`).join('')}
+  ${(()=>{const M=HOOP.A.filter(s=>s.htest&&!s.tday&&!didIt(ST.hoop,s.id)&&s.date>=new Date(new Date().setHours(0,0,0,0))).slice(0,3);
+    return `<h4>➕ Mini tests</h4><p class="muted" style="font-size:12px;margin:0 0 4px">One test at a time, added to a normal training. All 7 in order, twice a year. Extra — test days A and B stay.</p>`+
+     (M.length?M.map(s=>`<div class="trow"><span>${BTESTS[s.htest].emo} ${BTESTS[s.htest].no} · ${BTESTS[s.htest].name}</span><span class="muted">${fmt(s.date)}</span></div>`).join(''):'<p class="muted" style="font-size:12px">None left in this plan.</p>');})()}
+  <button class="btn sec" style="width:100%;margin-top:10px" data-cbopen>📝 Log a test day</button></div>`;}
+document.addEventListener('click',e=>{if(!e.target.closest('[data-tdedit]'))return;const T=tdays();
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🏁 Test days</h2><div class="timebox">${[0,1,2,3,4,5].map(i=>`<label class="erow">${i+1} · ${i%2?'B (2 3 5 6)':'A (1 4 7)'}<input type="date" data-tdd value="${T[i]||''}"></label>`).join('')}</div>
+   <div class="row2"><button class="btn main" data-tdsave>Save</button><button class="btn sec" data-close>Cancel</button></div>`;$('ov').classList.add('on');});
+document.addEventListener('click',e=>{if(!e.target.closest('[data-tdsave]'))return;LF.tdays=[...document.querySelectorAll('[data-tdd]')].map(i=>i.value).filter(Boolean).sort();saveLF();refresh();save();closeSheet();renderAll();if($('v-bb').classList.contains('on'))renderBB();toast('🏁 Test days saved');});
 /* ---- records wall ---- */
 function records(){const R=[];const add=(e,l,v,d)=>{if(v!=null&&v!==-Infinity&&v!==Infinity)R.push({e,l,v,d});};
   const mx=(L,f)=>{let b=null;L.forEach(x=>{const v=f(x);if(v!=null&&!isNaN(v)&&(b==null||v>b.v))b={v,d:x.d||x.date};});return b;};
@@ -4343,7 +4438,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-gdk]');if(
   if(k==='log'&&gd[k]){const g=G.g;if(g){gmLog(g.r);return;}bbNew('game',G.iso);return;}if(k==='warm'&&gd[k])startWarm(1);renderHome();});
 
 const _renderBBX=renderBB;renderBB=function(){_renderBBX();const v=$('v-bb'),sc=[...v.querySelectorAll('.card')].find(c=>/Season 2026/.test(c.textContent))||v.querySelector('.stats');
-  sc&&sc.insertAdjacentHTML('afterend',playerCard()+ftCard()+shotCard()+oppCard()+`<div class="card"><div class="fmh"><h3 style="margin:0">🏁 Combine day</h3><small class="muted">next: ${fmt(dOf(combNext()))} · ${inTxt(daysTo(combNext()))}</small></div><p class="muted" style="font-size:12px;margin:6px 0">All tests in one day, every 2 months.</p><button class="btn sec" style="width:100%" data-cbopen>🏁 Do combine day</button></div>`+recordsCard());};
+  sc&&sc.insertAdjacentHTML('afterend',playerCard()+ftCard()+shotCard()+oppCard()+tdCard()+recordsCard());};
 
 /* ================= WEEK & MONTH: totals, what's coming, pop-ups, countdowns, Wrapped ================= */
 const dRange=(s,e)=>{const o=[];for(const d=new Date(s);d<=e;d.setDate(d.getDate()+1))o.push(new Date(d));return o;};
@@ -4369,7 +4464,7 @@ function dayEvents(d){const iso=isoD(d),o=[];try{if(holiOf(d))o.push(['🏖',hol
   dayItems(d).forEach(({plan,s,t})=>o.push([plan.emoji,`${plan.name.replace(' Plan','')}${s.test||s.htest||s.kind==='final'?' · 📊 test':''} · ${t}`,'tr']));
   examsOn(iso).forEach(x=>o.push(['📝',`${sName(x.subj)} ${(EXK.find(k=>k[0]===x.kind)||EXK[0])[1].replace(/^\S+\s/,'')}`,'ex']));
   studyOn(iso).forEach(({x,s})=>o.push(['📚',`Study ${sName(x.subj)} ${s.min} min`,'st']));SC.hw.filter(h=>!h.done&&h.due===iso).forEach(h=>o.push(['📚',`Homework due · ${sName(h.subj)}`,'hw']));
-  if(iso===combNext())o.push(['🏁','Combine day','cb']);if(d.getMonth()===1&&d.getDate()===5)o.push(['🎂','Your birthday!','bd']);LF.cd.filter(c=>c.d===iso).forEach(c=>o.push([c.e||'⏳',c.n,'cd']));return o;}
+  if(tdays().includes(iso)&&!HOOP.A.some(s=>s.tday===iso))o.push(['🏁','Test day','cb']);if(d.getMonth()===1&&d.getDate()===5)o.push(['🎂','Your birthday!','bd']);LF.cd.filter(c=>c.d===iso).forEach(c=>o.push([c.e||'⏳',c.n,'cd']));return o;}
 function weekAhead(){const[s]=weekRange(0),t=isoD(new Date());return dRange(s,new Date(s.getFullYear(),s.getMonth(),s.getDate()+6)).map(d=>{const iso=isoD(d),E=dayEvents(d);
   return `<div class="wkd ${iso===t?'tod':''} ${iso<t?'past':''}" data-calopen="${iso}"><div class="wkdd"><b>${d.toLocaleDateString(LOC,{weekday:'short'})}</b><small>${d.getDate()}</small></div><div class="dmid">${E.length?E.map(([e,l])=>`<span class="wke">${e} ${esc(l)}</span>`).join(''):'<span class="muted" style="font-size:12px">free day</span>'}</div></div>`;}).join('');}
 function monthAhead(off){const t=new Date(),ms=new Date(t.getFullYear(),t.getMonth()+off,1),me=new Date(t.getFullYear(),t.getMonth()+off+1,0),L=[];
@@ -4377,7 +4472,7 @@ function monthAhead(off){const t=new Date(),ms=new Date(t.getFullYear(),t.getMon
   return L.length?L.map(([d,e,l])=>`<div class="trow"><span>${e} ${esc(l)}</span><span class="muted">${fmt(d)}</span></div>`).join(''):'<p class="muted" style="font-size:13px">Nothing big planned yet.</p>';}
 /* countdowns */
 function cdAll(){const t=isoD(new Date()),o=[...LF.cd.map(c=>({...c,mine:1}))];const by=new Date().getMonth()>1||new Date().getMonth()===1&&new Date().getDate()>5?new Date().getFullYear()+1:new Date().getFullYear();
-  o.push({n:'My birthday',e:'🎂',d:`${by}-02-05`});const g=SEASON.find(x=>x.d>=t&&x.us==null);if(g)o.push({n:'Next game · '+oppName(g.o),e:'🏀',d:g.d});o.push({n:'Combine day',e:'🏁',d:combNext()});
+  o.push({n:'My birthday',e:'🎂',d:`${by}-02-05`});const g=SEASON.find(x=>x.d>=t&&x.us==null);if(g)o.push({n:'Next game · '+oppName(g.o),e:'🏀',d:g.d});o.push({n:'Test day',e:'🏁',d:combNext()});
   const h=HOLI.find(([a])=>a>=t);if(h)o.push({n:holiName(h),e:'🏖',d:h[0]});const x=SC.exams.filter(z=>z.date>=t).sort((a,b)=>a.date.localeCompare(b.date))[0];if(x)o.push({n:sName(x.subj)+' exam',e:'📝',d:x.date});
   return o.filter(c=>c.d>=t).sort((a,b)=>a.d.localeCompare(b.d));}
 function cdChips(){const L=cdAll().slice(0,4);return L.length?`<div class="cdrow">${L.map(c=>`<button class="cdc" data-view="week"><b>${daysTo(c.d)===0?'TODAY':daysTo(c.d)}</b><small>${daysTo(c.d)===0?'':daysTo(c.d)===1?'day':'days'}</small><span>${c.e} ${esc(c.n)}</span></button>`).join('')}</div>`:'';}
@@ -4621,6 +4716,47 @@ document.addEventListener('click',e=>{const t=e.target;let b;
   if(t.closest('[data-nttest]')){ntAsk().then(()=>notify('🔔 Test — notifications work!'));return;}});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.ntt;if(!k)return;LF.nt[k].t=e.target.value||LF.nt[k].t;saveLF();ntSchedule();});
 
+/* ================= UI POLISH: page intros, section jump bar, tidy cards; daily-care routine removed ================= */
+LF.on.check=0;
+const PGI={'v-cal':'Every day of your plans. Tap a day to see it, move it or mark it done.',
+ 'v-bb':'Log games & practices · your season, player card, tests and records.',
+ 'v-log':'Your diary: write about the day, pick a mood and what you did.',
+ 'v-food':'What you ate vs. today\'s goal — the goal changes with how hard your day is.',
+ 'v-school':'Timetable, exams, homework and grades.',
+ 'v-tlog':'Pick a training day and log exactly what you did in it.',
+ 'v-data':'Graphs of everything you log. Pick the time range below.',
+ 'v-badges':'Badges you won — and what to do to win the rest.',
+ 'v-life':'Your body and daily life: water, stretching, sleep, injuries, height, savings.',
+ 'v-week':'What\'s coming this week and month, and your totals.',
+ 'v-settings':'How the app looks and works, sync and backups.'};
+const JUMPV=['v-bb','v-log','v-food','v-data','v-life','v-week','v-school'];
+const secLab=el=>{if(el.matches('.ready'))return '🔋 Readiness';const h=el.matches('details')?el.querySelector('summary'):el.querySelector('h3');if(!h)return '';
+  let t=h.textContent.replace(/\s+/g,' ').trim().split(' · ')[0].replace(/\s*[\d/–\-]+\s*$/,'').trim();return t.length>22?t.slice(0,21)+'…':t;};
+let PGX=false;
+function pgDecorate(v){if(PGX||!v||!v.classList.contains('view'))return;PGX=true;try{const top=v.querySelector(':scope>.top');
+  if(top&&PGI[v.id]&&!v.querySelector(':scope>.pgintro'))top.insertAdjacentHTML('afterend',`<p class="pgintro">${PGI[v.id]}</p>`);
+  if(JUMPV.includes(v.id)){const S=[...v.children].filter(c=>(c.matches('.card')||c.matches('details.tip'))&&secLab(c));S.forEach((c,i)=>c.dataset.sec=i);
+    const sig=S.map(secLab).join('|'),old=v.querySelector(':scope>.jumpbar');if(old&&old.dataset.sig===sig)S.length=0;else if(old)old.remove();
+    if(S.length>=4){const after=v.querySelector(':scope>.pgintro')||top;after&&after.insertAdjacentHTML('afterend',`<div class="jumpbar" data-sig="${esc(sig)}">${S.map((c,i)=>`<button data-jump="${i}">${esc(secLab(c))}</button>`).join('')}</div>`);}}
+  v.querySelectorAll('.card').forEach(c=>{const R=[...c.querySelectorAll(':scope>.trow')];if(R.length>9&&!c.querySelector(':scope>.showall')){R.slice(7).forEach(r=>r.classList.add('trhide'));
+    R[R.length-1].insertAdjacentHTML('afterend',`<button class="showall chip">Show all (${R.length}) ▾</button>`);}});
+  const num=[...v.children].find(c=>c.matches('.card')&&/🧮/.test((c.querySelector('h3')||{}).textContent||''));
+  if(num&&!num.classList.contains('fold')){num.classList.add('fold');}
+}finally{PGX=false;}}
+const PGO=new MutationObserver(M=>{const s=new Set();M.forEach(m=>{const v=m.target.closest?m.target.closest('.view'):null;if(v)s.add(v);});s.forEach(pgDecorate);});
+document.querySelectorAll('.view').forEach(v=>{PGO.observe(v,{childList:true});pgDecorate(v);});
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-jump]')){const v=b.closest('.view'),c=v.querySelector(`[data-sec="${b.dataset.jump}"]`);if(c){if(c.matches('details'))c.open=true;c.scrollIntoView({behavior:'smooth',block:'start'});}
+    b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));return;}
+  if(b=t.closest('.showall')){const c=b.closest('.card');c.querySelectorAll('.trhide').forEach(r=>r.classList.remove('trhide'));b.remove();return;}
+  if(b=t.closest('.card.fold>h3')){b.parentElement.classList.toggle('open');return;}});
+/* daily care is gone: hide its parts */
+const _renderLifeUI=renderLife;renderLife=function(){_renderLifeUI();const v=$('v-life');v.querySelectorAll('[data-lfon="check"]').forEach(x=>x.remove());
+  [...v.querySelectorAll('.stk small')].forEach(s=>{if(/Daily care/.test(s.textContent))s.parentElement.remove();});};
+const _streakCardUI=streakCard;streakCard=function(){return _streakCardUI().replace(/<div class="stk[^"]*"><span>✅<\/span>.*?<\/div>/,'');};
+/* player card gets a title */
+const _playerCardUI=playerCard;playerCard=function(){return _playerCardUI().replace('<div class="card pcard">','<div class="card pcard"><h3>🪪 My player card</h3>');};
+
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -4717,7 +4853,7 @@ Object.assign(HE,{'Made':'קלע','Tried':'ניסה','Skip':'דלג','Team pract
  'No plan training today — team day 🏀':'אין אימון מהתוכנית היום — יום קבוצה 🏀','3rd day — only the week after you miss one':'יום שלישי — רק בשבוע אחרי פספוס',
  "✓ Time's up — enter your numbers":'✓ הזמן נגמר — רשום את המספרים','Nothing to save':'אין מה לשמור','🎯 Shooting saved':'🎯 הקליעות נשמרו','timer':'טיימר'});
 [['Hoops Plan','תוכנית כדורסל'],['Shooting Foundation','בסיס קליעה'],['Dribble & Finishing','כדרור וסיומים'],['Game Speed Conditioning','כושר במהירות משחק'],['Game Shots','זריקות משחק'],
- ['Weak Hand + Strength','יד חלשה + כוח'],['Play & Compete','משחק ותחרות'],['Weak Hand','יד חלשה'],['Conditioning','כושר'],['Finishing','סיומים'],['Shooting','קליעה'],
+ ['Weak Hand + Defense','יד חלשה + הגנה'],['Weak Hand + Strength','יד חלשה + כוח'],['Play & Compete','משחק ותחרות'],['Weak Hand','יד חלשה'],['Conditioning','כושר'],['Finishing','סיומים'],['Shooting','קליעה'],
  ['shots made','קליעות'],['Close shots','זריקות קרובות'],['Layups & finishes','לייאפים וסיומים'],['Mid-range','חצי מרחק'],['3-pointers','שלשות'],['Free throws','זריקות עונשין'],
  ['Your own days','הימים שלך'],['3rd this week','שלישי השבוע'],['Game tomorrow','משחק מחר'],['team practice','אימון קבוצה'],['team game','משחק קבוצה'],['Game this day','משחק ביום הזה'],
  ['Form shots close','זריקות טכניקה קרוב'],['Catch & shoot mid-range','תפיסה וזריקה מחצי מרחק'],['Free throws in pairs','עונשין בזוגות'],['Elbow 1-minute','דקה מהמרפק'],
