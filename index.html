@@ -483,6 +483,9 @@ body.home .view{padding-bottom:100px}
 .astlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.astlist .chip{display:inline-flex;align-items:center;gap:6px}.astlist .chip button{background:none;border:0;color:var(--muted);font-size:12px;padding:0}
 .shtsel{margin:8px 0 4px}.shtsel .chips{margin-top:4px}
 .bbx .row2 input{min-width:0;flex:1;width:auto}
+.t-hfriends{background:rgba(255,105,180,.15);color:#ff69b4}.frbox{background:rgba(255,105,180,.1);border:1px solid rgba(255,105,180,.35);border-radius:14px;padding:10px 12px;margin:10px 0}
+.frbtn{margin:0 0 10px}.frbtn[disabled]{opacity:.5}.frday{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:6px 0;color:inherit;font:inherit}
+.frday span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.frday.on{border-color:#ff69b4}.frday[disabled]{opacity:.55}
 </style>
 </head>
 <body class="home">
@@ -5151,6 +5154,50 @@ const _moreStatsG2=moreStatsCard;moreStatsCard=function(){const G=seasonGames();
   if(!out.length)return h;if(!h)return `<div class="card"><h3>📋 More game stats</h3>${out.join('')}</div>`;
   return h.replace('<h3>📋 More game stats</h3>','<h3>📋 More game stats</h3>'+out.join(''));};
 
+/* ================= PLAY WITH FRIENDS: a fun day + 2 small drills (~15 min) · max 2 a week ================= */
+HW.friends={name:'Play with friends',emo:'🤝',lvl:'Fun',mins:{A:15}};
+HW.friends.A=[HWU,
+ HD('Before: weak-hand layups','10','each side',5,'Before you play: 10 layups with your right hand from the right, 10 from the left. Count makes.',{log:'lay',tries:20}),
+ HD('Just play! 🤝','Play','with friends',0,'No plan today — 1-on-1, 2-on-2, 21, HORSE, whatever you want. Try your new moves in a real game and have fun.'),
+ HD('After: 10 free throws tired','10','free throws',5,'Right after you play, while you\'re tired: 10 free throws with your normal routine. Count makes.',{log:'ft',tries:10})];
+HTIPS.friends=['Have fun! Use the moves you practice — in a real game it counts double.','The 2 small drills are ~15 min: one before you play, one after.'];
+Object.assign(PHASE,{hfriends:'With friends'});
+const FRID=SPID+300,frWk=d=>Math.floor((d-HSTART)/(7*864e5));
+function frCount(w,skip){return HOOP.A.filter(s=>s.type==='friends'&&s.hw===w&&s.id!==skip).length;}
+const _hoopTypesFR=hoopTypes;hoopTypes=function(){_hoopTypesFR();const S=ST.hoop,rem=S.removed||{};
+  for(let i=0;i<100;i++)delete HOOP.S[FRID+i];
+  (S.frx||[]).forEach((iso,i)=>{const d=dOf(iso),k=Math.round((d-HSTART)/864e5);if(k<0||k>=HDAYS)return;
+    HOOP.S[FRID+i]={id:FRID+i,hw:frWk(d),slot:'fr',kind:'main',type:'friends',auto:'friends',phase:'hfriends',fr:iso,date:d,baseDate:d,week:Math.floor(k/7)+1,day:k+1,extra:false,del:!!rem[FRID+i],off:false,ex:[]};});};
+function frAdd(iso){const S=ST.hoop,d=dOf(iso),w=frWk(d);if(frCount(w)>=2){toast('🤝 Max 2 friends days a week');return false;}
+  const s=HOOP.A.find(x=>isoD(x.date)===iso&&!x.special&&!x.fr&&x.type!=='friends'&&!didIt(S,x.id));
+  if(s){const was=HW[s.type].name;S.typeOv=S.typeOv||{};S.typeOv[s.id]='friends';refresh();save();renderAll();toast(`🤝 Friends day! ${was} moves to your next training`);return true;}
+  S.frx=(S.frx||[]).filter(x=>x!==iso);S.frx.push(iso);S.frx.sort();refresh();save();renderAll();toast('🤝 Friends day added — your plan stays the same');return true;}
+function frDel(id){const S=ST.hoop,s=HOOP.S[id];if(!s)return;if(s.fr){S.frx=(S.frx||[]).filter(x=>x!==s.fr);}else if((S.typeOv||{})[id]==='friends')delete S.typeOv[id];refresh();save();renderAll();}
+/* in the training sheet */
+const _sheetTopFR=HOOP.sheetTop;HOOP.sheetTop=function(s){let h=_sheetTopFR.call(this,s);if(s.tday||s.special)return h;
+  if(s.type==='friends'){h=h.replace(' · you picked this one','');
+    return h+`<div class="frbox"><b>🤝 Friends day</b><div class="muted" style="font-size:13px;margin:4px 0 8px">Just play — the app doesn't tell you what to do. ${s.fr?'This is an extra day, your plan stays the same.':'Your planned workout moved to the next training.'}</div>
+     <button class="chip" data-frdel="${s.id}">${s.fr?'🗑 Remove this friends day':'↩ Back to the plan'}</button></div>`;}
+  if(didIt(ST.hoop,s.id))return h;const n=frCount(s.hw,s.id);
+  return h+`<button class="chip frbtn" ${n>=2?'disabled':''} data-fradd="${isoD(s.date)}">🤝 Playing with friends instead${n>=2?' · max 2 this week':''}</button>`;};
+/* pick any day */
+function frSheet(){const t=new Date();t.setHours(0,0,0,0);const S=ST.hoop,rows=[];
+  for(let i=0;i<10;i++){const d=new Date(t);d.setDate(t.getDate()+i);const iso=isoD(d),k=Math.round((d-HSTART)/864e5);if(k<0||k>=HDAYS)continue;
+    const L=HOOP.A.filter(x=>isoD(x.date)===iso),fr=L.find(x=>x.type==='friends'),tr=L.find(x=>!x.special&&!x.fr&&x.type!=='friends'),full=frCount(frWk(d))>=2;
+    rows.push(`<button class="frday ${fr?'on':''}" ${fr||full&&!fr?'disabled':''} data-fradd="${iso}"><b>${i===0?'Today':i===1?'Tomorrow':d.toLocaleDateString('en',{weekday:'long'})}</b> <small class="muted">${fmt(d)}</small>
+     <span>${fr?'🤝 already a friends day':full?'max 2 this week':tr?`replaces ${HW[tr.type].emo} ${HW[tr.type].name} → it moves to the next training`:'extra day · nothing moves'}</span></button>`);}
+  $('sheet').innerHTML=`<div class="grab"></div><h2>🤝 Play with friends</h2><p class="muted" style="font-size:13px;margin:4px 0 10px">Just play — plus 2 small drills (~15 min) before and after. Max 2 a week. On a training day it takes that training's place and the workouts move +1.</p>
+   ${rows.join('')}<button class="btn sec" style="width:100%;margin-top:10px" data-close>Close</button>`;$('ov').classList.add('on');}
+const _hoopDaysCardFR=hoopDaysCard;hoopDaysCard=function(){const h=_hoopDaysCardFR(),i=h.lastIndexOf('</details>');
+  const row=`<button class="btn sec" style="width:100%;margin-top:10px" data-fropen>🤝 Play with friends on a day…</button>`;return i<0?h+row:h.slice(0,i)+row+h.slice(i);};
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(t.closest('[data-fropen]')){e.stopImmediatePropagation();frSheet();return;}
+  if(b=t.closest('[data-fradd]')){e.stopImmediatePropagation();if(b.disabled)return;const inSheet=!!b.closest('.frday');if(frAdd(b.dataset.fradd)){if(inSheet)frSheet();else{const s=HOOP.A.find(x=>isoD(x.date)===b.dataset.fradd&&x.type==='friends');closeSheet();if(s){cur='hoop';openSheet(s.id);}}}return;}
+  if(b=t.closest('[data-frdel]')){e.stopImmediatePropagation();const s=HOOP.S[+b.dataset.frdel],iso=s&&isoD(s.date);frDel(+b.dataset.frdel);closeSheet();
+    const nx=s&&!s.fr&&HOOP.A.find(x=>isoD(x.date)===iso&&!x.special);if(nx){cur='hoop';openSheet(nx.id);}toast('↩ Back to the plan');return;}},true);
+
+const _linesFR=HOOP.lines;HOOP.lines=function(s){const L=_linesFR.call(this,s);return s.type==='friends'?L.map(([a,b])=>[a,String(b).replace(' · ~0 min','')]):L;};
+const _stepsFR=HOOP.steps;HOOP.steps=function(s){const L=_stepsFR.call(this,s);if(s.type==='friends')L.forEach(x=>{if(x.kind)x.kind=x.kind.replace(' · ~0 min','');});return L;};
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
