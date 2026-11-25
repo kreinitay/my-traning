@@ -468,8 +468,8 @@ body.home .view{padding-bottom:100px}
 .didbox .row2 .btn{font-size:16px;padding:12px}.didbox .didyes.main{background:#3ddc84;color:#06210f}.didbox .didno.main{background:#ff7a6b;color:#2a0905}.didq{font-weight:700;font-size:14px;margin:12px 0 6px}
 .mqrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}.mqb{flex:none;width:44px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:18px;font-weight:800;color:inherit}.mqb.yes{color:#3ddc84}.mqb.no{color:#ff7a6b}
 .bbx{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}.bbx>summary{font-weight:700;cursor:pointer}
-.stgrid{display:grid;grid-template-columns:1fr 58px 58px 44px;gap:6px;align-items:center}.stgrid>span{font-size:13px}.stgrid>small,.qgrid>small{text-align:center;color:var(--muted);font-size:11px}.stgrid>b,.qgrid>b{text-align:center;font-size:13px}
-.qgrid{display:grid;grid-template-columns:44px repeat(5,1fr) 40px;gap:4px;align-items:center;margin-top:8px}.qgrid>span{font-size:13px;font-weight:600}
+.stgrid{display:grid;grid-template-columns:1fr 58px 58px 44px;gap:6px;align-items:center}.stgrid>span{font-size:13px}.stgrid>small,.qtgrid>small{text-align:center;color:var(--muted);font-size:11px}.stgrid>b,.qtgrid>b{text-align:center;font-size:13px}
+.qtgrid{display:grid;grid-template-columns:44px repeat(5,1fr) 40px;gap:4px;align-items:center;margin-top:8px}.qtgrid>span{font-size:13px;font-weight:600}
 .bbxn{width:100%;min-width:0;box-sizing:border-box;text-align:center;padding:8px 2px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:inherit;font-size:15px}
 .gxrow{padding:10px 0;border-top:1px solid var(--line)}.gxrow:first-of-type{border-top:0}.qbars{display:flex;gap:10px;align-items:flex-end;margin:8px 0 4px}.qbars>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
 .qbars i{display:block;width:100%;max-width:44px;border-radius:6px 6px 2px 2px;background:var(--accent);opacity:.45}.qbars i.on{opacity:1}.qbars small{color:var(--muted);font-size:11px}
@@ -526,10 +526,16 @@ body.home .view{padding-bottom:100px}
 .mdl{width:46px;flex:none}.mdl b{display:block;font-size:14px}.mdl small{color:var(--muted);font-size:11px}.mdi{flex:1;display:flex;flex-wrap:wrap;gap:6px}
 .mchip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);color:inherit;font:inherit;font-size:13px;cursor:pointer}
 .mchip.lesson{background:color-mix(in srgb,var(--c) 32%,transparent)}.mchip.basic{border-style:dashed}.mchip small{color:var(--muted);font-size:11px}.mchip.dn{background:#3ddc84;border-color:#3ddc84;color:#06210f}.mchip.dn small{color:#06210f}
-.mleg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:10px}.mleg .mchip{padding:2px 8px;font-size:11px;cursor:default}
+.mulg{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:10px}.mulg .mchip{padding:2px 8px;font-size:11px;cursor:default}
 .calmu{font-style:normal;font-size:8px;opacity:.55}.calmu.dn{opacity:1}
 .msearch{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:inherit;font-size:15px;margin-top:10px}
 .mfl{flex-wrap:nowrap;overflow-x:auto;margin-top:8px;padding-bottom:4px}.mfl .chip{flex:none;white-space:nowrap}.mfl small{opacity:.6}
+.lbig{display:flex;align-items:center;gap:12px;margin:6px 0}.lbig b{font-size:34px;min-width:84px}.lbig .lpr{flex:1}
+.lpr{position:relative;height:10px;border-radius:5px;background:var(--line);overflow:visible;margin:6px 0}.lpr i{display:block;height:100%;border-radius:5px;background:var(--accent)}.lpr em{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink,#fff);opacity:.7;transform:translateX(-1px)}
+.lst{display:block;font-size:12px;margin:4px 0;color:var(--muted)}.lst.ok{color:#3ddc84}.lst.mid{color:#ffb627}.lst.bad{color:#ff6b6b}
+.lhist{margin-top:10px;font-size:13px}.lhist>div{display:grid;grid-template-columns:72px 44px 1fr;gap:6px;padding:4px 0;border-top:1px solid var(--line)}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}.lrow.paused{opacity:.5}.lrow .mf{font-size:20px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:color-mix(in srgb,var(--lc) 20%,transparent);flex:none}
+.lrow b{display:block}.lpc{font-size:16px;flex:none}.lquick{background:var(--card2);border-radius:12px;padding:8px 10px;margin-top:8px}.lquick .row3{margin:6px 0}
 </style>
 </head>
 <body class="home">
@@ -4736,7 +4742,7 @@ document.addEventListener('click',e=>{const t=e.target;let b;if(t.closest('[data
 
 /* ================= QUICK ADD (+) ================= */
 document.body.insertAdjacentHTML('beforeend','<button class="fab" id="fab" aria-label="Quick add">＋</button>');
-function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst']];
+function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst'],['🎵','Music today','qmu']];
   $('sheet').innerHTML=`<div class="grab"></div><h2>＋ Quick add</h2><div class="qgrid">${Q.map(([e,l,k])=>`<button class="qbtn" data-q="${k}"><b>${e}</b>${l}</button>`).join('')}</div><button class="btn sec" style="width:100%;margin-top:12px" data-close>Close</button>`;$('ov').classList.add('on');}
 document.addEventListener('click',e=>{const t=e.target;let b;if(t.id==='fab'){fabSheet();return;}
   if(!(b=t.closest('[data-q]')))return;const k=b.dataset.q;closeSheet();const iso=isoD(new Date());
@@ -5075,7 +5081,7 @@ function gameExtras(){const e=BBE,hasQ=QROWS.some(([r])=>qHas(e,r)),hasT=SHTY.so
   <details class="bbx" ${hasT?'open':''}><summary>🏀 Shot types</summary><p class="muted" style="font-size:12px;margin:6px 0">Made / tried for each kind of shot.</p>
    <div class="stgrid"><span></span><small>Made</small><small>Tried</small><small>%</small>${SHTY.map(([k,e2,l])=>`<span>${e2} ${l}</span>${nIn(`st.${k}.0`)}${nIn(`st.${k}.1`)}<b id="stp-${k}">${stPct(k)}</b>`).join('')}</div></details>
   <details class="bbx" ${hasQ?'open':''}><summary>⏱ Points per quarter</summary>
-   <div class="qgrid"><span></span>${QTRS.map(q=>`<small>${q}</small>`).join('')}<small>Total</small>
+   <div class="qtgrid"><span></span>${QTRS.map(q=>`<small>${q}</small>`).join('')}<small>Total</small>
     ${QROWS.map(([r,l])=>`<span>${l}</span>${QTRS.map((q,i)=>nIn(`q.${r}.${i}`)).join('')}<b id="qt-${r}">${qHas(e,r)?qSum(e,r):'–'}</b>`).join('')}</div>
    <div class="muted" id="qinfo" style="font-size:12px;margin-top:6px">${qInfo()}</div></details>
   <details class="bbx" ${G.n||G.pts!=null?'open':''}><summary>🛡 Player you guarded</summary>
@@ -5152,7 +5158,7 @@ function gameExtras2(){const e=BBE,A=e.astL||[],T=e.tovT||{},hasT=TOVT.some(([k]
 const _renderBBFormG2=renderBBForm;renderBBForm=function(){_renderBBFormG2();if(!BBE||BBE.type!=='game')return;try{const sh=$('sheet'),x=sh.querySelectorAll('.bbx');const last=x[0];
   last&&last.insertAdjacentHTML('afterend',gameExtras2());
   const h=[...sh.querySelectorAll('h4')].find(z=>/Your stats/.test(z.textContent));h&&h.insertAdjacentHTML('afterend',`<div class="grate" id="grate">${grHtml()}</div>`);
-  const q=sh.querySelector('.qgrid');q&&q.insertAdjacentHTML('afterend','<div class="muted" style="font-size:11px;margin-top:4px">Min = minutes you played in each quarter.</div>');}catch(err){console.warn('g2',err);}};
+  const q=sh.querySelector('.qtgrid');q&&q.insertAdjacentHTML('afterend','<div class="muted" style="font-size:11px;margin-top:4px">Min = minutes you played in each quarter.</div>');}catch(err){console.warn('g2',err);}};
 function grHtml(){const r=gRate(BBE);return r==null?'<span class="muted">⭐ Game rating — add your stats</span>':`<span>⭐ Game rating</span><b style="color:${rateCol(r)}">${r.toFixed(1)}</b><small class="muted">/ 10</small>`;}
 const grUpd=()=>{const g=$('grate');if(g)g.innerHTML=grHtml();};
 document.addEventListener('click',ev=>{const t=ev.target;let b;if(!BBE)return;
@@ -5475,7 +5481,7 @@ function muTimes(d){const t=new Date(d);t.setHours(0,0,0,0);const busy=[],sp=sch
   L.forEach(it=>{const mn=it.kind==='song'?15:25;let st=null;from=Math.ceil(from/5)*5;for(let x=from;x+mn<=21*60+45;x+=5){if(busy.every(([a,b])=>x+mn<=a||x>=b)){st=x;break;}}
     if(st==null)st=Math.min(21*60,Math.max(from,...busy.map(b=>b[1])));busy.push([st,st+mn+5]);out[it.i]=`${String(Math.floor(st/60)).padStart(2,'0')}:${String(st%60).padStart(2,'0')}`;});return out;}
 let MUTC={};const muTime=(i,t)=>{const k=isoD(t)+'|'+(MU().gStart||'')+'|'+MU().start+'|'+JSON.stringify(MU().wk2).length;if(!MUTC[k]||Date.now()-MUTC[k].at>15000)MUTC[k]={at:Date.now(),v:muTimes(t)};return MUTC[k].v[i]||'';};
-const muSong=i=>(MU().songs[i]||[]).find(s=>s.id===MU().cur[i])||null;
+const muSong=i=>muPick(i);
 const muDay=d=>['p','g'].map(i=>muItem(i,d)).filter(Boolean);
 const myLv=i=>Math.max(i==='p'?2:1,...(MU().songs[i]||[]).filter(s=>MU().learned[s.id]).map(s=>s.lv));
 const ytUrl=(i,s)=>'https://www.youtube.com/results?search_query='+encodeURIComponent(`${s.n.replace(' — ',' ')} ${i==='p'?(s.lv<=3?'easy piano tutorial':'piano tutorial'):(s.lv<=3?'easy guitar tutorial chords':'guitar tutorial')}`);
@@ -5498,7 +5504,7 @@ function renderMusic(){const v=$('v-music'),t=new Date();t.setHours(0,0,0,0);con
   v.innerHTML=`<div class="top"><button class="back" data-home>‹</button><h1>Music <span>🎵</span></h1></div>
    <p class="pgintro">🎹 Piano 4 days, 🎸 guitar 5 days. 2 of them are real lessons, the rest you practice a song. Times are picked around school and training.</p>
    <div class="tday"><h3>Today</h3>${td.length?td.map(row).join(''):'<div class="muted">No music today 🎧</div>'}</div>
-   <div class="card"><h3>📅 This week</h3><div class="muted" style="font-size:12px;margin:-4px 0 8px">Tap a session to open it. You can move any session to another day — 2 moves a week (left: ${mvl}).</div>${grid}<div class="mleg"><span class="mchip lesson" style="--c:#8b5cf6"><b>Lesson</b></span> 25 min, learn something new <span class="mchip song" style="--c:#8b5cf6"><b>Song</b></span> 15 min, practice your song</div></div>
+   <div class="card"><h3>📅 This week</h3><div class="muted" style="font-size:12px;margin:-4px 0 8px">Tap a session to open it. You can move any session to another day — 2 moves a week (left: ${mvl}).</div>${grid}<div class="mulg"><span class="mchip lesson" style="--c:#8b5cf6"><b>Lesson</b></span> 25 min, learn something new <span class="mchip song" style="--c:#8b5cf6"><b>Song</b></span> 15 min, practice your song</div></div>
    ${inst('p')}${inst('g')}
    <div class="card"><h3>🎼 Songs</h3><div class="chips">${['p','g'].map(i=>`<button class="chip ${MTAB===i?'on':''}" data-mutab="${i}">${MI[i].e} ${MI[i].n}</button>`).join('')}</div>
     ${L.map(s=>{const r=recOf(MTAB,s);return `<div class="msong ${MU().cur[MTAB]===s.id?'cur':''}" data-musong="${MTAB}|${s.id}"><span class="mf" style="--lc:${LVF[s.lv-1][2]}">${LVF[s.lv-1][0]}</span><div class="dmid"><b>${esc(s.n)}</b><small class="muted">${s.lv} · ${LVF[s.lv-1][1]} · ${r[0]} ${r[1]}</small></div>${MU().cur[MTAB]===s.id?'<em>now</em>':''}</div>`;}).join('')}
@@ -5766,6 +5772,89 @@ const _renderMusicPL=renderMusic;renderMusic=function(){_renderMusicPL();try{con
 document.addEventListener('click',e=>{const t=e.target;let b;if(b=t.closest('[data-mufl]')){MFL=b.dataset.mufl;MALL=false;renderMusic();return;}if(t.closest('[data-muall]')){MALL=true;renderMusic();return;}
   if(t.closest('[data-mutab]')){MFL='all';MALL=false;MQ='';}},true);
 document.addEventListener('input',e=>{if(e.target.id!=='muQ')return;MQ=e.target.value.trim().toLowerCase();const pos=e.target.selectionStart;renderMusic();const q=$('muQ');if(q){q.focus();try{q.setSelectionRange(pos,pos);}catch(x){}}});
+document.addEventListener('click',e=>{if(!e.target.closest('[data-q="qmu"]'))return;e.stopImmediatePropagation();closeSheet();const t=new Date();t.setHours(0,0,0,0);const L=muDay(t).filter(x=>!x.done);if(L.length){MUS=[L[0].i,L[0].iso];muSheet();}else{renderMusic();show('music');}},true);
+/* ================= MUSIC: songs I'm learning — many at once, progress, parts, goal + date, notes, history ================= */
+LF.mu.lrn=LF.mu.lrn||{};
+const LPARTS=['Intro','Verse','Chorus','Bridge','Outro','Full song in time'],LGOAL=[[40,'🎯 The chorus'],[70,'🎼 Main part'],[100,'🏆 Full song']];
+const LR=()=>LF.mu.lrn||{},sOf=(i,id)=>(LF.mu.songs[i]||[]).find(x=>x.id===id);
+function lrnInfo(L){const t=new Date();t.setHours(0,0,0,0);const g=L.goal||100,left=Math.max(0,g-(L.pct||0));
+  if(!L.by)return{left,days:null,txt:left?`${left}% to your goal`:'🎯 Goal reached!',cls:left?'':'ok'};
+  const days=Math.round((dOf(L.by)-t)/864e5),start=dOf(L.at||isoD(t)),tot=Math.max(1,Math.round((dOf(L.by)-start)/864e5)),should=Math.min(g,Math.round(g*Math.min(1,(tot-days)/tot)));
+  if(!left)return{left,days,txt:'🎯 Goal reached!',cls:'ok'};if(days<0)return{left,days,txt:`⏰ ${-days} day${days===-1?'':'s'} late — pick a new date or keep going`,cls:'bad'};
+  const st=(L.pct||0)>=should-5?['✅ On track','ok']:(L.pct||0)>=should-20?['⚠️ A bit behind','mid']:['🐢 Behind','bad'];
+  return{left,days,txt:`${st[0]} · ${days} day${days===1?'':'s'} left · about +${Math.ceil(left/Math.max(1,Math.ceil(days/7)))}% a week`,cls:st[1]};}
+function muPick(i){const M=LF.mu,A=Object.entries(M.lrn||{}).filter(([id,L])=>L.i===i&&!L.paused&&(L.pct||0)<100&&sOf(i,id));
+  if(!A.length)return sOf(i,M.cur[i])||null;const t=new Date();t.setHours(0,0,0,0);
+  const sc=([,L])=>{const left=Math.max(1,(L.goal||100)-(L.pct||0)),d=L.by?Math.max(1,(dOf(L.by)-t)/864e5):60;return left/d;};
+  return sOf(i,A.sort((a,b)=>sc(b)-sc(a))[0][0]);}
+function lrnStart(i,id){const M=LF.mu;if(!M.lrn[id])M.lrn[id]={i,at:isoD(new Date()),pct:0,goal:100,parts:{},log:[],prac:0};M.cur[i]=id;saveLF();}
+function lrnSet(id,pct,note){const L=LR()[id];if(!L)return;const old=L.pct||0;L.pct=Math.max(0,Math.min(100,pct));const d=isoD(new Date());
+  const last=L.log[L.log.length-1];if(last&&last.d===d){last.pct=L.pct;if(note)last.note=last.note?last.note+' · '+note:note;}else if(note||L.pct!==old)L.log.push({d,pct:L.pct,...(note?{note}:{})});
+  if(old<(L.goal||100)&&L.pct>=(L.goal||100)){L.hit=d;if(L.by&&d<=L.by)L.ontime=1;try{confetti();}catch(e){}toast('🎯 Song goal reached!');}
+  if(L.pct>=100&&old<100){const s=sOf(L.i,id);LF.mu.learned[id]=d;toast(`🎉 You can play ${s?s.n.split(' — ')[0]:'it'}!`);}saveLF();}
+let LRS=null;
+function lrnSheet(id){LRS=id;const L=LR()[id];if(!L){closeSheet();return;}const s=sOf(L.i,id);if(!s){closeSheet();return;}const I=lrnInfo(L),pc=L.parts||{},np=LPARTS.filter(p=>pc[p]).length;
+  const hist=L.log.slice(-6).reverse();
+  $('sheet').innerHTML=`<div class="grab"></div><h2>${MI[L.i].e} ${esc(s.n)}</h2><div style="margin:4px 0 10px">${lvTag(s.lv)} <small class="muted">· learning since ${fmt(dOf(L.at))} · ${L.prac||0} practice day${L.prac===1?'':'s'}</small></div>
+   <div class="lbig"><b id="lrnPct">${L.pct||0}%</b><div class="lpr"><i style="width:${L.pct||0}%"></i><em style="left:${L.goal||100}%"></em></div></div>
+   <input type="range" min="0" max="100" step="5" value="${L.pct||0}" data-lrnpct style="width:100%">
+   <div class="lst ${I.cls}">${I.txt}</div>
+   <h4>What do you know? <small class="muted">${np}/${LPARTS.length}</small></h4><div class="chips">${LPARTS.map(p=>`<button class="chip ${pc[p]?'on':''}" data-lrnpart="${p}">${pc[p]?'✓ ':''}${p}</button>`).join('')}</div>
+   <h4>Your goal</h4><div class="chips">${LGOAL.map(([v,l])=>`<button class="chip ${(L.goal||100)===v?'on':''}" data-lrngoal="${v}">${l}</button>`).join('')}</div>
+   <label class="erow" style="margin-top:8px">📅 By when?<input type="date" data-lrnby value="${L.by||''}" min="${isoD(new Date())}"></label>
+   <h4>📝 Note for today</h4><div class="row2"><input id="lrnNote" class="ename" placeholder="e.g. learned the verse, chorus still slow" style="flex:1;min-width:0"><button class="btn main" style="flex:0 0 70px" data-lrnnote>Save</button></div>
+   ${hist.length?`<div class="lhist">${hist.map(h=>`<div><small class="muted">${fmt(dOf(h.d))}</small><b>${h.pct}%</b><span>${h.note?esc(h.note):''}</span></div>`).join('')}</div>`:''}
+   <a class="btn sec" style="display:block;text-align:center;margin-top:10px" href="${ytUrl(L.i,s)}" target="_blank" rel="noopener">▶ YouTube tutorial</a>
+   <div class="row3" style="margin-top:8px"><button class="btn sec" data-lrnpause>${L.paused?'▶ Resume':'⏸ Pause'}</button><button class="btn sec" data-lrnstop>🗑 Stop</button><button class="btn sec" data-close>Close</button></div>`;$('ov').classList.add('on');}
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-lrnopen]')){e.stopImmediatePropagation();lrnSheet(b.dataset.lrnopen);return;}
+  if(b=t.closest('[data-lrnstart]')){e.stopImmediatePropagation();const[i,id]=b.dataset.lrnstart.split('|');lrnStart(i,id);lrnSheet(id);if($('v-music').classList.contains('on'))renderMusic();toast('📈 Added to songs you\'re learning');return;}
+  if(!LRS)return;const id=LRS,L=LR()[id];if(!L)return;
+  if(b=t.closest('[data-lrnpart]')){L.parts=L.parts||{};const p=b.dataset.lrnpart;L.parts[p]=!L.parts[p];const n=LPARTS.filter(x=>L.parts[x]).length;lrnSet(id,Math.max(L.pct||0,Math.round(n/LPARTS.length*100/5)*5));lrnSheet(id);renderMusic();return;}
+  if(b=t.closest('[data-lrngoal]')){L.goal=+b.dataset.lrngoal;saveLF();lrnSheet(id);renderMusic();return;}
+  if(t.closest('[data-lrnnote]')){const v=($('lrnNote').value||'').trim();if(!v)return;lrnSet(id,L.pct||0,v);lrnSheet(id);toast('📝 Saved');return;}
+  if(t.closest('[data-lrnpause]')){L.paused=!L.paused;saveLF();lrnSheet(id);renderMusic();return;}
+  if(t.closest('[data-lrnstop]')){if(!confirm('Stop learning this song? Your progress is deleted.'))return;delete LF.mu.lrn[id];if(LF.mu.cur[L.i]===id)delete LF.mu.cur[L.i];saveLF();closeSheet();LRS=null;renderMusic();return;}
+  if(t.closest('[data-close]')||t.id==='ov')LRS=null;},true);
+document.addEventListener('change',e=>{const t=e.target;if(!LRS)return;const L=LR()[LRS];if(!L)return;
+  if(t.dataset.lrnpct!=null){lrnSet(LRS,+t.value);lrnSheet(LRS);renderMusic();}
+  if(t.dataset.lrnby!=null){L.by=t.value||null;saveLF();lrnSheet(LRS);renderMusic();}});
+document.addEventListener('input',e=>{if(e.target.dataset&&e.target.dataset.lrnpct!=null){const p=$('lrnPct');if(p)p.textContent=e.target.value+'%';}});
+/* song sheet: start learning / open progress */
+const _songSheetLR=songSheet;songSheet=function(i,id){_songSheetLR(i,id);try{const L=LR()[id],b=$('sheet').querySelector('[data-mucur]');if(!b)return;
+  b.outerHTML=L?`<button class="btn main" data-lrnopen="${id}">📈 Learning · ${L.pct||0}%</button>`:`<button class="btn sec" data-lrnstart="${i}|${id}">📈 Start learning</button>`;}catch(e){}};
+/* song day: which song + quick progress */
+const _muSheetLR=muSheet;muSheet=function(){_muSheetLR();try{const[i,iso]=MUS,it=muItem(i,dOf(iso));if(!it||!it.song)return;const L=LR()[it.song.id],c=$('sheet').querySelector('.mcur');if(!c)return;
+  c.insertAdjacentHTML('afterend',L?`<div class="lquick"><div class="lpr"><i style="width:${L.pct||0}%"></i><em style="left:${L.goal||100}%"></em></div><div class="row3"><button class="btn sec" data-lrnq="5">+5%</button><button class="btn sec" data-lrnq="10">+10%</button><button class="btn sec" data-lrnopen="${it.song.id}">📈 ${L.pct||0}% ›</button></div><small class="muted">${lrnInfo(L).txt}</small></div>`
+   :`<button class="btn sec" style="width:100%;margin-top:6px" data-lrnstart="${i}|${it.song.id}">📈 Track my progress on this song</button>`);}catch(e){console.warn('lrn sheet',e);}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-lrnq]');if(!b||!MUS)return;e.stopImmediatePropagation();const it=muItem(MUS[0],dOf(MUS[1]));if(!it||!it.song)return;const L=LR()[it.song.id];if(!L)return;
+  lrnSet(it.song.id,(L.pct||0)+(+b.dataset.lrnq));muSheet();toast(`📈 ${LR()[it.song.id].pct}%`);},true);
+window.addEventListener('click',e=>{if(!e.target.closest('[data-mudone]')||!MUS)return;const[i,iso]=MUS,it=muItem(i,dOf(iso));if(it&&it.song&&!it.done){const L=LR()[it.song.id];if(L){L.prac=(L.prac||0)+1;saveLF();}}},true);
+/* Learning tab */
+function lrnList(){const M=LF.mu,E=Object.entries(M.lrn||{}).filter(([id,L])=>sOf(L.i,id));
+  const act=E.filter(([,L])=>(L.pct||0)<100).sort((a,b)=>(a[1].paused?1:0)-(b[1].paused?1:0)||(a[1].by||'9').localeCompare(b[1].by||'9')),done=E.filter(([,L])=>(L.pct||0)>=100);
+  const row=([id,L])=>{const s=sOf(L.i,id),I=lrnInfo(L);return `<div class="lrow ${L.paused?'paused':''}" data-lrnopen="${id}"><span class="mf" style="--lc:${LVF[s.lv-1][2]}">${MI[L.i].e}</span><div class="dmid"><b>${esc(s.n)}</b>
+    <div class="lpr"><i style="width:${L.pct||0}%;background:${MI[L.i].c}"></i><em style="left:${L.goal||100}%"></em></div>
+    <small class="lst ${I.cls}">${L.paused?'⏸ Paused':`${L.pct||0}% · ${LGOAL.find(g=>g[0]===(L.goal||100))[1]}${L.by?' by '+fmt(dOf(L.by)):''}`}</small></div><b class="lpc">${L.pct||0}%</b></div>`;};
+  return `${act.length?act.map(row).join(''):'<p class="muted" style="margin:8px 0">No songs yet. Open any song → <b>📈 Start learning</b>. You can learn a few at the same time — on song days the app picks the one that needs it most.</p>'}
+   ${done.length?`<h4 style="margin:12px 0 4px">✅ Finished</h4>${done.map(row).join('')}`:''}
+   ${act.length>4?'<div class="muted" style="font-size:12px;margin-top:6px">💡 That\'s a lot at once — 2–3 per instrument is usually best.</div>':''}`;}
+const _renderMusicLR=renderMusic;renderMusic=function(){const lt=MTAB==='L';if(lt)MTAB='p';_renderMusicLR();if(lt)MTAB='L';try{const v=$('v-music'),h=[...v.querySelectorAll('.card>h3')].find(x=>/Songs$/.test(x.textContent.trim()));if(!h)return;const card=h.parentElement,ch=card.querySelector('.chips');
+  const n=Object.values(LR()).filter(L=>(L.pct||0)<100&&!L.paused).length;
+  ch.insertAdjacentHTML('beforeend',`<button class="chip ${lt?'on':''}" data-mutab="L">📈 Learning${n?' · '+n:''}</button>`);
+  if(lt){ch.querySelectorAll('[data-mutab="p"],[data-mutab="g"]').forEach(b=>b.classList.remove('on'));[...card.children].forEach(c=>{if(c!==h&&c!==ch)c.remove();});ch.insertAdjacentHTML('afterend',lrnList());}
+  /* "learning" chip on rows */
+  card.querySelectorAll('.msong').forEach(r=>{const[,id]=r.dataset.musong.split('|'),L=LR()[id];if(L&&(L.pct||0)<100)r.querySelector('small').insertAdjacentHTML('beforeend',` · 📈 ${L.pct||0}%`);});
+  /* instrument card: what you're learning */
+  ['p','g'].forEach(i=>{const c=[...v.querySelectorAll('.card>h3')].find(x=>x.textContent.trim()===`${MI[i].e} ${MI[i].n}`),cur=c&&c.parentElement.querySelector('.mcur');if(!cur)return;
+    const A=Object.entries(LR()).filter(([id,L])=>L.i===i&&(L.pct||0)<100&&!L.paused&&sOf(i,id));if(!A.length)return;const s=muPick(i),L=LR()[s.id];
+    cur.querySelector('small')&&(cur.querySelector('small').textContent=A.length>1?`Next song day · ${A.length} songs you're learning`:'You\'re learning');
+    cur.removeAttribute('data-musong');cur.setAttribute('data-lrnopen',s.id);cur.insertAdjacentHTML('beforeend',`<b class="lpc">${L?L.pct||0:0}%</b>`);});}catch(e){console.warn('lrn page',e);}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mutab="L"]');if(!b)return;e.stopImmediatePropagation();MTAB='L';renderMusic();},true);
+/* badges */
+const _aggrLR=aggr;aggr=function(){const a=_aggrLR();try{const E=Object.values(LR());a.lrnNow=E.filter(L=>(L.pct||0)<100&&!L.paused).length;a.lrnOnTime=E.filter(L=>L.ontime).length;a.lrnNotes=E.reduce((n,L)=>n+L.log.filter(x=>x.note).length,0);}catch(e){}return a;};
+BADGES.push(['mul3','🤹','Juggler','Learn 3 songs at the same time',a=>a.lrnNow>=3],['mudl','⏰','Deadline hit','Reach a song goal before its date',a=>a.lrnOnTime>=1],['munt10','📝','Music diary','Write 10 notes about your songs',a=>a.lrnNotes>=10]);
+
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
