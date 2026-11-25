@@ -486,6 +486,13 @@ body.home .view{padding-bottom:100px}
 .t-hfriends{background:rgba(255,105,180,.15);color:#ff69b4}.frbox{background:rgba(255,105,180,.1);border:1px solid rgba(255,105,180,.35);border-radius:14px;padding:10px 12px;margin:10px 0}
 .frbtn{margin:0 0 10px}.frbtn[disabled]{opacity:.5}.frday{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:6px 0;color:inherit;font:inherit}
 .frday span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.frday.on{border-color:#ff69b4}.frday[disabled]{opacity:.55}
+.kcbox .kch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.kcbox .kch b{font-size:34px;letter-spacing:-.5px}.kcm{font-size:12px;color:var(--muted);margin-top:2px}
+.kcrow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.kcrow:first-of-type{margin-top:10px}.kcrow.sk>span{opacity:.6}.kcrow s{font-weight:400;font-size:12px}
+.kcs{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-style:normal;font-size:11px;margin-right:6px;background:var(--card2)}.kcs.done,.kcs.more{background:#3ddc84;color:#06210f}.kcs.skip{background:#ff6b6b;color:#2a0905}.kcs.part,.kcs.sickdid,.kcs.sick{background:#ffb627;color:#2a1a00}
+.kcnote{background:rgba(139,92,246,.12);border-radius:10px;padding:8px 10px;font-size:13px;margin-top:8px}
+.kwk{display:flex;gap:6px;align-items:flex-end}.kwk>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;border-radius:10px;padding:4px 0}.kwk>div.on{background:var(--card2)}
+.kwb{height:72px;display:flex;align-items:flex-end;gap:2px}.kwb i{display:block;width:9px;border-radius:4px 4px 1px 1px}.kwb i.g{background:var(--line)}.kwk small{font-size:11px}
+.kbase{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.kbase label{display:flex;flex-direction:column;align-items:center;gap:2px}.kbase input{width:100%;min-width:0;box-sizing:border-box;text-align:center;padding:7px 0;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:inherit;font-size:12px}
 </style>
 </head>
 <body class="home">
@@ -5198,6 +5205,86 @@ document.addEventListener('click',e=>{const t=e.target;let b;
 
 const _linesFR=HOOP.lines;HOOP.lines=function(s){const L=_linesFR.call(this,s);return s.type==='friends'?L.map(([a,b])=>[a,String(b).replace(' · ~0 min','')]):L;};
 const _stepsFR=HOOP.steps;HOOP.steps=function(s){const L=_stepsFR.call(this,s);if(s.type==='friends')L.forEach(x=>{if(x.kind)x.kind=x.kind.replace(' · ~0 min','');});return L;};
+/* ================= SMART CALORIES: base for each day of the week + every training adds its own calories ================= */
+FD.wkBase=FD.wkBase||[1800,1800,1800,1750,1800,1900,1950];          // Sun … Sat, at the starting body
+
+const KDAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const HMET={found:4.5,shots:5,finish:5.5,weak:5.5,play:6,cond:7.5,friends:6.5};
+const JMET={easy:4,powA:6,powB:6,sq:5,strM:5,easyF:3.5},PMET={max:4.5,var:4.5,pump:5,xtra:4,bonus:4.5};
+const STF={done:1,part:.65,sickdid:.85,skip:.3,sick:.3};
+function bodyNow(){const P=FD.prof||{},H=(LF.hgt||[]).filter(x=>x.h).slice(-1)[0];return{kg:+P.kg||56,cm:H?+H.h:(+P.cm||161),age:+P.age||13};}
+if(!FD.ref){const b0=bodyNow();FD.ref={kg:b0.kg,cm:b0.cm};saveFD();}
+const bmrOf=(kg,cm)=>10*kg+6.25*cm-5*13+5;                    // age never lowers it while you're growing (under 18)
+function bodyF(){const B=bodyNow(),R=FD.ref;return{B,base:bmrOf(B.kg,B.cm)/bmrOf(R.kg,R.cm),kg:B.kg/R.kg};}
+const netK=(met,min,kg)=>Math.max(0,(met-1.3)*kg*min/60);
+function exMin(s){let m=5;(s.ex||[]).forEach(e=>{const arr=Array.isArray(e[1]),sets=arr?e[1].length:(+e[1]||3),u=arr?e[2]:e[3],rest=+(arr?e[3]:e[4])||60,reps=arr?Math.max(...e[1]):+e[2];
+  m+=sets*((u==='sec'?reps/60:u==='leg'||u==='side'?1.2:.6)+rest/60);});return Math.round(m);}
+/* one training → {e,n,min,kc,st} */
+function sesKcal(plan,s,kg){let met=4.5,min=15,e=plan.emoji,n=plan.name,musc=0;
+  try{if(plan.key==='hoop'){const w=HW[s.type]||{};e=w.emo||e;n=s.tday?'Test day':w.name||n;min=hMin(s);
+      if(s.type==='friends')return{e:'🤝',n:'Friends day',min:75,kc:netK(5,15,kg)+netK(7,60,kg),musc:0};
+      met=s.tday?4.3:s.htest&&s.special?4.5:(HMET[s.type]||5);}
+    else if(plan.key==='str'){const L=strList(s);min=sMinL(L);met=s.type==='legs'?5.5:4.5;n=s.type==='legs'?'Legs day':'Hands day';e=s.type==='legs'?'🦵':'💪';musc=1;}
+    else if(plan.key==='jump'){min=exMin(s);met=JMET[s.type]||5;n=JTITLE[s.type]||n;musc=s.type==='sq'||s.type==='strM'?1:.5;}
+    else if(plan.key==='push'){min=exMin(s);met=PMET[s.type]||4.5;n=PTITLE[s.type]||n;musc=1;}
+    else if(plan.key==='pull'){min=s.kind==='prep'?12:s.kind==='final'?10:15;met=s.kind==='prep'?4:4.5;n=s.kind==='prep'?'Pull-up prep':'Pull-ups';musc=1;}}catch(x){}
+  let kc=netK(met,min,kg);if(isLightDay(plan,s))kc*=.55;return{e,n,min,kc,musc};}
+/* the whole day */
+function kcalDay(iso){const d=dOf(iso),F=bodyF(),kg=F.B.kg,t=new Date();t.setHours(0,0,0,0);const past=d<t,today=+d===+t,rows=[];
+  const base=Math.round((FD.wkBase[d.getDay()]||1800)*F.base);
+  try{teamOn(d).forEach(tm=>{const lg=BB.log.find(e=>e.date===iso&&e.type===tm.type);
+    if(tm.type==='game'){const pm=lg&&+lg.min>0?+lg.min:16;rows.push({e:'🆚',n:'Game',kc:netK(5,20,kg)+netK(9,pm,kg)+netK(1.8,60,kg),st:lg?'done':past?'done':'todo',team:1,musc:0,t:tm.time});}
+    else{const fri=d.getDay()===5;rows.push({e:'👥',n:fri?'Team · gym + basketball':'Team practice',kc:fri?netK(5.5,60,kg)+netK(7,60,kg):netK(7,90,kg),st:lg?'done':past?'done':'todo',team:1,musc:fri?.4:0,t:tm.time});}});}catch(x){}
+  try{dayItems(d).forEach(({plan,s})=>{if(s.phase==='hist')return;const S=ST[plan.key],k=stOf(S,s.id),r=sesKcal(plan,s,kg);
+    let f=1,st='todo';if(k){f=STF[k]??1;st=k;if(k==='done'&&(S.more||{})[s.id]){f=1.15;st='more';}}else if(past)st='done';
+    rows.push({...r,full:r.kc,kc:r.kc*f,st,plan,s,t:timeOf(plan,s)});});}catch(x){console.warn('kcal',x);}
+  rows.forEach(r=>{r.full=Math.round(r.full??r.kc);r.kc=Math.round(r.kc);});
+  const ex=rows.reduce((a,r)=>a+r.kc,0),mus=rows.reduce((a,r)=>a+r.kc*(r.musc||0),0);
+  const own=(FD.days[iso]||{}).kc;let kcal=Math.max(base,base+ex);if(own)kcal=+own;kcal=Math.round(kcal/10)*10;
+  const pk=F.kg;let p=Math.min(130,70+.06*ex+.08*mus)*pk;p=Math.round(Math.max(70*pk,Math.min(130*pk,p)));
+  const fp=.30-.05*Math.min(1,ex/800),f=Math.round(kcal*fp/9),c=Math.max(0,Math.round((kcal-p*4-f*9)/4));
+  return{iso,base,rows,ex,kcal,own:!!own,p,f,c,F,today,past};}
+dayGoals=function(iso){const G={...(FD.goals||{})},K=kcalDay(iso);G.kcal=K.kcal;G.p=K.p;delete G.pmax;G.f=K.f;G.c=K.c;return G;};
+/* ---- UI on the Food page ---- */
+const STI={todo:'⏳',done:'✓',more:'💪',part:'½',sickdid:'🤒',skip:'✕',sick:'🤒'};
+function kcalBox(iso){const K=kcalDay(iso),d=dOf(iso),F=K.F,pct=Math.round(((F.base)-1)*1000)/10;
+  const todo=K.rows.filter(r=>r.st==='todo'&&!K.past);
+  return `<div class="card kcbox"><div class="kch"><div><small class="muted">${K.today?'Today\'s goal':KDAY[d.getDay()]+'\'s goal'}</small><div><b>${K.kcal.toLocaleString('en')}</b> kcal</div>
+    <div class="kcm">🥩 ${K.p} g protein · 🍚 ${K.c} g carbs · 🥑 ${K.f} g fat</div></div>
+    <button class="chip" data-kcown>${K.own?'↺ Let the app pick':'✏️ My number'}</button></div>
+   ${K.own?`<div class="muted" style="font-size:12px;margin:6px 0">You picked this number for this day.</div>`:''}
+   <div class="kcrow"><span>🏠 Base · ${KDAY[d.getDay()]}</span><b>${K.base.toLocaleString('en')}</b></div>
+   ${K.rows.map(r=>{const cut=r.full!==r.kc;return `<div class="kcrow ${r.st==='skip'||r.st==='sick'?'sk':''}"><span><i class="kcs ${r.st}">${STI[r.st]||'✓'}</i>${r.e} ${esc(r.n)}${r.t&&r.st==='todo'?` <small class="muted">${r.t}</small>`:''}</span><b>${cut?`<s class="muted">+${r.full}</s> `:''}+${r.kc}</b></div>`;}).join('')}
+   ${!K.rows.length?'<div class="muted" style="font-size:12px;margin:4px 0">No trainings this day — just your base.</div>':''}
+   ${todo.length?`<div class="kcnote">⏳ Includes ${todo.map(r=>`<b>${r.kc}</b> for ${r.e} ${esc(r.n)}`).join(' + ')} — go do it 💪</div>`:''}
+   ${K.rows.some(r=>r.st==='skip'||r.st==='sick')?'<div class="muted" style="font-size:12px;margin-top:6px">✕ Skipped trainings count 30% — you still moved that day and you\'re growing.</div>':''}
+   <div class="muted" style="font-size:11px;margin-top:8px">Based on ${F.B.kg} kg · ${F.B.cm} cm · ${F.B.age} y${pct?` · ${pct>0?'+':''}${pct}% since you started`:''} · change it in 🧮 below</div></div>`;}
+function kcalWeek(iso){const d=dOf(iso),s=new Date(d);s.setDate(d.getDate()-d.getDay());const D=[];
+  for(let i=0;i<7;i++){const x=new Date(s);x.setDate(s.getDate()+i);const k=isoD(x),g=kcalDay(k).kcal,ate=Math.round(foodSum((FD.days[k]||{items:[]}).items).kcal);D.push({x,k,g,ate});}
+  const mx=Math.max(...D.map(v=>Math.max(v.g,v.ate)),1),L=D.filter(v=>v.ate>0),ag=L.length?Math.round(L.reduce((a,v)=>a+v.g,0)/L.length):0,aa=L.length?Math.round(L.reduce((a,v)=>a+v.ate,0)/L.length):0;
+  return `<div class="card"><h3>📅 This week</h3><div class="kwk">${D.map(v=>`<div class="${v.k===iso?'on':''}" data-kwday="${v.k}"><div class="kwb"><i class="g" style="height:${v.g/mx*70}px"></i><i class="a" style="height:${v.ate/mx*70}px;background:${!v.ate?'transparent':v.ate<v.g*.85?'#ffb627':v.ate>v.g*1.15?'#ff6b6b':'#3ddc84'}"></i></div><small>${'SMTWTFS'[v.x.getDay()]}</small><small class="muted">${(v.g/1000).toFixed(1)}k</small></div>`).join('')}</div>
+   <div class="muted" style="font-size:12px;margin-top:6px">${L.length?`Average on the days you logged: ate <b>${aa.toLocaleString('en')}</b> · goal <b>${ag.toLocaleString('en')}</b>${Math.abs(aa-ag)<=ag*.08?' · right on it 👌':aa<ag?' · eat a bit more — you need the energy 🍚':''}`:'Grey = goal, color = what you ate.'} One big day is fine — the week is what counts.</div></div>`;}
+function kcalSettings(){const B=bodyNow(),P=FD.prof;
+  return `<div class="card"><h3>🧮 Your body & base</h3>
+   <div class="timebox" style="margin-top:4px"><label class="erow">Age<input type="number" data-fprof="age" value="${P.age}" style="width:70px"></label><label class="erow">Weight (kg)<input type="number" step="0.5" data-fprof="kg" value="${P.kg}" style="width:70px"></label>
+    <label class="erow">Height (cm)${(LF.hgt||[]).some(x=>x.h)?` <small class="muted">from your height log</small><b style="width:70px;text-align:right">${B.cm}</b>`:`<input type="number" data-fprof="cm" value="${P.cm}" style="width:70px">`}</label></div>
+   <h4 style="margin:12px 0 4px">🏠 Base for each day <small class="muted">(no training · at ${FD.ref.kg} kg, ${FD.ref.cm} cm)</small></h4>
+   <div class="kbase">${KDAY.map((n,i)=>`<label><small>${n.slice(0,3)}</small><input type="number" inputmode="numeric" step="50" data-kbase="${i}" value="${FD.wkBase[i]}"></label>`).join('')}</div>
+   <ol class="hhow" style="padding-left:20px;font-size:13px"><li>Goal = <b>base for that day</b> + <b>every training</b> you have.</li>
+    <li>Each training has its own number from how long and how hard it is, and your weight (Conditioning more than Shooting, a game ~220 because you sit a lot).</li>
+    <li>✕ skipped = 30% of it · ½ part = 65% · 💪 more = 115%. Never under your base.</li>
+    <li>Grow 2 kg / 2 cm → everything goes up by itself, in %. Age never lowers it while you're growing.</li>
+    <li>Protein 70–130 g (more on muscle days) · fat 25–30% · carbs = the rest (your fuel).</li></ol>
+   ${[['su','Sugar (max)','g'],['sa','Salt (max)','g']].map(([k,l,u])=>`<label class="erow">${l} (${u})<input type="number" inputmode="numeric" data-fgoal="${k}" value="${(FD.goals||{})[k]??''}" placeholder="–" style="width:90px"></label>`).join('')}
+   <p class="muted" style="font-size:12px;margin:8px 0 0">You're still growing, so don't eat less than your body needs. A guide, not a diet. Want to change your body? Ask your doctor or a sports dietitian first.</p></div>`;}
+const _renderFoodKC=renderFood;renderFood=function(){_renderFoodKC();try{const v=$('v-food'),pre=v.querySelector('.fpre');if(pre){const p=pre.nextElementSibling;if(p&&p.tagName==='P')p.remove();pre.outerHTML=kcalBox(FDATE);}
+  const box=v.querySelector('.kcbox');box&&box.insertAdjacentHTML('afterend',kcalWeek(FDATE));
+  const nc=[...v.querySelectorAll('.card>h3')].find(h=>/Your numbers/.test(h.textContent));if(nc)nc.parentElement.outerHTML=kcalSettings();}catch(e){console.warn('kcal ui',e);}};
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(t.closest('[data-kcown]')){const D=FD.days[FDATE]=FD.days[FDATE]||{items:[]};if(D.kc){delete D.kc;}else{const v=prompt('Your own calorie goal for this day:',kcalDay(FDATE).kcal);if(!v||isNaN(+v)||+v<1000)return;D.kc=Math.round(+v);}saveFD();renderFood();return;}
+  if(b=t.closest('[data-kwday]')){FDATE=b.dataset.kwday;renderFood();return;}});
+document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.kbase;if(k==null)return;const v=+e.target.value;if(v>=1000&&v<=4000){FD.wkBase[+k]=Math.round(v);saveFD();renderFood();}});
+
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
