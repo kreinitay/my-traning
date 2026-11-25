@@ -536,6 +536,14 @@ body.home .view{padding-bottom:100px}
 .lhist{margin-top:10px;font-size:13px}.lhist>div{display:grid;grid-template-columns:72px 44px 1fr;gap:6px;padding:4px 0;border-top:1px solid var(--line)}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}.lrow.paused{opacity:.5}.lrow .mf{font-size:20px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:color-mix(in srgb,var(--lc) 20%,transparent);flex:none}
 .lrow b{display:block}.lpc{font-size:16px;flex:none}.lquick{background:var(--card2);border-radius:12px;padding:8px 10px;margin-top:8px}.lquick .row3{margin:6px 0}
+.icard{border-top:3px solid var(--ic)}.ich{display:flex;align-items:center;gap:12px}.ich h3{margin:0}.iemo{font-size:30px;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--ic) 20%,transparent);flex:none}
+.iwk{text-align:right;flex:none}.iwk b{display:block;font-size:22px}.iwk small{color:var(--muted);font-size:11px}.ibar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:10px 0 8px}.ibar i{display:block;height:100%;background:var(--ic)}
+.istats{display:flex;gap:6px;flex-wrap:wrap;font-size:12px}.istats span{background:var(--card2);border-radius:999px;padding:4px 10px}
+.inx{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--ic) 12%,var(--card2));border-radius:14px;padding:10px 12px;margin-top:10px;cursor:pointer}.inx>span:first-child{font-size:22px}.inx b{display:block;font-size:14px}
+.ih4{margin:14px 0 2px}.isong{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}.isong:first-of-type{border-top:0}.isong b{display:block;font-size:14px}
+.isf{font-size:20px;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--lc) 20%,transparent);flex:none}.ipc{font-size:17px;flex:none;min-width:44px;text-align:right}
+.inext{display:inline-block;font-style:normal;font-size:10px;font-weight:800;color:var(--ic);background:color-mix(in srgb,var(--ic) 18%,transparent);border-radius:6px;padding:1px 6px;margin-bottom:2px}
+.iempty{background:var(--card2);border-radius:14px;padding:12px;font-size:13px;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body class="home">
@@ -5778,7 +5786,7 @@ LF.mu.lrn=LF.mu.lrn||{};
 const LPARTS=['Intro','Verse','Chorus','Bridge','Outro','Full song in time'],LGOAL=[[40,'🎯 The chorus'],[70,'🎼 Main part'],[100,'🏆 Full song']];
 const LR=()=>LF.mu.lrn||{},sOf=(i,id)=>(LF.mu.songs[i]||[]).find(x=>x.id===id);
 function lrnInfo(L){const t=new Date();t.setHours(0,0,0,0);const g=L.goal||100,left=Math.max(0,g-(L.pct||0));
-  if(!L.by)return{left,days:null,txt:left?`${left}% to your goal`:'🎯 Goal reached!',cls:left?'':'ok'};
+  if(!L.by)return{left,days:null,txt:!left?'🎯 Goal reached!':!(L.pct||0)?'🆕 Not started · tap to set a goal date':`${left}% to your goal · tap to set a date`,cls:left?'':'ok'};
   const days=Math.round((dOf(L.by)-t)/864e5),start=dOf(L.at||isoD(t)),tot=Math.max(1,Math.round((dOf(L.by)-start)/864e5)),should=Math.min(g,Math.round(g*Math.min(1,(tot-days)/tot)));
   if(!left)return{left,days,txt:'🎯 Goal reached!',cls:'ok'};if(days<0)return{left,days,txt:`⏰ ${-days} day${days===-1?'':'s'} late — pick a new date or keep going`,cls:'bad'};
   const st=(L.pct||0)>=should-5?['✅ On track','ok']:(L.pct||0)>=should-20?['⚠️ A bit behind','mid']:['🐢 Behind','bad'];
@@ -5855,6 +5863,27 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-mutab="L"]
 const _aggrLR=aggr;aggr=function(){const a=_aggrLR();try{const E=Object.values(LR());a.lrnNow=E.filter(L=>(L.pct||0)<100&&!L.paused).length;a.lrnOnTime=E.filter(L=>L.ontime).length;a.lrnNotes=E.reduce((n,L)=>n+L.log.filter(x=>x.note).length,0);}catch(e){}return a;};
 BADGES.push(['mul3','🤹','Juggler','Learn 3 songs at the same time',a=>a.lrnNow>=3],['mudl','⏰','Deadline hit','Reach a song goal before its date',a=>a.lrnOnTime>=1],['munt10','📝','Music diary','Write 10 notes about your songs',a=>a.lrnNotes>=10]);
 
+/* ================= MUSIC: nicer piano / guitar cards (3 songs you're learning) ================= */
+function instCard(i){const M=LF.mu,t=new Date();t.setHours(0,0,0,0);const ws=new Date(t);ws.setDate(t.getDate()-t.getDay());const w=muWeekStat(i,ws),st=muStreak(i),C=MI[i].c;
+  const A=Object.entries(M.lrn||{}).filter(([id,L])=>L.i===i&&(L.pct||0)<100&&!L.paused&&sOf(i,id)),pick=muPick(i);
+  A.sort((a,b)=>(pick&&a[0]===pick.id?-1:pick&&b[0]===pick.id?1:0)||(a[1].by||'9').localeCompare(b[1].by||'9'));
+  let nx=null;for(let k=0;k<14&&!nx;k++){const d=new Date(t);d.setDate(t.getDate()+k);const it=muItem(i,d);if(it&&!it.done)nx=it;}
+  const learned=(M.songs[i]||[]).filter(s=>M.learned[s.id]).length,bas=i==='g'&&muCount('g',t,'any')<GBAS.length;
+  const row=([id,L],k)=>{const s=sOf(i,id),I=lrnInfo(L);return `<div class="isong" data-lrnopen="${id}"><span class="isf" style="--lc:${LVF[s.lv-1][2]}">${LVF[s.lv-1][0]}</span>
+     <div class="dmid">${k===0&&pick&&pick.id===id?'<em class="inext">♪ Next song day</em>':''}<b>${esc(s.n)}</b><div class="lpr"><i style="width:${L.pct||0}%;background:${C}"></i><em style="left:${L.goal||100}%"></em></div>
+     <small class="lst ${I.cls}">${I.txt}</small></div><b class="ipc">${L.pct||0}%</b></div>`;};
+  return `<div class="card icard" style="--ic:${C}">
+   <div class="ich"><span class="iemo">${MI[i].e}</span><div class="dmid"><h3>${MI[i].n}</h3><small class="muted">${Object.keys(MI[i].def).length} days a week · 2 lessons</small></div>
+    <div class="iwk"><b>${w.dn}/${w.pl}</b><small>this week</small></div></div>
+   <div class="ibar"><i style="width:${w.pl?w.dn/w.pl*100:0}%"></i></div>
+   <div class="istats"><span>🔥 <b>${st}</b> full week${st===1?'':'s'}</span><span>✅ <b>${learned}</b> learned</span><span>${LVF[myLv(i)-1][0]} level <b>${myLv(i)}</b></span></div>
+   ${nx?`<div class="inx" data-muopen="${i}|${nx.iso}"><span>${nx.kind==='lesson'?'📘':nx.kind==='basic'?'🧱':'♪'}</span><div class="dmid"><small class="muted">Next · ${isoD(nx.d)===isoD(t)?'today':KDAY[nx.d.getDay()]} ${nx.time||''}</small><b>${esc(nx.n)}</b></div><span class="chev">›</span></div>`:''}
+   ${bas?'':`<h4 class="ih4">📈 Songs you're learning <small class="muted">${A.length}</small></h4>
+   ${A.length?A.slice(0,3).map(row).join('')+(A.length>3?`<button class="btn sec" style="width:100%;margin-top:8px" data-mutab="L">+${A.length-3} more · see all</button>`:'')
+     :`<div class="iempty">No song yet. Pick 1–3 songs to learn — on song days the app picks the one that needs it most.<button class="btn main" style="width:100%;margin-top:8px" data-mupickgo="${i}">🎼 Pick songs</button></div>`}`}</div>`;}
+const _renderMusicIC=renderMusic;renderMusic=function(){_renderMusicIC();try{const v=$('v-music');['p','g'].forEach(i=>{if(i==='g'&&!LF.mu.gStart)return;const h=[...v.querySelectorAll('.card>h3')].find(x=>x.textContent.trim()===`${MI[i].e} ${MI[i].n}`);if(h)h.parentElement.outerHTML=instCard(i);});}catch(e){console.warn('inst card',e);}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-mupickgo]');if(!b)return;e.stopImmediatePropagation();MTAB=b.dataset.mupickgo;MFL='good';MALL=false;MQ='';renderMusic();
+  const h=[...$('v-music').querySelectorAll('.card>h3')].find(x=>/Songs$/.test(x.textContent.trim()));h&&h.scrollIntoView({behavior:'smooth',block:'start'});toast('👍 Songs good for your level — tap one → 📈 Start learning');},true);
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
