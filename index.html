@@ -544,6 +544,8 @@ body.home .view{padding-bottom:100px}
 .isf{font-size:20px;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--lc) 20%,transparent);flex:none}.ipc{font-size:17px;flex:none;min-width:44px;text-align:right}
 .inext{display:inline-block;font-style:normal;font-size:10px;font-weight:800;color:var(--ic);background:color-mix(in srgb,var(--ic) 18%,transparent);border-radius:6px;padding:1px 6px;margin-bottom:2px}
 .iempty{background:var(--card2);border-radius:14px;padding:12px;font-size:13px;color:var(--muted);margin-top:6px}
+.napbig .chip{padding:10px 14px;font-size:14px}.naptip{background:var(--card2);border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px}
+.mnew{font-size:9px;font-weight:800;background:#3ddc84;color:#06210f;border-radius:5px;padding:1px 5px;vertical-align:middle}
 </style>
 </head>
 <body class="home">
@@ -4750,7 +4752,7 @@ document.addEventListener('click',e=>{const t=e.target;let b;if(t.closest('[data
 
 /* ================= QUICK ADD (+) ================= */
 document.body.insertAdjacentHTML('beforeend','<button class="fab" id="fab" aria-label="Quick add">＋</button>');
-function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst'],['🎵','Music today','qmu']];
+function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst'],['🎵','Music today','qmu'],['😴','Nap','qnap']];
   $('sheet').innerHTML=`<div class="grab"></div><h2>＋ Quick add</h2><div class="qgrid">${Q.map(([e,l,k])=>`<button class="qbtn" data-q="${k}"><b>${e}</b>${l}</button>`).join('')}</div><button class="btn sec" style="width:100%;margin-top:12px" data-close>Close</button>`;$('ov').classList.add('on');}
 document.addEventListener('click',e=>{const t=e.target;let b;if(t.id==='fab'){fabSheet();return;}
   if(!(b=t.closest('[data-q]')))return;const k=b.dataset.q;closeSheet();const iso=isoD(new Date());
@@ -5884,6 +5886,42 @@ function instCard(i){const M=LF.mu,t=new Date();t.setHours(0,0,0,0);const ws=new
 const _renderMusicIC=renderMusic;renderMusic=function(){_renderMusicIC();try{const v=$('v-music');['p','g'].forEach(i=>{if(i==='g'&&!LF.mu.gStart)return;const h=[...v.querySelectorAll('.card>h3')].find(x=>x.textContent.trim()===`${MI[i].e} ${MI[i].n}`);if(h)h.parentElement.outerHTML=instCard(i);});}catch(e){console.warn('inst card',e);}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-mupickgo]');if(!b)return;e.stopImmediatePropagation();MTAB=b.dataset.mupickgo;MFL='good';MALL=false;MQ='';renderMusic();
   const h=[...$('v-music').querySelectorAll('.card>h3')].find(x=>/Songs$/.test(x.textContent.trim()));h&&h.scrollIntoView({behavior:'smooth',block:'start'});toast('👍 Songs good for your level — tap one → 📈 Start learning');},true);
+/* ================= NAPS: fast log (today / yesterday), 0–15 … 90–140 min or exact minutes, saved in the sleep log ================= */
+const NAPR=[[0,'No nap'],[10,'0–15 min'],[30,'15–45 min'],[50,'45–60 min'],[75,'60–90 min'],[115,'90–140 min']];
+LF.naps=LF.naps||{};LF.napT=LF.napT||{};
+const isoPrev=iso=>{const d=dOf(iso);d.setDate(d.getDate()-1);return isoD(d);},isoNext=iso=>{const d=dOf(iso);d.setDate(d.getDate()+1);return isoD(d);};
+(()=>{if(LF.napMig)return;try{Object.entries(JR.e||{}).forEach(([iso,e])=>{const v=e&&e.v&&e.v.nap;if(typeof v==='number'){const d=isoPrev(iso);if(LF.naps[d]==null)LF.naps[d]=[0,20,45,75][v]??0;}});}catch(e){}LF.napMig=1;saveLF();})();
+const napB=m=>m==null?-1:m===0?0:m<=15?1:m<=45?2:m<=60?3:m<=90?4:5;
+const napTxt=m=>m==null?'':m===0?'no nap':`${m} min`;
+function napChips(day,big){const m=LF.naps[day];return `<div class="chips ${big?'napbig':''}">${NAPR.map(([v,l],k)=>`<button class="chip ${napB(m)===k?'on':''}" data-napset="${day}|${v}">${k===0?'🚫 ':''}${l}</button>`).join('')}</div>
+  <label class="erow" style="margin-top:6px">Exact minutes <small class="muted">(optional)</small><input type="number" inputmode="numeric" min="0" max="300" data-napmin="${day}" value="${m&&!NAPR.some(([v])=>v===m)?m:''}" placeholder="–" style="width:80px"></label>`;}
+const _jFieldNap=jField;jField=function(f,e,pre){if(f.k==='nap'&&!pre){const iso=SLD||JD;if(iso){const d=isoPrev(iso);return `<div class="jf"><b>😴 Nap yesterday${LF.naps[d]!=null?` · <span class="muted">${napTxt(LF.naps[d])}</span>`:''}</b>${napChips(d)}</div>`;}}return _jFieldNap(f,e,pre);};
+let NAPD=null;
+function napSheet(day){const t=isoD(new Date());NAPD=day||t;const W=[];for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const m=LF.naps[isoD(d)];if(m)W.push(m);}
+  $('sheet').innerHTML=`<div class="grab"></div><h2>😴 Nap</h2><div class="chips" style="margin:6px 0 10px">${[[t,'Today'],[isoPrev(t),'Yesterday']].map(([d,l])=>`<button class="chip ${NAPD===d?'on':''}" data-napday="${d}">${l}${LF.naps[d]!=null?' · '+napTxt(LF.naps[d]):''}</button>`).join('')}</div>
+   <h4>How long?</h4>${napChips(NAPD,1)}
+   <label class="erow">Started at <small class="muted">(optional)</small><input type="time" data-naptime="${NAPD}" value="${LF.napT[NAPD]||''}"></label>
+   <div class="naptip">💡 Best nap: <b>15–30 min, before 16:00</b>. Long or late naps make it harder to fall asleep at night.${W.length?`<br>This week: <b>${W.length}</b> nap${W.length>1?'s':''} · about <b>${Math.round(W.reduce((a,b)=>a+b,0)/W.length)} min</b>`:''}</div>
+   <button class="btn main" style="width:100%;margin-top:12px" data-close>Done ✓</button>`;$('ov').classList.add('on');}
+const napRe=()=>{if(NAPD&&$('ov').classList.contains('on')&&$('sheet').querySelector('[data-napday]'))napSheet(NAPD);else if(SLD)sleepSheet(SLD);else if(typeof renderJEdit==='function'&&JD)renderJEdit();};
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(t.closest('[data-q="qnap"]')){e.stopImmediatePropagation();closeSheet();setTimeout(()=>napSheet(),60);return;}
+  if(b=t.closest('[data-napday]')){napSheet(b.dataset.napday);return;}
+  if(b=t.closest('[data-napset]')){e.stopImmediatePropagation();const[d,v]=b.dataset.napset.split('|');LF.naps[d]=LF.naps[d]===+v?undefined:+v;if(LF.naps[d]===undefined)delete LF.naps[d];saveLF();napRe();toast(LF.naps[d]==null?'Nap cleared':`😴 ${napTxt(LF.naps[d])} saved`);return;}
+  if(t.closest('[data-close]')||t.id==='ov')NAPD=null;},true);
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset.napmin){const v=t.value===''?null:Math.max(0,Math.min(300,Math.round(+t.value)));if(v==null)delete LF.naps[t.dataset.napmin];else LF.naps[t.dataset.napmin]=v;saveLF();napRe();}
+  if(t.dataset.naptime){if(t.value)LF.napT[t.dataset.naptime]=t.value;else delete LF.napT[t.dataset.naptime];saveLF();}});
+/* show naps: sleep line + data page */
+const _sleepLineNap=sleepLine;sleepLine=function(e){let h=_sleepLineNap(e);try{const iso=Object.keys(JR.e).find(k=>JR.e[k]===e);if(iso){const m=LF.naps[isoPrev(iso)];if(m)h+=(h?' · ':'')+`💤 nap yesterday ${m} min`;}}catch(x){}return h;};
+const _renderDataNap=renderData;renderData=function(){_renderDataNap();try{const D=daysBack().filter(d=>inRange(d)),N=D.map(d=>({d,m:LF.naps[isoD(d)]})).filter(x=>x.m!=null);if(!N.length)return;const n=N.filter(x=>x.m>0);
+  $('v-data').insertAdjacentHTML('beforeend',`<div class="card"><h3>💤 Naps</h3>${barChart(N.slice(-31).map(x=>({l:`${x.d.getDate()}/${x.d.getMonth()+1}`,v:x.m,col:x.m>60?'#ff6b6b':x.m>30?'#ffb627':'#7bd5ff'})),{h:120})}
+   <div class="muted" style="font-size:12px">${n.length} nap${n.length===1?'':'s'} · about ${n.length?Math.round(n.reduce((a,x)=>a+x.m,0)/n.length):0} min · 🔵 short · 🟡 medium · 🔴 long (60+ min)</div></div>`);}catch(e){}};
+/* ================= MUSIC: songs added on 26 Nov (batch 2) ================= */
+const MPL2=[["Whatever It Takes — Imagine Dragons", 3, 3], ["Smooth Criminal — Michael Jackson", 5, 5], ["We Are the Champions — Queen", 4, 3], ["The Nights — Avicii", 3, 2], ["Wake Me Up — Avicii", 3, 2], ["Viva La Vida — Coldplay", 2, 2], ["Stressed Out — twenty one pilots", 3, 3], ["Seven Nation Army — The White Stripes", 1, 1], ["Mr. Brightside — The Killers", 3, 4], ["Hall of Fame — The Script", 3, 2], ["Pompeii — Bastille", 2, 2], ["Shape of You — Ed Sheeran", 3, 3], ["Take On Me — a-ha", 4, 3], ["Golden Hour — JVKE", 6, 4], ["Giorno's Theme — JoJo's Bizarre Adventure", 5, 5]];
+function muAddBatch(flag,L){const M=LF.mu;if(M[flag])return;['p','g'].forEach(i=>{const have=new Set((M.songs[i]||[]).map(s=>songKey(s.n)));L.forEach(([n,lp,lg],k)=>{if(have.has(songKey(n)))return;M.songs[i].push({id:flag+i+k,n,lv:i==='p'?lp:lg,pl:1,nw:1});});});M[flag]=1;saveLF();}
+muAddBatch('pl2',MPL2);
+const _renderMusicNW=renderMusic;renderMusic=function(){_renderMusicNW();try{$('v-music').querySelectorAll('.msong').forEach(r=>{const[i,id]=r.dataset.musong.split('|'),x=(LF.mu.songs[i]||[]).find(z=>z.id===id);if(x&&x.nw&&!LF.mu.learned[id]){const b=r.querySelector('b');b&&b.insertAdjacentHTML('afterbegin','<span class="mnew">NEW</span> ');}});}catch(e){}};
+muAddBatch('pl3',[["In The Stars — Benson Boone", 3, 3], ["Two Six — J. Cole", 3, 3], ["Sirius — The Alan Parsons Project", 3, 4], ["Space Jam — Quad City DJ's", 3, 3], ["Hit 'Em High — B-Real", 3, 3], ["Memories — Maroon 5", 2, 2], ["Камин — EMIN", 3, 3], ["Somewhere Only We Know — Keane", 3, 3], ["Love Is Gone — SLANDER", 3, 2]]);
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
