@@ -12,23 +12,29 @@ Nitay's training + basketball app:
 - Search, quick-add button, weekly auto backup
 - Calendar and badges
 
-It's a plain website with no build step, so it works on Netlify straight away.
+It's a plain website with no build step, so it works on Cloudflare Pages straight away.
 
 ## Files (all in one folder, no subfolders)
 - `index.html`: the whole app
 - `sw.js`: lets it work offline
 - `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`: app name and icon
-- `netlify.toml`: Netlify settings
+- `_headers`: Cloudflare settings (always load the newest version)
 - `README.md`: this file
 
-## Update on GitHub + Netlify
+## First time on Cloudflare Pages
+1. dash.cloudflare.com → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+2. Pick your GitHub repository → **Begin setup**.
+3. Framework preset: **None** · Build command: `exit 0` · Build output directory: leave empty (or `/`).
+4. **Save and Deploy**. Your app is at `your-project.pages.dev`.
+
+## Update on GitHub + Cloudflare
 1. Open your repository on GitHub → **Add file → Upload files**.
 2. Drag in all the files → **Commit changes**.
-3. Netlify updates the site by itself in about a minute.
+3. Cloudflare updates the site by itself in about a minute.
 4. On the phone, close the app and open it again (twice if it still shows the old version).
 
 ## Put it on your phone like an app
-Open your Netlify link in Chrome → **⋮ → Add to Home screen / Install app**.
+Open your pages.dev link in Chrome → **⋮ → Add to Home screen / Install app**.
 
 ## Login on several devices
 Settings → **Account & sync** → follow the 5 steps (free Firebase).
