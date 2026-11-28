@@ -606,7 +606,7 @@ body.noanim *,body.noanim *::before,body.noanim *::after{animation:none!importan
 .csring span,.bring span{width:46px;height:46px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:13px;font-weight:800}
 .cschips{display:flex;flex-wrap:wrap;gap:6px}.cschips span{font-size:12px;padding:4px 9px;border-radius:99px;background:color-mix(in srgb,var(--accent) 12%,transparent);font-weight:600}
 .cday{transition:transform .15s,background .2s;position:relative}.cday:active{transform:scale(.92)}
-.cday.heat:not(.mfill){background:color-mix(in srgb,var(--accent) calc(var(--heat,0)*26% + 6%),var(--card))}
+.cday.cdheat:not(.mfill){background:color-mix(in srgb,var(--accent) calc(var(--heat,0)*26% + 6%),var(--card))}
 .cday.rest:not(.out):not(.mfill){background:color-mix(in srgb,var(--card) 55%,transparent)}
 .cday.today{border:2px solid var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
 .cday.today .cn{background:var(--accent);color:var(--onaccent,#fff);border-radius:99px;padding:0 6px;font-weight:800}
@@ -660,6 +660,48 @@ body.noanim *,body.noanim *::before,body.noanim *::after{animation:none!importan
 .iqrate{justify-content:space-between}.iqused{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px}
 .iqrow{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}.iqrow>span{font-size:22px;width:30px;text-align:center}.iqrow small{display:block;color:var(--muted);font-size:11px}
 .iqrow.ok b{color:#3ddc84}.iqrow.lock{opacity:.45}.iqbb{cursor:pointer}.iqbb small{display:block}
+/* calendar 3: same-size cells */
+#v-cal .cal{gap:4px;align-items:start}#v-cal .cal>.cday{align-self:start;vertical-align:top}#v-cal .cdh>*{display:inline-flex;align-items:center;height:18px}
+#v-cal .cday{height:86px;min-height:86px;max-height:86px;padding:4px 3px 3px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;border:0;border-radius:12px;overflow:hidden;position:relative;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent);text-align:center}
+#v-cal .cday.out{opacity:.38}
+#v-cal .cday.wknd:not(.cdheat):not(.moody){background:color-mix(in srgb,var(--card) 88%,var(--accent) 4%)}
+#v-cal .cday.moody{background:color-mix(in srgb,var(--mood) 30%,var(--card))!important}
+#v-cal .cday.today{border:0;box-shadow:inset 0 0 0 2px var(--accent),0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)}
+#v-cal .cday.alldone::after{content:none}
+#v-cal .cdh{display:flex;justify-content:space-between;align-items:center;height:18px;padding:0 2px}
+#v-cal .cday .cn{font-size:13px;font-weight:800;line-height:18px;min-width:18px;text-align:center;padding:0 4px;border-radius:99px}
+#v-cal .cday.today .cn{background:var(--accent);color:var(--onaccent,#fff)}
+#v-cal .cmood{font-size:11px;line-height:1}#v-cal .cok{color:var(--accent);font-size:11px}
+#v-cal .cday .cdots{height:8px;display:flex;justify-content:center;align-items:center;gap:3px;margin:0}
+#v-cal .cday .cdots i{width:7px;height:7px;border-radius:50%;margin:0;flex:none}
+#v-cal .cday .cicons{height:15px;display:flex;justify-content:center;align-items:center;gap:1px;font-size:11px;line-height:15px;margin:0;white-space:nowrap;overflow:hidden}
+#v-cal .cday .cicons i{font-style:normal;font-size:11px}
+#v-cal .cmore{font-style:normal;font-size:9px;font-weight:800;color:var(--muted);margin-inline-start:1px}
+#v-cal .cevs{display:flex;flex-direction:column;gap:2px;margin-top:auto;min-width:0}
+#v-cal .cev{display:block;height:13px;font-size:9px;font-weight:700;line-height:13px;border-radius:4px;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--ec);color:#fff;text-align:start}
+#v-cal .cev.start{border-start-end-radius:0;border-end-end-radius:0;margin-inline-end:-4px}#v-cal .cev.mid{border-radius:0;margin:0 -4px}#v-cal .cev.end{border-start-start-radius:0;border-end-start-radius:0;margin-inline-start:-4px}
+#v-cal .cev.more{background:color-mix(in srgb,var(--muted) 30%,transparent);color:var(--text);text-align:center}
+.calbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 10px}.calbar .seg{flex:1}
+.lgev{display:inline-block;width:14px;height:8px;border-radius:3px;background:#7c5cff;margin-inline-end:4px}
+/* agenda */
+.agenda{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.agd{display:flex;gap:10px;align-items:flex-start}
+.agdate{width:46px;flex:none;text-align:center;padding:6px 0;border-radius:12px;background:var(--card)}.agdate b{display:block;font-size:20px;line-height:1}.agdate small{display:block;font-size:10px;color:var(--muted)}
+.agdate.now{background:var(--accent);color:var(--onaccent,#fff)}.agdate.now small{color:inherit}.agl{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.agx{font-size:13px;padding:8px 10px;border-radius:12px;background:var(--card);cursor:pointer}
+/* event rows */
+.evrow{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--ec) 14%,var(--card));border-inline-start:4px solid var(--ec);cursor:pointer;margin-bottom:6px}
+.evrow .evi{font-size:22px;line-height:1.1}.evrow b{display:block}.evrow small{color:var(--muted);font-size:12px}.evrow p{margin:4px 0 0;font-size:12px;opacity:.85}.evrow>div{min-width:0;flex:1}
+.evday{margin:6px 0 10px}.evadd{width:100%;margin-top:2px}.evhome{margin-bottom:6px}
+/* editor */
+.evhd{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;background:color-mix(in srgb,var(--ec) 22%,var(--card));margin-bottom:8px}.evbig{font-size:38px}
+.evtitle{flex:1;font-size:18px;font-weight:800;background:transparent;border:0;border-bottom:2px solid color-mix(in srgb,var(--ec) 60%,transparent);color:var(--text);padding:6px 2px;outline:none;min-width:0}
+.evsec{margin:10px 0}.evsec>small,.evsec label>small{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:700}
+.evemo{display:flex;flex-wrap:wrap;gap:4px}.evemo button{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:19px}.evemo button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 22%,var(--card))}
+.evemo input{width:44px;height:38px;border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--text);text-align:center;font-size:18px}
+.evgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.evgrid input,.evinl input,.evinl textarea,.evli input{width:100%;box-sizing:border-box;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit}
+.evinl{display:block;margin-top:8px}.evli{display:flex;gap:8px;align-items:center;margin:5px 0}.evli span{flex:1}.evli span.dn{text-decoration:line-through;opacity:.55}
+.evck{width:24px;height:24px;border-radius:7px;border:2px solid var(--accent);background:transparent;color:var(--onaccent,#fff);font-weight:900;flex:none}.evck.on{background:var(--accent)}.evx{border:0;background:transparent;color:var(--muted);font-size:16px}
+.evtog label{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:14px}
 </style>
 </head>
 <body class="home">
@@ -4868,7 +4910,7 @@ document.addEventListener('click',e=>{const t=e.target;let b;if(t.closest('[data
 
 /* ================= QUICK ADD (+) ================= */
 document.body.insertAdjacentHTML('beforeend','<button class="fab" id="fab" aria-label="Quick add">＋</button>');
-function fabSheet(){const Q=[['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst'],['🎵','Music today','qmu'],['😴','Nap','qnap'],['🕒','Training times','qtt']];
+function fabSheet(){const Q=[['📌','Event','qev'],['💧','+1 cup of water','csw'],['📔','Journal · today','qj'],['🍽','Food (paste)','qf'],['📚','Homework','qh'],['🏀','Log a game','qg'],['🏃','Log a practice','qp'],['🎯','Free-throw challenge','qft'],['🩹','Something hurts','qi'],['💰','Add savings','qs'],['🧘','Stretch 5 min','qst'],['🎵','Music today','qmu'],['😴','Nap','qnap'],['🕒','Training times','qtt']];
   $('sheet').innerHTML=`<div class="grab"></div><h2>＋ Quick add</h2><div class="qgrid">${Q.map(([e,l,k])=>`<button class="qbtn" data-q="${k}"><b>${e}</b>${l}</button>`).join('')}</div><button class="btn sec" style="width:100%;margin-top:12px" data-close>Close</button>`;$('ov').classList.add('on');}
 document.addEventListener('click',e=>{const t=e.target;let b;if(t.id==='fab'){fabSheet();return;}
   if(!(b=t.closest('[data-q]')))return;const k=b.dataset.q;closeSheet();const iso=isoD(new Date());
@@ -6218,7 +6260,7 @@ function calMonthStats(){const y=CALM.getFullYear(),m=CALM.getMonth(),t=new Date
   return{pl,dn,games,prac,mus,food,act};}
 const _renderCalC2=renderCal;renderCal=function(){_renderCalC2();try{const v=$('v-cal'),S=calMonthStats(),p=S.pl?Math.round(S.dn/S.pl*100):0,t=new Date();
   v.querySelectorAll('.cday[data-calday]').forEach(b=>{const d=dOf(b.dataset.calday),it=dayItems(d).filter(({s})=>!s.extra||s.sx),done=it.filter(({plan,s})=>didIt(ST[plan.key],s.id)).length,c=b.querySelector('.cicons');
-    if(!it.length&&!teamOn(d).length)b.classList.add('rest');if(it.length&&done)b.style.setProperty('--heat',Math.min(1,done/Math.max(1,it.length)));if(done)b.classList.add('heat');
+    if(!it.length&&!teamOn(d).length)b.classList.add('rest');if(it.length&&done)b.style.setProperty('--heat',Math.min(1,done/Math.max(1,it.length)));if(done)b.classList.add('cdheat');
     if(it.length&&done===it.length&&d<t)b.classList.add('alldone');
     const sp=it.map(({s})=>s.sx?'⭐':s.type==='friends'?'🤝':s.tday?'🏁':'').filter(Boolean);if(c&&sp.length)c.insertAdjacentHTML('afterbegin',[...new Set(sp)].map(x=>`<i class="calsp">${x}</i>`).join(''));});
   const head=v.querySelector('.calhead');const cm=new Date(t.getFullYear(),t.getMonth(),1);
@@ -6663,6 +6705,115 @@ BADGES.push(['iq1','🧠','Student of the game','Finish your first Basketball IQ
  ['iqu5','🏀','Used it','Use 5 IQ topics in a game',a=>a.iqUse>=5],['iqq3','💯','Quiz ace','3/3 in the IQ quiz — 3 times',a=>a.iqQ>=3]);
 BCAT.splice(BCAT.length-1,0,['iq','🧠','Basketball IQ']);BCMAP.iq='iq1 iq10 iq30 iqp5 iql1 iqu5 iqq3';
 
+/* ================= CALENDAR 3: tidy same-size cells + 📌 events (notes, times, repeat, reminders, checklist, countdown) ================= */
+LF.ev=LF.ev||[];LF.evN=LF.evN||{};
+const EVCAT=[['me','🙂','Personal','#7c5cff'],['fam','👨‍👩‍👦','Family','#ff6b9d'],['school','🏫','School','#5c7cfa'],['hoops','🏀','Basketball','#ff8c1a'],['bday','🎂','Birthday','#f06595'],
+ ['trip','✈️','Trip','#15aabf'],['doc','🩺','Doctor','#20c997'],['fun','🎮','Fun','#fcc419'],['other','📌','Other','#868e96']];
+const EVEMO=['📌','🎉','🎂','✈️','🏀','⚽','🎮','🎬','🍕','🩺','🦷','💇','🛒','🎁','📚','📝','🏫','👨‍👩‍👦','🕍','🏖','🎵','🏆','💰','⭐'];
+const EVREP=[['none','Once'],['day','Every day'],['week','Every week'],['2week','Every 2 weeks'],['month','Every month'],['year','Every year']];
+const EVREM=[['','No reminder'],['0','At the time'],['30','30 min before'],['60','1 hour before'],['1440','1 day before']];
+const evCat=k=>EVCAT.find(c=>c[0]===k)||EVCAT[0];
+const isoAdd=(iso,n)=>{const d=dOf(iso);d.setDate(d.getDate()+n);return isoD(d);};
+const isoDiff=(a,b)=>Math.round((dOf(b)-dOf(a))/864e5);
+function evRepHit(ev,s){if(s<ev.d)return false;if(ev.until&&s>ev.until)return false;const n=isoDiff(ev.d,s),a=dOf(ev.d),b=dOf(s);
+  switch(ev.rep){case'day':return true;case'week':return n%7===0;case'2week':return n%14===0;case'month':return a.getDate()===b.getDate();case'year':return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth();default:return n===0;}}
+/* occurrence on iso → {ev, start, pos:'one'|'start'|'mid'|'end'} */
+function evOn(iso){const out=[];LF.ev.forEach(ev=>{if((ev.skip||[]).includes(iso))return;const len=ev.d2&&ev.d2>ev.d?isoDiff(ev.d,ev.d2):0;
+  for(let k=0;k<=len;k++){const s=isoAdd(iso,-k);if(evRepHit(ev,s)){out.push({ev,start:s,pos:len===0?'one':k===0?'start':k===len?'end':'mid'});break;}}});
+  return out.sort((a,b)=>(a.ev.all?0:1)-(b.ev.all?0:1)||(a.ev.s||'').localeCompare(b.ev.s||''));}
+const evCol=ev=>ev.col||evCat(ev.cat)[3];
+const evWhen=ev=>ev.all!==false&&!ev.s?'All day':ev.s+(ev.en?'–'+ev.en:'');
+/* ---------- tidy month cells (runs after every other calendar add-on) ---------- */
+const CALSEG=window.Intl&&Intl.Segmenter?new Intl.Segmenter():null;
+const calTok=s=>(CALSEG?[...CALSEG.segment(s)].map(x=>x.segment):[...s]).filter(x=>x.trim());
+const CALPRI=['🆚','🏀','👥','🏃','📝','🏖','⭐','🤝','🏁','🧠','🎹','🎸','🍽'];
+let CALV='month';
+function calTidy(b){const iso=b.dataset.calday,d=dOf(iso),cn=b.querySelector('.cn'),dots=[...b.querySelectorAll('.cdots i')],ic=b.querySelector('.cicons'),ics=[];
+  if(ic)ic.childNodes.forEach(n=>{if(n.nodeType===3)calTok(n.nodeValue).forEach(t=>ics.push({k:t,h:t}));else if(n.nodeType===1&&!n.classList.contains('mface')){const k=n.textContent.trim();if(k)ics.push({k,h:`<i class="${n.className}" style="${n.getAttribute('style')||''}">${k}</i>`});}});
+  const seen=new Set(),I=ics.filter(x=>!seen.has(x.k)&&seen.add(x.k)).sort((a,b)=>{const pa=CALPRI.indexOf(a.k),pb=CALPRI.indexOf(b.k);return(pa<0?99:pa)-(pb<0?99:pb);});
+  const e=JR.e[iso],mood=e&&e.mood,all=b.classList.contains('alldone'),E=evOn(iso);
+  b.classList.remove('mfill');b.style.background='';if(mood){b.classList.add('moody');b.style.setProperty('--mood',MOODC[mood-1]);}
+  if(d.getDay()===5||d.getDay()===6)b.classList.add('wknd');
+  const dh=dots.slice(0,4).map(x=>x.outerHTML).join('')+(dots.length>4?`<em class="cmore">+${dots.length-4}</em>`:'');
+  const ih=I.slice(0,3).map(x=>x.h).join('')+(I.length>3?`<em class="cmore">+${I.length-3}</em>`:'');
+  const eh=E.slice(0,2).map(o=>`<span class="cev ${o.pos}" style="--ec:${evCol(o.ev)}">${o.pos==='one'||o.pos==='start'||d.getDay()===0?`${o.ev.e||evCat(o.ev.cat)[1]} ${esc(o.ev.t)}`:'&nbsp;'}</span>`).join('')+(E.length>2?`<span class="cev more">+${E.length-2}</span>`:'');
+  b.innerHTML=`<span class="cdh"><span class="cn">${cn?cn.textContent:d.getDate()}</span><span class="cmood">${mood?MOODS[mood-1]:all?'<b class="cok">✓</b>':''}</span></span><span class="cdots">${dh}</span><span class="cicons">${ih}</span><span class="cevs">${eh}</span>`;}
+function evAgenda(){const t=isoD(new Date()),from=CALM&&isoD(CALM)>t?isoD(CALM):t,days=[];
+  for(let i=0;i<60;i++){const iso=isoAdd(from,i),E=evOn(iso),g=[];try{teamOn(dOf(iso)).filter(x=>x.type==='game').forEach(()=>g.push('🆚 Game'));examsOn(iso).forEach(x=>g.push('📝 '+sName(x.subj)+' exam'));const h=holiOf(dOf(iso));if(h&&isoAdd(iso,-1)!==iso&&!holiOf(dOf(isoAdd(iso,-1))))g.push('🏖 '+holiName(h));}catch(e){}
+    if(E.length||g.length)days.push({iso,E,g});}
+  return `<div class="agenda">${days.length?days.map(x=>{const d=dOf(x.iso);return `<div class="agd"><div class="agdate ${x.iso===t?'now':''}"><b>${d.getDate()}</b><small>${d.toLocaleDateString(LOC,{weekday:'short'})}</small><small>${d.toLocaleDateString(LOC,{month:'short'})}</small></div><div class="agl">
+    ${x.E.map(o=>`<div class="evrow" data-evedit="${o.ev.id}|${x.iso}" style="--ec:${evCol(o.ev)}"><span class="evi">${o.ev.e||evCat(o.ev.cat)[1]}</span><div><b>${esc(o.ev.t)}</b><small>${evWhen(o.ev)}${o.pos!=='one'?' · '+(o.pos==='start'?'starts':o.pos==='end'?'ends':'continues'):''}${o.ev.loc?' · 📍 '+esc(o.ev.loc):''}${o.ev.list&&o.ev.list.length?` · ☑️ ${o.ev.list.filter(z=>z.done).length}/${o.ev.list.length}`:''}</small></div></div>`).join('')}
+    ${x.g.map(z=>`<div class="agx" data-calday="${x.iso}">${z}</div>`).join('')}</div></div>`;}).join(''):'<p class="muted" style="text-align:center">Nothing coming up. Tap ＋ Event to add one.</p>'}</div>`;}
+const _renderCalEV=renderCal;renderCal=function(){_renderCalEV();try{const v=$('v-cal');v.querySelectorAll('.cday[data-calday]').forEach(calTidy);
+  const head=v.querySelector('.calhead');head&&head.insertAdjacentHTML('afterend',`<div class="calbar"><div class="seg calv"><button class="${CALV==='month'?'on':''}" data-calv="month">📅 Month</button><button class="${CALV==='agenda'?'on':''}" data-calv="agenda">📋 Agenda</button></div><button class="chip on" data-evnew="">＋ Event</button></div>`);
+  if(CALV==='agenda'){const c=v.querySelector('.cal');c&&c.insertAdjacentHTML('afterend',evAgenda());c&&(c.style.display='none');v.querySelectorAll('.legend,.legend+p').forEach(x=>x.style.display='none');}
+  const lg=v.querySelector('.legend');lg&&lg.insertAdjacentHTML('beforeend','<span><i class="lgev"></i>event</span>');}catch(e){console.warn('cal3',e);}};
+/* ---------- day sheet ---------- */
+const _openCalDayEV=openCalDay;openCalDay=function(iso){_openCalDayEV(iso);try{const E=evOn(iso),h=$('sheet').querySelector('h2');
+  h&&h.insertAdjacentHTML('afterend',`<div class="evday">${E.map(o=>`<div class="evrow" data-evedit="${o.ev.id}|${iso}" style="--ec:${evCol(o.ev)}"><span class="evi">${o.ev.e||evCat(o.ev.cat)[1]}</span><div><b>${esc(o.ev.t)}</b><small>${evWhen(o.ev)}${o.ev.rep&&o.ev.rep!=='none'?' · 🔁':''}${o.ev.rem!=null&&o.ev.rem!==''?' · 🔔':''}${o.ev.loc?' · 📍 '+esc(o.ev.loc):''}${o.ev.list&&o.ev.list.length?` · ☑️ ${o.ev.list.filter(z=>z.done).length}/${o.ev.list.length}`:''}</small>${o.ev.note?`<p>${esc(o.ev.note).slice(0,140)}</p>`:''}</div></div>`).join('')}
+   <button class="btn sec evadd" data-evnew="${iso}">📌 Add event or note to this day</button></div>`);}catch(e){console.warn('evday',e);}};
+/* ---------- editor ---------- */
+let EVD=null;
+function evNew(iso){const c=EVCAT[0];return{id:'ev'+Date.now().toString(36),t:'',e:'',cat:'me',d:iso||isoD(new Date()),d2:'',all:true,s:'',en:'',rep:'none',until:'',rem:'',note:'',loc:'',list:[],cd:false,home:true};}
+function evSheet(ev,occ){EVD=JSON.parse(JSON.stringify(ev));EVD._occ=occ||ev.d;const isNew=!LF.ev.some(x=>x.id===ev.id);evDraw(isNew);}
+function evDraw(isNew){const v=EVD,c=evCat(v.cat),col=v.col||c[3];
+  $('sheet').innerHTML=`<div class="grab"></div><div class="evhd" style="--ec:${col}"><span class="evbig">${v.e||c[1]}</span><input class="evtitle" id="evT" placeholder="What's happening?" value="${esc(v.t)}" maxlength="60"></div>
+   <div class="evsec"><small>Type</small><div class="chips">${EVCAT.map(k=>`<button class="chip ${v.cat===k[0]?'on':''}" style="${v.cat===k[0]?`background:${k[3]};border-color:${k[3]};color:#fff`:''}" data-evcat="${k[0]}">${k[1]} ${k[2]}</button>`).join('')}</div></div>
+   <div class="evsec"><small>Emoji</small><div class="evemo">${EVEMO.map(x=>`<button class="${(v.e||c[1])===x?'on':''}" data-eve="${x}">${x}</button>`).join('')}<input id="evE" maxlength="4" placeholder="+" value=""></div></div>
+   <div class="evsec evgrid"><label><small>Date</small><input type="date" id="evD" value="${v.d}"></label><label><small>Ends (more days)</small><input type="date" id="evD2" value="${v.d2||''}" min="${v.d}"></label></div>
+   <div class="evsec"><div class="seg"><button class="${v.all?'on':''}" data-evall="1">☀️ All day</button><button class="${!v.all?'on':''}" data-evall="0">🕒 Time</button></div>
+    ${v.all?'':`<div class="evgrid" style="margin-top:8px"><label><small>From</small><input type="time" id="evS" value="${v.s||'16:00'}"></label><label><small>To</small><input type="time" id="evEn" value="${v.en||''}"></label></div>`}</div>
+   <div class="evsec"><small>🔁 Repeat</small><div class="chips">${EVREP.map(([k,l])=>`<button class="chip ${v.rep===k?'on':''}" data-evrep="${k}">${l}</button>`).join('')}</div>
+    ${v.rep!=='none'?`<label class="evinl"><small>Until (optional)</small><input type="date" id="evU" value="${v.until||''}"></label>`:''}</div>
+   <div class="evsec"><small>🔔 Reminder</small><div class="chips">${EVREM.map(([k,l])=>`<button class="chip ${String(v.rem??'')===k?'on':''}" data-evrem="${k}">${l}</button>`).join('')}</div>${v.rem!==''&&window.Notification&&Notification.permission!=='granted'?'<p class="muted" style="font-size:12px;margin:4px 0 0">Turn on 🔔 notifications in Settings so the reminder can pop up.</p>':''}</div>
+   <div class="evsec"><label class="evinl"><small>📍 Where</small><input id="evL" placeholder="e.g. Grandma's house" value="${esc(v.loc)}"></label>
+    <label class="evinl"><small>📝 Notes</small><textarea id="evN" rows="3" placeholder="Anything to remember…">${esc(v.note)}</textarea></label></div>
+   <div class="evsec"><small>☑️ Checklist</small>${v.list.map((x,i)=>`<div class="evli"><button class="evck ${x.done?'on':''}" data-evck="${i}">${x.done?'✓':''}</button><span class="${x.done?'dn':''}">${esc(x.t)}</span><button class="evx" data-evdl="${i}">✕</button></div>`).join('')}
+    <div class="evli"><input id="evLi" placeholder="+ Add item (e.g. bring water)"><button class="chip" data-evla>Add</button></div></div>
+   <div class="evsec evtog"><label><input type="checkbox" id="evCd" ${v.cd?'checked':''}> ⏳ Countdown on Home</label><label><input type="checkbox" id="evH" ${v.home!==false?'checked':''}> 🏠 Show on Home that day</label></div>
+   <div class="row2"><button class="btn sec" data-close>Cancel</button><button class="btn main" data-evsave>${isNew?'Add 📌':'Save ✓'}</button></div>
+   ${isNew?'':`<div class="row2" style="margin-top:8px"><button class="btn sec" data-evdup>⧉ Copy</button><button class="btn sec" data-evdel style="color:#ff6b6b">🗑 Delete</button></div>`}`;
+  $('ov').classList.add('on');}
+function evGrab(){const g=id=>$(id);if(!g('evT'))return;EVD.t=g('evT').value.trim();EVD.d=g('evD').value||EVD.d;EVD.d2=g('evD2').value>EVD.d?g('evD2').value:'';
+  if(g('evS')){EVD.s=g('evS').value;EVD.en=g('evEn').value;}if(g('evU'))EVD.until=g('evU').value;EVD.loc=g('evL').value.trim();EVD.note=g('evN').value;EVD.cd=g('evCd').checked;EVD.home=g('evH').checked;
+  const ce=g('evE').value.trim();if(ce)EVD.e=ce;}
+document.addEventListener('click',e=>{const t=e.target;let b;
+  if(b=t.closest('[data-calv]')){CALV=b.dataset.calv;renderCal();return;}
+  if(b=t.closest('[data-evnew]')){e.stopImmediatePropagation();evSheet(evNew(b.dataset.evnew));return;}
+  if(b=t.closest('[data-evedit]')){e.stopImmediatePropagation();const[id,occ]=b.dataset.evedit.split('|'),ev=LF.ev.find(x=>x.id===id);if(ev)evSheet(ev,occ);return;}
+  if(!EVD||!t.closest('#sheet'))return;
+  if(b=t.closest('[data-evcat]')){evGrab();const old=evCat(EVD.cat);EVD.cat=b.dataset.evcat;if(!EVD.e||EVD.e===old[1])EVD.e='';evDraw(!LF.ev.some(x=>x.id===EVD.id));return;}
+  if(b=t.closest('[data-eve]')){evGrab();EVD.e=b.dataset.eve;evDraw(!LF.ev.some(x=>x.id===EVD.id));return;}
+  if(b=t.closest('[data-evall]')){evGrab();EVD.all=b.dataset.evall==='1';if(EVD.all){EVD.s='';EVD.en='';}else if(!EVD.s)EVD.s='16:00';evDraw(!LF.ev.some(x=>x.id===EVD.id));return;}
+  if(b=t.closest('[data-evrep]')){evGrab();EVD.rep=b.dataset.evrep;evDraw(!LF.ev.some(x=>x.id===EVD.id));return;}
+  if(b=t.closest('[data-evrem]')){evGrab();EVD.rem=b.dataset.evrem;evDraw(!LF.ev.some(x=>x.id===EVD.id));return;}
+  if(b=t.closest('[data-evck]')){evGrab();const x=EVD.list[+b.dataset.evck];x.done=!x.done;evDraw(!LF.ev.some(z=>z.id===EVD.id));return;}
+  if(b=t.closest('[data-evdl]')){evGrab();EVD.list.splice(+b.dataset.evdl,1);evDraw(!LF.ev.some(z=>z.id===EVD.id));return;}
+  if(t.closest('[data-evla]')){evGrab();const v=$('evLi').value.trim();if(v)EVD.list.push({t:v,done:false});evDraw(!LF.ev.some(z=>z.id===EVD.id));setTimeout(()=>$('evLi')&&$('evLi').focus(),50);return;}
+  if(t.closest('[data-evsave]')){evGrab();if(!EVD.t){toast('Give it a name first');$('evT').focus();return;}const o=EVD;delete o._occ;const i=LF.ev.findIndex(x=>x.id===o.id);if(i>=0)LF.ev[i]=o;else LF.ev.push(o);
+    saveLF();BAGC=null;EVD=null;closeSheet();renderAll();toast(`📌 ${o.t} · ${short(dOf(o.d))}`);return;}
+  if(t.closest('[data-evdup]')){evGrab();const o={...JSON.parse(JSON.stringify(EVD)),id:'ev'+Date.now().toString(36)};delete o._occ;evSheet(o);toast('⧉ Copy — change the date and tap Add');return;}
+  if(t.closest('[data-evdel]')){const o=EVD;if(o.rep&&o.rep!=='none'&&!t.closest('[data-evdel]').dataset.sure){const r=$('sheet').querySelector('[data-evdel]').parentNode;
+      r.outerHTML=`<div class="row2" style="margin-top:8px"><button class="btn sec" data-evdel1>🗑 Only ${short(dOf(o._occ))}</button><button class="btn sec" data-evdel data-sure="1" style="color:#ff6b6b">🗑 All of them</button></div>`;return;}
+    LF.ev=LF.ev.filter(x=>x.id!==o.id);saveLF();EVD=null;closeSheet();renderAll();toast('🗑 Deleted');return;}
+  if(t.closest('[data-evdel1]')){const ev=LF.ev.find(x=>x.id===EVD.id);if(ev){ev.skip=[...(ev.skip||[]),EVD._occ];saveLF();}EVD=null;closeSheet();renderAll();toast('🗑 Removed from that day');return;}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='evLi'){e.preventDefault();$('sheet').querySelector('[data-evla]').click();}});
+/* ---------- Home: today's events + countdowns ---------- */
+const _renderHomeEV=renderHome;renderHome=function(){_renderHomeEV();try{const iso=isoD(new Date()),E=evOn(iso).filter(o=>o.ev.home!==false),td=$('v-home').querySelector('.tday');if(!E.length||!td)return;
+  td.insertAdjacentHTML('afterbegin',`<div class="evhome">${E.map(o=>`<div class="evrow" data-evedit="${o.ev.id}|${iso}" style="--ec:${evCol(o.ev)}"><span class="evi">${o.ev.e||evCat(o.ev.cat)[1]}</span><div><b>${esc(o.ev.t)}</b><small>📌 ${evWhen(o.ev)}${o.ev.loc?' · 📍 '+esc(o.ev.loc):''}${o.ev.list&&o.ev.list.length?` · ☑️ ${o.ev.list.filter(z=>z.done).length}/${o.ev.list.length}`:''}</small></div></div>`).join('')}</div>`);}catch(e){console.warn('evhome',e);}};
+const _cdAllEV=cdAll;cdAll=function(){const o=_cdAllEV(),t=isoD(new Date());try{LF.ev.filter(ev=>ev.cd).forEach(ev=>{let nx=null;for(let i=0;i<400&&!nx;i++){const iso=isoAdd(t,i);if(evOn(iso).some(x=>x.ev.id===ev.id&&(x.pos==='one'||x.pos==='start')))nx=iso;}
+  if(nx)o.push({n:ev.t,e:ev.e||evCat(ev.cat)[1],d:nx});});}catch(e){}return o.filter(c=>c.d>=t).sort((a,b)=>a.d.localeCompare(b.d));};
+/* ---------- reminders (while the app was opened recently) ---------- */
+function evCheck(){try{const now=new Date(),t=isoD(now);[t,isoAdd(t,1)].forEach(iso=>evOn(iso).forEach(o=>{const ev=o.ev;if(ev.rem===''||ev.rem==null||(o.pos!=='one'&&o.pos!=='start'))return;
+    const at=dOf(iso);const[h,m]=(ev.all||!ev.s?'08:00':ev.s).split(':').map(Number);at.setHours(h,m,0,0);const fire=new Date(at-ev.rem*60000),key=ev.id+'@'+iso;
+    if(now>=fire&&now-fire<6*3600e3&&!LF.evN[key]){LF.evN[key]=1;saveLF();notify(`📌 ${ev.t} — ${ev.rem==='1440'?'tomorrow':ev.all?'today':'at '+ev.s}${ev.loc?' · 📍 '+ev.loc:''}`);}}));}catch(e){}}
+setInterval(evCheck,60000);setTimeout(evCheck,4000);
+/* quick add */
+document.addEventListener('click',e=>{if(!e.target.closest('[data-q="qev"]'))return;e.stopImmediatePropagation();closeSheet();setTimeout(()=>evSheet(evNew(isoD(new Date()))),60);},true);
+/* badges */
+const _aggrEV=aggr;aggr=function(){const a=_aggrEV();try{a.evN=LF.ev.length;}catch(e){}return a;};
+BADGES.push(['ev1','📌','Planner','Add your first calendar event',a=>a.evN>=1],['ev20','🗓','Organized','Add 20 calendar events',a=>a.evN>=20]);BCMAP.app+=' ev1 ev20';
+
 /* ================= HEBREW (עברית) ================= */
 // Exact texts
 const HE={
@@ -6918,6 +7069,18 @@ Object.assign(AR,{'Elbow 4-minute (makes)':'المرفق 4 دقائق (ناجح�
  ['Watch 1–2 short clips. Look for the moment the defender makes his choice — and what the player does right after.','צפה ב-1–2 קטעים קצרים. חפש את הרגע שבו המגן מחליט — ומה השחקן עושה מיד אחרי.','شاهد مقطعًا أو اثنين قصيرين. ابحث عن اللحظة التي يقرر فيها المدافع — وما يفعله اللاعب بعدها مباشرة.'],
  ['📖 Today','📖 היום','📖 اليوم'],['🎬 Video · 5–8 min','🎬 סרטון · 5–8 דק׳','🎬 فيديو · 5–8 د']];
  X.forEach(([e,h,a])=>{HE[e]=h;AR[e]=a;});})();
+(()=>{const X=[['📅 Month','📅 חודש','📅 شهر'],['📋 Agenda','📋 רשימה','📋 جدول'],['＋ Event','＋ אירוע','＋ حدث'],['Event','אירוע','حدث'],['event','אירוע','حدث'],['📌 Add event or note to this day','📌 הוסף אירוע או הערה ליום הזה','📌 أضف حدثًا أو ملاحظة لهذا اليوم'],
+ ['Type','סוג','النوع'],['Emoji','אימוג׳י','إيموجي'],['Date','תאריך','التاريخ'],['Ends (more days)','מסתיים (כמה ימים)','ينتهي (عدة أيام)'],['☀️ All day','☀️ כל היום','☀️ طوال اليوم'],['🕒 Time','🕒 שעה','🕒 وقت'],['From','מ-','من'],['To','עד','إلى'],
+ ['🔁 Repeat','🔁 חזרה','🔁 تكرار'],['Once','פעם אחת','مرة واحدة'],['Every day','כל יום','كل يوم'],['Every week','כל שבוע','كل أسبوع'],['Every 2 weeks','כל שבועיים','كل أسبوعين'],['Every month','כל חודש','كل شهر'],['Every year','כל שנה','كل سنة'],['Until (optional)','עד (לא חובה)','حتى (اختياري)'],
+ ['🔔 Reminder','🔔 תזכורת','🔔 تذكير'],['No reminder','בלי תזכורת','بلا تذكير'],['At the time','בזמן','في الوقت'],['30 min before','30 דק׳ לפני','قبل 30 د'],['1 hour before','שעה לפני','قبل ساعة'],['1 day before','יום לפני','قبل يوم'],
+ ['📍 Where','📍 איפה','📍 أين'],['📝 Notes','📝 הערות','📝 ملاحظات'],['☑️ Checklist','☑️ רשימה','☑️ قائمة'],['Add','הוסף','أضف'],['⏳ Countdown on Home','⏳ ספירה לאחור בבית','⏳ عدّ تنازلي في الرئيسية'],['🏠 Show on Home that day','🏠 הצג בבית באותו יום','🏠 اعرضه في الرئيسية ذلك اليوم'],
+ ['Cancel','ביטול','إلغاء'],['Add 📌','הוסף 📌','أضف 📌'],['Save ✓','שמור ✓','احفظ ✓'],['⧉ Copy','⧉ שכפל','⧉ نسخ'],['🗑 Delete','🗑 מחק','🗑 حذف'],['🗑 All of them','🗑 את כולם','🗑 كلها'],['All day','כל היום','طوال اليوم'],
+ ['Personal','אישי','شخصي'],['Family','משפחה','العائلة'],['Basketball','כדורסל','كرة السلة'],['Birthday','יום הולדת','عيد ميلاد'],['Trip','טיול','رحلة'],['Doctor','רופא','طبيب'],['Fun','כיף','متعة'],['Other','אחר','آخر'],
+ ['Nothing coming up. Tap ＋ Event to add one.','אין כלום בקרוב. לחץ ＋ אירוע כדי להוסיף.','لا شيء قريبًا. اضغط ＋ حدث لإضافة واحد.'],['Planner','מתכנן','المخطِّط'],['Add your first calendar event','הוסף את האירוע הראשון ללוח','أضف أول حدث في التقويم'],['Organized','מסודר','منظَّم'],['Add 20 calendar events','הוסף 20 אירועים ללוח','أضف 20 حدثًا في التقويم'],
+ ["What's happening?",'מה קורה?','ماذا سيحدث؟'],["e.g. Grandma's house",'למשל אצל סבתא','مثلًا بيت الجدة'],['Anything to remember…','משהו לזכור…','شيء تتذكره…'],['+ Add item (e.g. bring water)','+ הוסף פריט (למשל להביא מים)','+ أضف عنصرًا (مثلًا أحضر ماء)'],
+ ['Give it a name first','קודם תן לו שם','أعطه اسمًا أولًا'],['🗑 Deleted','🗑 נמחק','🗑 حُذف'],['🗑 Removed from that day','🗑 הוסר מהיום הזה','🗑 أُزيل من ذلك اليوم']];
+ X.forEach(([e,h,a])=>{HE[e]=h;AR[e]=a;});
+ [['starts','מתחיל','يبدأ'],['ends','נגמר','ينتهي'],['continues','ממשיך','مستمر']].forEach(([e,h,a])=>{HE_PH.push([e,h]);AR_PH.push([e,a]);});HE_PH.sort((x,y)=>y[0].length-x[0].length);AR_PH.sort((x,y)=>y[0].length-x[0].length);})();
 if(LANG!=='en'){trNode(document.body);document.addEventListener('DOMContentLoaded',()=>trNode(document.body));}
 
 // one time: plan the redo days for the pull-up days you didn't finish (Nov 8–15)
